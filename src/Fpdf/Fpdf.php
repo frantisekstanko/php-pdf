@@ -1910,22 +1910,7 @@ final class Fpdf
             // Font object
             $type = $font['type'];
             $name = $font['name'];
-            if ($type == 'Core') {
-                // Core font
-                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
-                $this->_newobj();
-                $this->_put('<</Type /Font');
-                $this->_put('/BaseFont /' . $name);
-                $this->_put('/Subtype /Type1');
-                if ($name != 'Symbol' && $name != 'ZapfDingbats') {
-                    $this->_put('/Encoding /WinAnsiEncoding');
-                }
-                if (isset($font['uv'])) {
-                    $this->_put('/ToUnicode ' . $this->cmaps[$cmapkey] . ' 0 R');
-                }
-                $this->_put('>>');
-                $this->_put('endobj');
-            } elseif ($type == 'Type1' || $type == 'TrueType') {
+            if ($type == 'Type1' || $type == 'TrueType') {
                 // Additional Type1 or TrueType/OpenType font
                 if (isset($font['subsetted']) && $font['subsetted']) {
                     $name = 'AAAAAA+' . $name;
