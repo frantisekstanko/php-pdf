@@ -1977,7 +1977,7 @@ final class Fpdf
             elseif ($type == 'TTF') {
                 $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
 
-                $ttf = new TTFontFile();
+                $ttf = new TtFontFile();
                 $fontname = 'MPDFAA+' . $font['name'];
                 $subset = $font['subset'];
                 unset($subset[0]);
