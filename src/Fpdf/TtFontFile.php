@@ -644,7 +644,7 @@ class TtFontFile
     // ///////////////////////////////////////////////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////////////////////////////////
 
-    public function makeSubset($file, &$subset): string
+    public function makeSubset(string $file, array &$subset): string
     {
         $this->filename = $file;
         $this->fh = fopen($file, 'rb') or exit('Can\'t open file ' . $file);
