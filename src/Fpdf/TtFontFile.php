@@ -1095,6 +1095,10 @@ class TtFontFile
         if (($numberOfHMetrics * 4) < $this->maxStrLenRead) {
             $data = $this->get_chunk($start, $numberOfHMetrics * 4);
             $arr = unpack('n*', $data);
+
+            if ($arr === false) {
+                throw new CompressionException('unpack() returned false');
+            }
         } else {
             $this->seek($start);
         }
