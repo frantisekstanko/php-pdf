@@ -29,7 +29,7 @@ class Fpdf
     protected array $pages;
     protected int $currentDocumentState;
     protected bool $compressionEnabled;
-    protected float $k;                  // scale factor (number of points in user unit)
+    protected float $scaleFactor;
     protected $DefOrientation;     // default orientation
     protected $CurOrientation;     // current orientation
     protected $StdPageSizes;       // standard page sizes
@@ -118,13 +118,13 @@ class Fpdf
         $this->CoreFonts = ['courier', 'helvetica', 'times', 'symbol', 'zapfdingbats'];
         // Scale factor
         if ($unit == 'pt') {
-            $this->k = 1;
+            $this->scaleFactor = 1;
         } elseif ($unit == 'mm') {
-            $this->k = 72 / 25.4;
+            $this->scaleFactor = 72 / 25.4;
         } elseif ($unit == 'cm') {
-            $this->k = 72 / 2.54;
+            $this->scaleFactor = 72 / 2.54;
         } elseif ($unit == 'in') {
-            $this->k = 72;
+            $this->scaleFactor = 72;
         } else {
             $this->Error('Incorrect unit: ' . $unit);
         }
@@ -148,17 +148,17 @@ class Fpdf
             $this->Error('Incorrect orientation: ' . $orientation);
         }
         $this->CurOrientation = $this->DefOrientation;
-        $this->wPt = $this->w * $this->k;
-        $this->hPt = $this->h * $this->k;
+        $this->wPt = $this->w * $this->scaleFactor;
+        $this->hPt = $this->h * $this->scaleFactor;
         // Page rotation
         $this->CurRotation = 0;
         // Page margins (1 cm)
-        $margin = 28.35 / $this->k;
+        $margin = 28.35 / $this->scaleFactor;
         $this->SetMargins($margin, $margin);
         // Interior cell margin (1 mm)
         $this->cMargin = $margin / 10;
         // Line width (0.2 mm)
-        $this->LineWidth = .567 / $this->k;
+        $this->LineWidth = .567 / $this->scaleFactor;
         // Automatic page break
         $this->SetAutoPageBreak(true, 2 * $margin);
         // Default display mode
@@ -325,7 +325,7 @@ class Fpdf
         $this->_out('2 J');
         // Set line width
         $this->LineWidth = $lw;
-        $this->_out(sprintf('%.2F w', $lw * $this->k));
+        $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         // Set font
         if ($family) {
             $this->SetFont($family, $style, $fontsize);
@@ -348,7 +348,7 @@ class Fpdf
         // Restore line width
         if ($this->LineWidth != $lw) {
             $this->LineWidth = $lw;
-            $this->_out(sprintf('%.2F w', $lw * $this->k));
+            $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         }
         // Restore font
         if ($family) {
@@ -450,14 +450,14 @@ class Fpdf
         // Set line width
         $this->LineWidth = $width;
         if ($this->currentPage > 0) {
-            $this->_out(sprintf('%.2F w', $width * $this->k));
+            $this->_out(sprintf('%.2F w', $width * $this->scaleFactor));
         }
     }
 
     public function Line($x1, $y1, $x2, $y2)
     {
         // Draw a line
-        $this->_out(sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->k, ($this->h - $y1) * $this->k, $x2 * $this->k, ($this->h - $y2) * $this->k));
+        $this->_out(sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->scaleFactor, ($this->h - $y1) * $this->scaleFactor, $x2 * $this->scaleFactor, ($this->h - $y2) * $this->scaleFactor));
     }
 
     public function Rect($x, $y, $w, $h, $style = '')
@@ -470,7 +470,7 @@ class Fpdf
         } else {
             $op = 'S';
         }
-        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->k, ($this->h - $y) * $this->k, $w * $this->k, -$h * $this->k, $op));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->scaleFactor, ($this->h - $y) * $this->scaleFactor, $w * $this->scaleFactor, -$h * $this->scaleFactor, $op));
     }
 
     public function AddFont($family, $style = '', $file = '')
@@ -606,7 +606,7 @@ class Fpdf
         $this->FontFamily = $family;
         $this->FontStyle = $style;
         $this->FontSizePt = $size;
-        $this->FontSize = $size / $this->k;
+        $this->FontSize = $size / $this->scaleFactor;
         $this->CurrentFont = &$this->fonts[$fontkey];
         if ($this->currentPage > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
@@ -620,7 +620,7 @@ class Fpdf
             return;
         }
         $this->FontSizePt = $size;
-        $this->FontSize = $size / $this->k;
+        $this->FontSize = $size / $this->scaleFactor;
         if ($this->currentPage > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
@@ -650,7 +650,7 @@ class Fpdf
     public function Link($x, $y, $w, $h, $link)
     {
         // Put a link on the page
-        $this->PageLinks[$this->currentPage][] = [$x * $this->k, $this->hPt - $y * $this->k, $w * $this->k, $h * $this->k, $link];
+        $this->PageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->hPt - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
     }
 
     public function Text($x, $y, $txt)
@@ -664,7 +664,7 @@ class Fpdf
         foreach ($this->UTF8StringToArray($txt) as $uni) {
             $this->CurrentFont['subset'][$uni] = $uni;
         }
-        $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->k, ($this->h - $y) * $this->k, $txt2);
+        $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->h - $y) * $this->scaleFactor, $txt2);
         if ($this->underline && $txt != '') {
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
@@ -684,7 +684,7 @@ class Fpdf
     {
         // Output a cell
         $txt = (string) $txt;
-        $k = $this->k;
+        $k = $this->scaleFactor;
         if ($this->y + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
             // Automatic page break
             $x = $this->x;
@@ -756,7 +756,7 @@ class Fpdf
                     $tx = '(' . $this->_escape($this->UTF8ToUTF16BE($tx, false)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
-                        $adj = -($this->ws * $this->k) * 1000 / $this->FontSizePt;
+                        $adj = -($this->ws * $this->scaleFactor) * 1000 / $this->FontSizePt;
                         $s .= sprintf('%d(%s) ', $adj, $space);
                     }
                 }
@@ -878,7 +878,7 @@ class Fpdf
                 } else {
                     if ($align == 'J') {
                         $this->ws = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
-                        $this->_out(sprintf('%.3F Tw', $this->ws * $this->k));
+                        $this->_out(sprintf('%.3F Tw', $this->ws * $this->scaleFactor));
                     }
                     $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
                     $i = $sep + 1;
@@ -1042,10 +1042,10 @@ class Fpdf
             $h = -96;
         }
         if ($w < 0) {
-            $w = -$info['w'] * 72 / $w / $this->k;
+            $w = -$info['w'] * 72 / $w / $this->scaleFactor;
         }
         if ($h < 0) {
-            $h = -$info['h'] * 72 / $h / $this->k;
+            $h = -$info['h'] * 72 / $h / $this->scaleFactor;
         }
         if ($w == 0) {
             $w = $h * $info['w'] / $info['h'];
@@ -1069,7 +1069,7 @@ class Fpdf
         if ($x === null) {
             $x = $this->x;
         }
-        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->k, $h * $this->k, $x * $this->k, ($this->h - ($y + $h)) * $this->k, $info['i']));
+        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->scaleFactor, $h * $this->scaleFactor, $x * $this->scaleFactor, ($this->h - ($y + $h)) * $this->scaleFactor, $info['i']));
         if ($link) {
             $this->Link($x, $y, $w, $h, $link);
         }
@@ -1238,7 +1238,7 @@ class Fpdf
             }
             $a = $this->StdPageSizes[$size];
 
-            return [$a[0] / $this->k, $a[1] / $this->k];
+            return [$a[0] / $this->scaleFactor, $a[1] / $this->scaleFactor];
         }
 
         if ($size[0] > $size[1]) {
@@ -1277,8 +1277,8 @@ class Fpdf
                 $this->w = $size[1];
                 $this->h = $size[0];
             }
-            $this->wPt = $this->w * $this->k;
-            $this->hPt = $this->h * $this->k;
+            $this->wPt = $this->w * $this->scaleFactor;
+            $this->hPt = $this->h * $this->scaleFactor;
             $this->PageBreakTrigger = $this->h - $this->bMargin;
             $this->CurOrientation = $orientation;
             $this->CurPageSize = $size;
@@ -1386,7 +1386,7 @@ class Fpdf
         $ut = $this->CurrentFont['ut'];
         $w = $this->GetStringWidth($txt) + $this->ws * substr_count($txt, ' ');
 
-        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->k, ($this->h - ($y - $up / 1000 * $this->FontSize)) * $this->k, $w * $this->k, -$ut / 1000 * $this->FontSizePt);
+        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->h - ($y - $up / 1000 * $this->FontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->FontSizePt);
     }
 
     protected function _parsejpg($file)
@@ -1675,9 +1675,9 @@ class Fpdf
                 if (isset($this->PageInfo[$l[0]]['size'])) {
                     $h = $this->PageInfo[$l[0]]['size'][1];
                 } else {
-                    $h = ($this->DefOrientation == 'P') ? $this->DefPageSize[1] * $this->k : $this->DefPageSize[0] * $this->k;
+                    $h = ($this->DefOrientation == 'P') ? $this->DefPageSize[1] * $this->scaleFactor : $this->DefPageSize[0] * $this->scaleFactor;
                 }
-                $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->PageInfo[$l[0]]['n'], $h - $l[1] * $this->k);
+                $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->PageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
             }
             $this->_put($s);
             $this->_put('endobj');
@@ -1754,7 +1754,7 @@ class Fpdf
             $w = $this->DefPageSize[1];
             $h = $this->DefPageSize[0];
         }
-        $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $w * $this->k, $h * $this->k));
+        $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $w * $this->scaleFactor, $h * $this->scaleFactor));
         $this->_put('>>');
         $this->_put('endobj');
     }
