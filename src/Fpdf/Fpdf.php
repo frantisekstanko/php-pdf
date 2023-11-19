@@ -105,7 +105,7 @@ class Fpdf
 
     /** @var array<int, array{0: int, 1: float}> */
     protected array $internalLinks;
-    protected bool $AutoPageBreak;      // automatic page breaking
+    protected bool $automaticPageBreak;
     protected float $PageBreakTrigger;   // threshold used to trigger page breaks
     protected bool $InHeader;           // flag set when processing header
     protected bool $InFooter;           // flag set when processing footer
@@ -240,7 +240,7 @@ class Fpdf
     public function SetAutoPageBreak($auto, $margin = 0)
     {
         // Set auto page break mode and triggering margin
-        $this->AutoPageBreak = $auto;
+        $this->automaticPageBreak = $auto;
         $this->pageBreakMargin = $margin;
         $this->PageBreakTrigger = $this->pageHeight - $margin;
     }
@@ -697,7 +697,7 @@ class Fpdf
     public function AcceptPageBreak()
     {
         // Accept automatic page break or not
-        return $this->AutoPageBreak;
+        return $this->automaticPageBreak;
     }
 
     public function Cell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
