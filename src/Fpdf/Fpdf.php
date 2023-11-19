@@ -75,7 +75,7 @@ class Fpdf
 
     /** @var array<mixed> */
     protected array $cmaps;              // array of ToUnicode CMaps
-    protected string $FontFamily;         // current font family
+    protected string $currentFontFamily;
     protected string $FontStyle;          // current font style
     protected bool $underline;          // underlining flag
 
@@ -140,7 +140,7 @@ class Fpdf
         $this->InHeader = false;
         $this->InFooter = false;
         $this->lastPrintedCellHeight = 0;
-        $this->FontFamily = '';
+        $this->currentFontFamily = '';
         $this->FontStyle = '';
         $this->FontSizePt = 12;
         $this->underline = false;
@@ -337,7 +337,7 @@ class Fpdf
         if ($this->currentDocumentState == 3) {
             $this->Error('The document is closed');
         }
-        $family = $this->FontFamily;
+        $family = $this->currentFontFamily;
         $style = $this->FontStyle . ($this->underline ? 'U' : '');
         $fontsize = $this->FontSizePt;
         $lw = $this->lineWidth;
@@ -595,7 +595,7 @@ class Fpdf
     {
         // Select a font; size given in points
         if ($family == '') {
-            $family = $this->FontFamily;
+            $family = $this->currentFontFamily;
         } else {
             $family = strtolower($family);
         }
@@ -613,7 +613,7 @@ class Fpdf
             $size = $this->FontSizePt;
         }
         // Test if font is already selected
-        if ($this->FontFamily == $family && $this->FontStyle == $style && $this->FontSizePt == $size) {
+        if ($this->currentFontFamily == $family && $this->FontStyle == $style && $this->FontSizePt == $size) {
             return;
         }
 
@@ -623,7 +623,7 @@ class Fpdf
             $this->Error('Undefined font: ' . $family . ' ' . $style);
         }
         // Select it
-        $this->FontFamily = $family;
+        $this->currentFontFamily = $family;
         $this->FontStyle = $style;
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->scaleFactor;
@@ -1276,7 +1276,7 @@ class Fpdf
         $this->currentDocumentState = 2;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
-        $this->FontFamily = '';
+        $this->currentFontFamily = '';
         // Check page size and orientation
         if ($orientation == '') {
             $orientation = $this->defaultOrientation;
