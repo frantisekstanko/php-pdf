@@ -18,6 +18,7 @@ use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
+use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
 final class Fpdf
 {
@@ -1108,14 +1109,9 @@ final class Fpdf
                 $type = substr($file, $pos + 1);
             }
             $type = strtolower($type);
-            if ($type == 'jpeg') {
-                $type = 'jpg';
-            }
-            $mtd = '_parse' . $type;
-            if (!method_exists($this, $mtd)) {
-                $this->Error('Unsupported image type: ' . $type);
-            }
-            $info = $this->{$mtd}($file);
+
+            $info = $this->parseImage($file, $type);
+
             $info['i'] = count($this->usedImages) + 1;
             $this->usedImages[$file] = $info;
         } else {
@@ -1473,7 +1469,7 @@ final class Fpdf
     }
 
     /** @return array<mixed> */
-    private function _parsejpg(string $file): array
+    private function parseJpg(string $file): array
     {
         // Extract info from a JPEG file
         $a = getimagesize($file);
@@ -1497,7 +1493,7 @@ final class Fpdf
     }
 
     /** @return array<mixed> */
-    private function _parsepng(string $file): array
+    private function parsePng(string $file): array
     {
         // Extract info from a PNG file
         $f = fopen($file, 'rb');
@@ -1676,7 +1672,7 @@ final class Fpdf
     }
 
     /** @return array<mixed> */
-    private function _parsegif(string $file): array
+    private function parseGif(string $file): array
     {
         // Extract info from a GIF file (via PNG conversion)
         if (!function_exists('imagepng')) {
@@ -2490,5 +2486,21 @@ final class Fpdf
         }
 
         return $out;
+    }
+
+    /** @return array<mixed> */
+    private function parseImage(string $file, string $type): array
+    {
+        if ($type === 'jpg' || $type == 'jpeg') {
+            return $this->parseJpg($file);
+        }
+        if ($type === 'png') {
+            return $this->parsePng($file);
+        }
+        if ($type === 'gif') {
+            return $this->parseGif($file);
+        }
+
+        throw new UnsupportedImageTypeException();
     }
 }
