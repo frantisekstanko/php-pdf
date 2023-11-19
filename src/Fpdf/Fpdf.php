@@ -81,8 +81,8 @@ class Fpdf
 
     /** @var array<mixed> */
     protected array $currentFont;
-    protected float $FontSizePt;         // current font size in points
-    protected float $FontSize;           // current font size in user unit
+    protected float $currentFontSizeInPoints;
+    protected float $currentFontSize;
     protected string $DrawColor;          // commands for drawing color
     protected string $FillColor;          // commands for filling color
     protected string $TextColor;          // commands for text color
@@ -142,7 +142,7 @@ class Fpdf
         $this->lastPrintedCellHeight = 0;
         $this->currentFontFamily = '';
         $this->currentFontStyle = '';
-        $this->FontSizePt = 12;
+        $this->currentFontSizeInPoints = 12;
         $this->isUnderline = false;
         $this->DrawColor = '0 G';
         $this->FillColor = '0 g';
@@ -339,7 +339,7 @@ class Fpdf
         }
         $family = $this->currentFontFamily;
         $style = $this->currentFontStyle . ($this->isUnderline ? 'U' : '');
-        $fontsize = $this->FontSizePt;
+        $fontsize = $this->currentFontSizeInPoints;
         $lw = $this->lineWidth;
         $dc = $this->DrawColor;
         $fc = $this->FillColor;
@@ -476,7 +476,7 @@ class Fpdf
             }
         }
 
-        return $w * $this->FontSize / 1000;
+        return $w * $this->currentFontSize / 1000;
     }
 
     public function SetLineWidth($width)
@@ -610,10 +610,10 @@ class Fpdf
             $style = 'BI';
         }
         if ($size == 0) {
-            $size = $this->FontSizePt;
+            $size = $this->currentFontSizeInPoints;
         }
         // Test if font is already selected
-        if ($this->currentFontFamily == $family && $this->currentFontStyle == $style && $this->FontSizePt == $size) {
+        if ($this->currentFontFamily == $family && $this->currentFontStyle == $style && $this->currentFontSizeInPoints == $size) {
             return;
         }
 
@@ -625,24 +625,24 @@ class Fpdf
         // Select it
         $this->currentFontFamily = $family;
         $this->currentFontStyle = $style;
-        $this->FontSizePt = $size;
-        $this->FontSize = $size / $this->scaleFactor;
+        $this->currentFontSizeInPoints = $size;
+        $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPage > 0) {
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->FontSizePt));
+            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
 
     public function SetFontSize($size)
     {
         // Set font size in points
-        if ($this->FontSizePt == $size) {
+        if ($this->currentFontSizeInPoints == $size) {
             return;
         }
-        $this->FontSizePt = $size;
-        $this->FontSize = $size / $this->scaleFactor;
+        $this->currentFontSizeInPoints = $size;
+        $this->currentFontSize = $size / $this->scaleFactor;
         if ($this->currentPage > 0) {
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->FontSizePt));
+            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
 
@@ -768,7 +768,7 @@ class Fpdf
                     $this->currentFont['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
-                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k);
+                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k);
                 $t = explode(' ', $txt);
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
@@ -776,7 +776,7 @@ class Fpdf
                     $tx = '(' . $this->_escape($this->UTF8ToUTF16BE($tx, false)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
-                        $adj = -($this->ws * $this->scaleFactor) * 1000 / $this->FontSizePt;
+                        $adj = -($this->ws * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
                         $s .= sprintf('%d(%s) ', $adj, $space);
                     }
                 }
@@ -787,16 +787,16 @@ class Fpdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->currentFont['subset'][$uni] = $uni;
                 }
-                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
+                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k, $txt2);
             }
             if ($this->isUnderline) {
-                $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->FontSize, $txt);
+                $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize, $txt);
             }
             if ($this->ColorFlag) {
                 $s .= ' Q';
             }
             if ($link) {
-                $this->Link($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h - .5 * $this->FontSize, $this->GetStringWidth($txt), $this->FontSize, $link);
+                $this->Link($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h - .5 * $this->currentFontSize, $this->GetStringWidth($txt), $this->currentFontSize, $link);
             }
         }
         if ($s) {
@@ -1406,7 +1406,7 @@ class Fpdf
         $ut = $this->currentFont['ut'];
         $w = $this->GetStringWidth($txt) + $this->ws * substr_count($txt, ' ');
 
-        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->FontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->FontSizePt);
+        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
 
     protected function _parsejpg($file)
