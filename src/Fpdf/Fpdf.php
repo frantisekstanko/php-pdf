@@ -1809,7 +1809,7 @@ final class Fpdf
         // Page content
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $alias = $this->UTF8ToUTF16BE($this->aliasForTotalNumberOfPages, false);
-            $r = $this->UTF8ToUTF16BE($this->currentPage, false);
+            $r = $this->UTF8ToUTF16BE((string) $this->currentPage, false);
             $this->pages[$n] = str_replace($alias, $r, $this->pages[$n]);
             // Now repeat for no pages in non-subset fonts
             $this->pages[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPage, $this->pages[$n]);
