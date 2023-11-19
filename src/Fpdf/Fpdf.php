@@ -1083,14 +1083,14 @@ class Fpdf
     }
 
     public function Image(
-        $file,
-        $x = null,
-        $y = null,
-        $w = 0,
-        $h = 0,
-        $type = '',
-        $link = '',
-    ) {
+        string $file,
+        float $x = null,
+        float $y = null,
+        float $w = 0,
+        float $h = 0,
+        string $type = '',
+        string $link = '',
+    ): void {
         // Put an image on the page
         if ($file == '') {
             $this->Error('Image file name is empty');
@@ -1159,25 +1159,25 @@ class Fpdf
         }
     }
 
-    public function GetPageWidth()
+    public function GetPageWidth(): float
     {
         // Get current page width
         return $this->pageWidth;
     }
 
-    public function GetPageHeight()
+    public function GetPageHeight(): float
     {
         // Get current page height
         return $this->pageHeight;
     }
 
-    public function GetX()
+    public function GetX(): float
     {
         // Get x position
         return $this->currentXPosition;
     }
 
-    public function SetX($x)
+    public function SetX(float $x): void
     {
         // Set x position
         if ($x >= 0) {
@@ -1187,13 +1187,13 @@ class Fpdf
         }
     }
 
-    public function GetY()
+    public function GetY(): float
     {
         // Get y position
         return $this->currentYPosition;
     }
 
-    public function SetY($y, $resetX = true)
+    public function SetY(float $y, bool $resetX = true): void
     {
         // Set y position and optionally reset x
         if ($y >= 0) {
@@ -1206,14 +1206,14 @@ class Fpdf
         }
     }
 
-    public function SetXY($x, $y)
+    public function SetXY(float $x, float $y): void
     {
         // Set x and y positions
         $this->SetX($x);
         $this->SetY($y, false);
     }
 
-    public function Output($dest = '', $name = '', bool $isUTF8 = false)
+    public function Output(string $dest = '', string $name = '', bool $isUTF8 = false): string
     {
         // Output PDF to some destination
         $this->Close();
