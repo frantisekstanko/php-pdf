@@ -94,7 +94,7 @@ class TtFontFile
         $this->maxStrLenRead = 200000;	// Maximum size of glyf table to read in as string (otherwise reads each glyph from file)
     }
 
-    public function getMetrics($file)
+    public function getMetrics(string $file): void
     {
         $this->filename = $file;
         $this->fh = fopen($file, 'rb') or exit('Can\'t open file ' . $file);
@@ -122,7 +122,7 @@ class TtFontFile
         fclose($this->fh);
     }
 
-    public function readTableDirectory()
+    public function readTableDirectory(): void
     {
         $this->numTables = $this->read_ushort();
         $this->searchRange = $this->read_ushort();
@@ -139,7 +139,7 @@ class TtFontFile
         }
     }
 
-    public function sub32($x, $y)
+    public function sub32($x, $y): array
     {
         $xlo = $x[1];
         $xhi = $x[0];
@@ -159,7 +159,8 @@ class TtFontFile
         return [$reshi, $reslo];
     }
 
-    public function calcChecksum($data)
+    /** @return array<int> */
+    public function calcChecksum($data): array
     {
         if (strlen($data) % 4) {
             $data .= str_repeat("\0", 4 - (strlen($data) % 4));
@@ -177,7 +178,7 @@ class TtFontFile
         return [$hi, $lo];
     }
 
-    public function get_table_pos($tag)
+    public function get_table_pos($tag): array
     {
         $offset = $this->tables[$tag]['offset'];
         $length = $this->tables[$tag]['length'];
@@ -185,19 +186,19 @@ class TtFontFile
         return [$offset, $length];
     }
 
-    public function seek($pos)
+    public function seek($pos): void
     {
         $this->_pos = $pos;
         fseek($this->fh, $this->_pos);
     }
 
-    public function skip($delta)
+    public function skip($delta): void
     {
         $this->_pos = $this->_pos + $delta;
         fseek($this->fh, $this->_pos);
     }
 
-    public function seek_table($tag, $offset_in_table = 0)
+    public function seek_table($tag, $offset_in_table = 0): int
     {
         $tpos = $this->get_table_pos($tag);
         $this->_pos = $tpos[0] + $offset_in_table;
@@ -206,14 +207,14 @@ class TtFontFile
         return $this->_pos;
     }
 
-    public function read_tag()
+    public function read_tag(): string
     {
         $this->_pos += 4;
 
         return fread($this->fh, 4);
     }
 
-    public function read_short()
+    public function read_short(): int
     {
         $this->_pos += 2;
         $s = fread($this->fh, 2);
@@ -225,7 +226,7 @@ class TtFontFile
         return $a;
     }
 
-    public function unpack_short($s)
+    public function unpack_short($s): string
     {
         $a = (ord($s[0]) << 8) + ord($s[1]);
         if ($a & (1 << 15)) {
@@ -235,7 +236,7 @@ class TtFontFile
         return $a;
     }
 
-    public function read_ushort()
+    public function read_ushort(): int
     {
         $this->_pos += 2;
         $s = fread($this->fh, 2);
@@ -243,7 +244,7 @@ class TtFontFile
         return (ord($s[0]) << 8) + ord($s[1]);
     }
 
-    public function read_ulong()
+    public function read_ulong(): int
     {
         $this->_pos += 4;
         $s = fread($this->fh, 4);
@@ -252,7 +253,7 @@ class TtFontFile
         return (ord($s[0]) * 16777216) + (ord($s[1]) << 16) + (ord($s[2]) << 8) + ord($s[3]); // 	16777216  = 1<<24
     }
 
-    public function get_ushort($pos)
+    public function get_ushort($pos): string
     {
         fseek($this->fh, $pos);
         $s = fread($this->fh, 2);
@@ -260,7 +261,7 @@ class TtFontFile
         return (ord($s[0]) << 8) + ord($s[1]);
     }
 
-    public function get_ulong($pos)
+    public function get_ulong($pos): string
     {
         fseek($this->fh, $pos);
         $s = fread($this->fh, 4);
@@ -269,7 +270,7 @@ class TtFontFile
         return (ord($s[0]) * 16777216) + (ord($s[1]) << 16) + (ord($s[2]) << 8) + ord($s[3]); // 	16777216  = 1<<24
     }
 
-    public function pack_short($val)
+    public function pack_short($val): string
     {
         if ($val < 0) {
             $val = abs($val);
@@ -280,19 +281,19 @@ class TtFontFile
         return pack('n', $val);
     }
 
-    public function splice($stream, $offset, $value)
+    public function splice($stream, $offset, $value): string
     {
         return substr($stream, 0, $offset) . $value . substr($stream, $offset + strlen($value));
     }
 
-    public function _set_ushort($stream, $offset, $value)
+    public function _set_ushort($stream, $offset, $value): string
     {
         $up = pack('n', $value);
 
         return $this->splice($stream, $offset, $up);
     }
 
-    public function _set_short($stream, $offset, $val)
+    public function _set_short($stream, $offset, $val): string
     {
         if ($val < 0) {
             $val = abs($val);
@@ -304,7 +305,7 @@ class TtFontFile
         return $this->splice($stream, $offset, $up);
     }
 
-    public function get_chunk($pos, $length)
+    public function get_chunk($pos, $length): string
     {
         fseek($this->fh, $pos);
         if ($length < 1) {
@@ -314,7 +315,7 @@ class TtFontFile
         return fread($this->fh, $length);
     }
 
-    public function get_table($tag)
+    public function get_table($tag): string
     {
         [$pos, $length] = $this->get_table_pos($tag);
         if ($length == 0) {
@@ -325,7 +326,7 @@ class TtFontFile
         return fread($this->fh, $length);
     }
 
-    public function add($tag, $data)
+    public function add($tag, $data): void
     {
         if ($tag == 'head') {
             $data = $this->splice($data, 8, "\0\0\0\0");
@@ -338,7 +339,7 @@ class TtFontFile
 
     // ///////////////////////////////////////////////////////////////////////////////////////
 
-    public function extractInfo()
+    public function extractInfo(): void
     {
         // /////////////////////////////////
         // name - Naming table
@@ -598,7 +599,7 @@ class TtFontFile
     // ///////////////////////////////////////////////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////////////////////////////////
 
-    public function makeSubset($file, &$subset)
+    public function makeSubset($file, &$subset): string
     {
         $this->filename = $file;
         $this->fh = fopen($file, 'rb') or exit('Can\'t open file ' . $file);
@@ -950,7 +951,7 @@ class TtFontFile
 
     // ////////////////////////////////////////////////////////////////////////////////
     // Recursively get composite glyph data
-    public function getGlyphData($originalGlyphIdx, &$maxdepth, &$depth, &$points, &$contours)
+    public function getGlyphData($originalGlyphIdx, &$maxdepth, &$depth, &$points, &$contours): void
     {
         ++$depth;
         $maxdepth = max($maxdepth, $depth);
@@ -967,7 +968,7 @@ class TtFontFile
 
     // ////////////////////////////////////////////////////////////////////////////////
     // Recursively get composite glyphs
-    public function getGlyphs($originalGlyphIdx, &$start, &$glyphSet, &$subsetglyphs)
+    public function getGlyphs($originalGlyphIdx, &$start, &$glyphSet, &$subsetglyphs): void
     {
         $glyphPos = $this->glyphPos[$originalGlyphIdx];
         $glyphLen = $this->glyphPos[$originalGlyphIdx + 1] - $glyphPos;
@@ -1007,7 +1008,7 @@ class TtFontFile
 
     // ////////////////////////////////////////////////////////////////////////////////
 
-    public function getHMTX($numberOfHMetrics, $numGlyphs, &$glyphToChar, $scale)
+    public function getHMTX($numberOfHMetrics, $numGlyphs, &$glyphToChar, $scale): void
     {
         $start = $this->seek_table('hmtx');
         $aw = 0;
@@ -1078,7 +1079,7 @@ class TtFontFile
         $this->charWidths[1] = chr($nCharWidths & 0xFF);
     }
 
-    public function getHMetric($numberOfHMetrics, $gid)
+    public function getHMetric($numberOfHMetrics, $gid): string
     {
         $start = $this->seek_table('hmtx');
         if ($gid < $numberOfHMetrics) {
@@ -1094,7 +1095,7 @@ class TtFontFile
         return $hm;
     }
 
-    public function getLOCA($indexToLocFormat, $numGlyphs)
+    public function getLOCA($indexToLocFormat, $numGlyphs): void
     {
         $start = $this->seek_table('loca');
         $this->glyphPos = [];
@@ -1116,7 +1117,7 @@ class TtFontFile
     }
 
     // CMAP Format 4
-    public function getCMAP4($unicode_cmap_offset, &$glyphToChar, &$charToGlyph)
+    public function getCMAP4($unicode_cmap_offset, &$glyphToChar, &$charToGlyph): void
     {
         $this->maxUniChar = 0;
         $this->seek($unicode_cmap_offset + 2);
@@ -1172,7 +1173,7 @@ class TtFontFile
     }
 
     // Put the TTF file together
-    public function endTTFile(&$stm)
+    public function endTTFile(&$stm): string
     {
         $stm = '';
         $numTables = count($this->otables);
