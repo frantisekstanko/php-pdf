@@ -1213,8 +1213,11 @@ class Fpdf
         $this->SetY($y, false);
     }
 
-    public function Output(string $dest = '', string $name = '', bool $isUTF8 = false): string
-    {
+    public function Output(
+        string $dest = '',
+        string $name = '',
+        bool $isUTF8 = false,
+    ): string {
         // Output PDF to some destination
         $this->Close();
         if (strlen($name) == 1 && strlen($dest) != 1) {
