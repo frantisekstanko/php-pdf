@@ -1750,6 +1750,9 @@ final class Fpdf
         if ($this->compressionEnabled) {
             $entries = '/Filter /FlateDecode ';
             $data = gzcompress($data);
+            if ($data === false) {
+                throw new CompressionException('gzcompress() returned false');
+            }
         } else {
             $entries = '';
         }
