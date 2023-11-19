@@ -2442,7 +2442,7 @@ final class Fpdf
 
     // ********* NEW FUNCTIONS *********
     // Converts UTF-8 strings to UTF16-BE.
-    private function UTF8ToUTF16BE($str, $setbom = true): string
+    private function UTF8ToUTF16BE(string $str, bool $setbom = true): string
     {
         $outstr = '';
         if ($setbom) {
