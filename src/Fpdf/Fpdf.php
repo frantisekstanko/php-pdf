@@ -52,7 +52,7 @@ class Fpdf
     protected float $pageWidthInPoints;
     protected float $pageHeightInPoints;
     protected float $pageWidth;
-    protected float $h;              // dimensions of current page in user unit
+    protected float $pageHeight;
     protected float $lMargin;            // left margin
     protected float $tMargin;            // top margin
     protected float $rMargin;            // right margin
@@ -176,17 +176,17 @@ class Fpdf
         if ($orientation == 'p' || $orientation == 'portrait') {
             $this->defaultOrientation = 'P';
             $this->pageWidth = $size[0];
-            $this->h = $size[1];
+            $this->pageHeight = $size[1];
         } elseif ($orientation == 'l' || $orientation == 'landscape') {
             $this->defaultOrientation = 'L';
             $this->pageWidth = $size[1];
-            $this->h = $size[0];
+            $this->pageHeight = $size[0];
         } else {
             $this->Error('Incorrect orientation: ' . $orientation);
         }
         $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-        $this->hPt = $this->h * $this->scaleFactor;
+        $this->hPt = $this->pageHeight * $this->scaleFactor;
         // Page rotation
         $this->currentPageOrientation = 0;
         // Page margins (1 cm)
@@ -245,7 +245,7 @@ class Fpdf
         // Set auto page break mode and triggering margin
         $this->AutoPageBreak = $auto;
         $this->bMargin = $margin;
-        $this->PageBreakTrigger = $this->h - $margin;
+        $this->PageBreakTrigger = $this->pageHeight - $margin;
     }
 
     public function SetDisplayMode($zoom, $layout = 'default')
@@ -494,7 +494,7 @@ class Fpdf
     public function Line($x1, $y1, $x2, $y2)
     {
         // Draw a line
-        $this->_out(sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->scaleFactor, ($this->h - $y1) * $this->scaleFactor, $x2 * $this->scaleFactor, ($this->h - $y2) * $this->scaleFactor));
+        $this->_out(sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->scaleFactor, ($this->pageHeight - $y1) * $this->scaleFactor, $x2 * $this->scaleFactor, ($this->pageHeight - $y2) * $this->scaleFactor));
     }
 
     public function Rect($x, $y, $w, $h, $style = '')
@@ -507,7 +507,7 @@ class Fpdf
         } else {
             $op = 'S';
         }
-        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->scaleFactor, ($this->h - $y) * $this->scaleFactor, $w * $this->scaleFactor, -$h * $this->scaleFactor, $op));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $w * $this->scaleFactor, -$h * $this->scaleFactor, $op));
     }
 
     public function AddFont($family, $style = '', $file = '')
@@ -701,7 +701,7 @@ class Fpdf
         foreach ($this->UTF8StringToArray($txt) as $uni) {
             $this->CurrentFont['subset'][$uni] = $uni;
         }
-        $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->h - $y) * $this->scaleFactor, $txt2);
+        $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $txt2);
         if ($this->underline && $txt != '') {
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
@@ -747,22 +747,22 @@ class Fpdf
             } else {
                 $op = 'S';
             }
-            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->x * $k, ($this->h - $this->y) * $k, $w * $k, -$h * $k, $op);
+            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->x * $k, ($this->pageHeight - $this->y) * $k, $w * $k, -$h * $k, $op);
         }
         if (is_string($border)) {
             $x = $this->x;
             $y = $this->y;
             if (strpos($border, 'L') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - $y) * $k, $x * $k, ($this->h - ($y + $h)) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - $y) * $k, $x * $k, ($this->pageHeight - ($y + $h)) * $k);
             }
             if (strpos($border, 'T') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - $y) * $k, ($x + $w) * $k, ($this->h - $y) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - $y) * $k, ($x + $w) * $k, ($this->pageHeight - $y) * $k);
             }
             if (strpos($border, 'R') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', ($x + $w) * $k, ($this->h - $y) * $k, ($x + $w) * $k, ($this->h - ($y + $h)) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', ($x + $w) * $k, ($this->pageHeight - $y) * $k, ($x + $w) * $k, ($this->pageHeight - ($y + $h)) * $k);
             }
             if (strpos($border, 'B') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - ($y + $h)) * $k, ($x + $w) * $k, ($this->h - ($y + $h)) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - ($y + $h)) * $k, ($x + $w) * $k, ($this->pageHeight - ($y + $h)) * $k);
             }
         }
         if ($txt !== '') {
@@ -785,7 +785,7 @@ class Fpdf
                     $this->CurrentFont['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
-                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->x + $dx) * $k, ($this->h - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k);
+                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->x + $dx) * $k, ($this->pageHeight - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k);
                 $t = explode(' ', $txt);
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
@@ -804,7 +804,7 @@ class Fpdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->CurrentFont['subset'][$uni] = $uni;
                 }
-                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->x + $dx) * $k, ($this->h - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
+                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->x + $dx) * $k, ($this->pageHeight - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
             }
             if ($this->underline) {
                 $s .= ' ' . $this->_dounderline($this->x + $dx, $this->y + .5 * $h + .3 * $this->FontSize, $txt);
@@ -1106,7 +1106,7 @@ class Fpdf
         if ($x === null) {
             $x = $this->x;
         }
-        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->scaleFactor, $h * $this->scaleFactor, $x * $this->scaleFactor, ($this->h - ($y + $h)) * $this->scaleFactor, $info['i']));
+        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->scaleFactor, $h * $this->scaleFactor, $x * $this->scaleFactor, ($this->pageHeight - ($y + $h)) * $this->scaleFactor, $info['i']));
         if ($link) {
             $this->Link($x, $y, $w, $h, $link);
         }
@@ -1121,7 +1121,7 @@ class Fpdf
     public function GetPageHeight()
     {
         // Get current page height
-        return $this->h;
+        return $this->pageHeight;
     }
 
     public function GetX()
@@ -1152,7 +1152,7 @@ class Fpdf
         if ($y >= 0) {
             $this->y = $y;
         } else {
-            $this->y = $this->h + $y;
+            $this->y = $this->pageHeight + $y;
         }
         if ($resetX) {
             $this->x = $this->lMargin;
@@ -1309,14 +1309,14 @@ class Fpdf
             // New size or orientation
             if ($orientation == 'P') {
                 $this->pageWidth = $size[0];
-                $this->h = $size[1];
+                $this->pageHeight = $size[1];
             } else {
                 $this->pageWidth = $size[1];
-                $this->h = $size[0];
+                $this->pageHeight = $size[0];
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-            $this->hPt = $this->h * $this->scaleFactor;
-            $this->PageBreakTrigger = $this->h - $this->bMargin;
+            $this->hPt = $this->pageHeight * $this->scaleFactor;
+            $this->PageBreakTrigger = $this->pageHeight - $this->bMargin;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = $size;
         }
@@ -1423,7 +1423,7 @@ class Fpdf
         $ut = $this->CurrentFont['ut'];
         $w = $this->GetStringWidth($txt) + $this->ws * substr_count($txt, ' ');
 
-        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->h - ($y - $up / 1000 * $this->FontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->FontSizePt);
+        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->FontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->FontSizePt);
     }
 
     protected function _parsejpg($file)
