@@ -50,7 +50,9 @@ class TtFontFile
     /** @var array<mixed> */
     public array $otables;
     public string $filename;
-    public mixed $fh;
+
+    /** @var resource */
+    public $fh;
     public int $hmetrics;
 
     /** @var array<mixed> */
