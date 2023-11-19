@@ -526,7 +526,7 @@ class Fpdf
         $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $w * $this->scaleFactor, -$h * $this->scaleFactor, $op));
     }
 
-    public function AddFont($family, $style = '', $file = '')
+    public function AddFont(string $family, string $style = '', string $file = ''): void
     {
         // Add a TrueType, OpenType or Type1 font
         $family = strtolower($family);
