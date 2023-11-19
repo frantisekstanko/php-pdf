@@ -866,13 +866,13 @@ class Fpdf
     }
 
     public function MultiCell(
-        $w,
-        $h,
-        $txt,
-        $border = 0,
-        $align = 'J',
-        $fill = false,
-    ) {
+        float $w,
+        float $h,
+        string $txt,
+        int $border = 0,
+        string $align = 'J',
+        bool $fill = false,
+    ): void {
         // Output text with automatic or explicit line breaks
         if (!isset($this->currentFont)) {
             $this->Error('No font has been set');
