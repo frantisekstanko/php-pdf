@@ -23,7 +23,7 @@ class Fpdf
 
     /** @var array<int, int> */
     protected array $objectOffsets;
-    protected string $buffer;             // buffer holding in-memory PDF
+    protected string $pdfFileBuffer;
     protected $pages;              // array containing pages
     protected $state;              // current document state
     protected $compress;           // compression flag
@@ -90,7 +90,7 @@ class Fpdf
         $this->state = 0;
         $this->currentPage = 0;
         $this->currentObjectNumber = 2;
-        $this->buffer = '';
+        $this->pdfFileBuffer = '';
         $this->pages = [];
         $this->PageInfo = [];
         $this->fonts = [];
@@ -1155,7 +1155,7 @@ class Fpdf
                     header('Cache-Control: private, max-age=0, must-revalidate');
                     header('Pragma: public');
                 }
-                echo $this->buffer;
+                echo $this->pdfFileBuffer;
 
                 break;
 
@@ -1166,13 +1166,13 @@ class Fpdf
                 header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $name, $isUTF8));
                 header('Cache-Control: private, max-age=0, must-revalidate');
                 header('Pragma: public');
-                echo $this->buffer;
+                echo $this->pdfFileBuffer;
 
                 break;
 
             case 'F':
                 // Save to local file
-                if (!file_put_contents($name, $this->buffer)) {
+                if (!file_put_contents($name, $this->pdfFileBuffer)) {
                     $this->Error('Unable to create output file: ' . $name);
                 }
 
@@ -1180,7 +1180,7 @@ class Fpdf
 
             case 'S':
                 // Return as a string
-                return $this->buffer;
+                return $this->pdfFileBuffer;
 
             default:
                 $this->Error('Incorrect output destination: ' . $dest);
@@ -1620,12 +1620,12 @@ class Fpdf
 
     protected function _put($s)
     {
-        $this->buffer .= $s . "\n";
+        $this->pdfFileBuffer .= $s . "\n";
     }
 
     protected function _getoffset()
     {
-        return strlen($this->buffer);
+        return strlen($this->pdfFileBuffer);
     }
 
     protected function _newobj($n = null)
