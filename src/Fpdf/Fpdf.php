@@ -20,7 +20,9 @@ class Fpdf
     public const VERSION = '1.33';
     protected int $currentPage;
     protected int $currentObjectNumber;
-    protected $offsets;            // array of object offsets
+
+    /** @var array<int, int> */
+    protected array $offsets;            // array of object offsets
     protected $buffer;             // buffer holding in-memory PDF
     protected $pages;              // array containing pages
     protected $state;              // current document state
