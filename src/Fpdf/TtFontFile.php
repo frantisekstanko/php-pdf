@@ -283,7 +283,7 @@ class TtFontFile
         return (ord($s[0]) * 16777216) + (ord($s[1]) << 16) + (ord($s[2]) << 8) + ord($s[3]); // 	16777216  = 1<<24
     }
 
-    public function get_ushort($pos): string
+    public function get_ushort(int $pos): string
     {
         fseek($this->fh, $pos);
         $s = fread($this->fh, 2);
@@ -295,7 +295,7 @@ class TtFontFile
         return (ord($s[0]) << 8) + ord($s[1]);
     }
 
-    public function get_ulong($pos): string
+    public function get_ulong(int $pos): string
     {
         fseek($this->fh, $pos);
         $s = fread($this->fh, 4);
