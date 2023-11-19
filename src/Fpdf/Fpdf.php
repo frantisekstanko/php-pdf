@@ -16,6 +16,7 @@ use Exception;
 use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
+use Stanko\Fpdf\Exception\UnknownColorTypeException;
 
 final class Fpdf
 {
@@ -1539,7 +1540,7 @@ final class Fpdf
         } elseif ($ct == 3) {
             $colspace = 'Indexed';
         } else {
-            $this->Error('Unknown color type: ' . $file);
+            throw new UnknownColorTypeException();
         }
         if (ord($this->_readstream($f, 1)) != 0) {
             $this->Error('Unknown compression method: ' . $file);
