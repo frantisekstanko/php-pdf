@@ -1288,7 +1288,7 @@ class Fpdf
         $this->createdAt = $createdAt;
     }
 
-    protected function _dochecks()
+    protected function _dochecks(): void
     {
         // Check availability of mbstring
         if (!function_exists('mb_strlen')) {
@@ -1296,7 +1296,7 @@ class Fpdf
         }
     }
 
-    protected function _checkoutput()
+    protected function _checkoutput(): void
     {
         if (PHP_SAPI != 'cli') {
             if (headers_sent($file, $line)) {
