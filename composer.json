@@ -1,0 +1,27 @@
+{
+    "name": "stanko/fpdf",
+    "homepage": "https://github.com/frantisekstanko/fpdf",
+    "description": "A fork of FPDF to generate PDF files in PHP.",
+    "keywords": ["fpdf", "pdf"],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Frantisek Stanko",
+            "email": "frantisek.stanko@protonmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Stanko\\Fpdf\\": "src/Fpdf"
+        }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.38",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10"
+    }
+}
