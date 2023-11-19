@@ -80,7 +80,7 @@ class Fpdf
     protected bool $isUnderline;
 
     /** @var array<mixed> */
-    protected array $CurrentFont;        // current font info
+    protected array $currentFont;
     protected float $FontSizePt;         // current font size in points
     protected float $FontSize;           // current font size in user unit
     protected string $DrawColor;          // commands for drawing color
@@ -459,7 +459,7 @@ class Fpdf
     {
         // Get width of a string in the current font
         $s = (string) $s;
-        $cw = $this->CurrentFont['cw'];
+        $cw = $this->currentFont['cw'];
         $w = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
@@ -467,10 +467,10 @@ class Fpdf
                 $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
             } elseif ($char > 0 && $char < 128 && isset($cw[chr($char)])) {
                 $w += $cw[chr($char)];
-            } elseif (isset($this->CurrentFont['desc']['MissingWidth'])) {
-                $w += $this->CurrentFont['desc']['MissingWidth'];
-            } elseif (isset($this->CurrentFont['MissingWidth'])) {
-                $w += $this->CurrentFont['MissingWidth'];
+            } elseif (isset($this->currentFont['desc']['MissingWidth'])) {
+                $w += $this->currentFont['desc']['MissingWidth'];
+            } elseif (isset($this->currentFont['MissingWidth'])) {
+                $w += $this->currentFont['MissingWidth'];
             } else {
                 $w += 500;
             }
@@ -627,9 +627,9 @@ class Fpdf
         $this->currentFontStyle = $style;
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->scaleFactor;
-        $this->CurrentFont = &$this->usedFonts[$fontkey];
+        $this->currentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPage > 0) {
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
+            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->FontSizePt));
         }
     }
 
@@ -642,7 +642,7 @@ class Fpdf
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->scaleFactor;
         if ($this->currentPage > 0) {
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
+            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->FontSizePt));
         }
     }
 
@@ -677,12 +677,12 @@ class Fpdf
     {
         // Output a string
         $txt = (string) $txt;
-        if (!isset($this->CurrentFont)) {
+        if (!isset($this->currentFont)) {
             $this->Error('No font has been set');
         }
         $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
         foreach ($this->UTF8StringToArray($txt) as $uni) {
-            $this->CurrentFont['subset'][$uni] = $uni;
+            $this->currentFont['subset'][$uni] = $uni;
         }
         $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $txt2);
         if ($this->isUnderline && $txt != '') {
@@ -749,7 +749,7 @@ class Fpdf
             }
         }
         if ($txt !== '') {
-            if (!isset($this->CurrentFont)) {
+            if (!isset($this->currentFont)) {
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
@@ -765,7 +765,7 @@ class Fpdf
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
             if ($this->ws) {
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
-                    $this->CurrentFont['subset'][$uni] = $uni;
+                    $this->currentFont['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
                 $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k);
@@ -785,7 +785,7 @@ class Fpdf
             } else {
                 $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
-                    $this->CurrentFont['subset'][$uni] = $uni;
+                    $this->currentFont['subset'][$uni] = $uni;
                 }
                 $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
             }
@@ -817,10 +817,10 @@ class Fpdf
     public function MultiCell($w, $h, $txt, $border = 0, $align = 'J', $fill = false)
     {
         // Output text with automatic or explicit line breaks
-        if (!isset($this->CurrentFont)) {
+        if (!isset($this->currentFont)) {
             $this->Error('No font has been set');
         }
-        $cw = $this->CurrentFont['cw'];
+        $cw = $this->currentFont['cw'];
         if ($w == 0) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
@@ -930,10 +930,10 @@ class Fpdf
     public function Write($h, $txt, $link = '')
     {
         // Output text in flowing mode
-        if (!isset($this->CurrentFont)) {
+        if (!isset($this->currentFont)) {
             $this->Error('No font has been set');
         }
-        $cw = $this->CurrentFont['cw'];
+        $cw = $this->currentFont['cw'];
         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         $wmax = ($w - 2 * $this->cellMargin);
         $s = str_replace("\r", '', (string) $txt);
@@ -1402,8 +1402,8 @@ class Fpdf
     protected function _dounderline($x, $y, $txt)
     {
         // Underline text
-        $up = $this->CurrentFont['up'];
-        $ut = $this->CurrentFont['ut'];
+        $up = $this->currentFont['up'];
+        $ut = $this->currentFont['ut'];
         $w = $this->GetStringWidth($txt) + $this->ws * substr_count($txt, ' ');
 
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->FontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->FontSizePt);
