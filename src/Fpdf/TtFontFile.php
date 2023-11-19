@@ -18,6 +18,7 @@
 
 namespace Stanko\Fpdf;
 
+use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\CopyrightedFontException;
 use Stanko\Fpdf\Exception\FileStreamException;
 
@@ -911,6 +912,10 @@ class TtFontFile
 
             if ($glyphLen > 0) {
                 $up = unpack('n', substr($data, 0, 2));
+
+                if ($up === false) {
+                    throw new CompressionException('unpack() returned false');
+                }
             }
 
             if ($glyphLen > 2 && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
