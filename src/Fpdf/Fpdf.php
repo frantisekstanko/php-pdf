@@ -743,8 +743,16 @@ class Fpdf
         return $this->automaticPageBreak;
     }
 
-    public function Cell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
-    {
+    public function Cell(
+        $w,
+        $h = 0,
+        $txt = '',
+        $border = 0,
+        $ln = 0,
+        $align = '',
+        $fill = false,
+        $link = '',
+    ) {
         // Output a cell
         $txt = (string) $txt;
         $k = $this->scaleFactor;
