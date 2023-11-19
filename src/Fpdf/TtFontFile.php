@@ -1042,6 +1042,10 @@ class TtFontFile
     }
 
     // Recursively get composite glyphs
+    /**
+     * @param array<mixed> $glyphSet
+     * @param array<mixed> $subsetglyphs
+     */
     public function getGlyphs(
         int $originalGlyphIdx,
         int &$start,
