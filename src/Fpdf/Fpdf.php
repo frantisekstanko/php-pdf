@@ -476,14 +476,10 @@ final class Fpdf
         $w = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
-            // @phpstan-ignore-next-line
             if (isset($cw[2 * $char])) {
-                // @phpstan-ignore-next-line
                 $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
-            // @phpstan-ignore-next-line
             } elseif ($char > 0 && $char < 128 && isset($cw[chr($char)])) {
                 $w += $cw[chr($char)];
-            // @phpstan-ignore-next-line
             } elseif (isset($this->currentFont['desc']['MissingWidth'])) {
                 $w += $this->currentFont['desc']['MissingWidth'];
             } elseif (isset($this->currentFont['MissingWidth'])) {
@@ -550,7 +546,6 @@ final class Fpdf
         if (file_exists($unifilename . '.mtx.php')) {
             include $unifilename . '.mtx.php';
         }
-        // @phpstan-ignore-next-line
         if (!isset($type) || !isset($name) || $originalsize != $ttfstat['size']) {
             $ttffile = $ttffilename;
 
@@ -571,7 +566,6 @@ final class Fpdf
             ];
             $up = round($ttf->underlinePosition);
             $ut = round($ttf->underlineThickness);
-            // @phpstan-ignore-next-line
             $originalsize = $ttfstat['size'] + 0;
             $type = 'TTF';
             // Generate metrics .php file
@@ -667,7 +661,6 @@ final class Fpdf
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPage > 0) {
-            // @phpstan-ignore-next-line
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
@@ -681,7 +674,6 @@ final class Fpdf
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
         if ($this->currentPage > 0) {
-            // @phpstan-ignore-next-line
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
@@ -1373,7 +1365,6 @@ final class Fpdf
             $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
             $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
             $this->currentOrientation = $orientation;
-            // @phpstan-ignore-next-line
             $this->currentPageSize = $size;
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
@@ -1808,7 +1799,6 @@ final class Fpdf
         if (!empty($this->pageLinks[$n])) {
             $s = '/Annots [';
             foreach ($this->pageLinks[$n] as $pl) {
-                // @phpstan-ignore-next-line
                 $s .= $pl[5] . ' 0 R ';
             }
             $s .= ']';
@@ -2202,7 +2192,6 @@ final class Fpdf
             } else {
                 $prevk = $k;
             }
-            // @phpstan-ignore-next-line
             $nextk = $k + $cws;
             if (isset($ws['interval'])) {
                 if ($cws > 3) {
@@ -2219,7 +2208,6 @@ final class Fpdf
         $w = '';
         foreach ($range as $k => $ws) {
             if (count(array_count_values($ws)) == 1) {
-                // @phpstan-ignore-next-line
                 $w .= ' ' . $k . ' ' . ($k + count($ws) - 1) . ' ' . $ws[0];
             } else {
                 $w .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";

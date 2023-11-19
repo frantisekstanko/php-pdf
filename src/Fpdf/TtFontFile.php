@@ -1008,7 +1008,6 @@ class TtFontFile
     }
 
     // Recursively get composite glyph data
-    // @phpstan-ignore-next-line
     public function getGlyphData(
         $originalGlyphIdx,
         &$maxdepth,
@@ -1018,16 +1017,12 @@ class TtFontFile
     ): void {
         ++$depth;
         $maxdepth = max($maxdepth, $depth);
-        // @phpstan-ignore-next-line
         if (count($this->glyphdata[$originalGlyphIdx]['compGlyphs'])) {
-            // @phpstan-ignore-next-line
             foreach ($this->glyphdata[$originalGlyphIdx]['compGlyphs'] as $glyphIdx) {
                 $this->getGlyphData($glyphIdx, $maxdepth, $depth, $points, $contours);
             }
-        // @phpstan-ignore-next-line
         } elseif (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {    // simple
             $contours += $this->glyphdata[$originalGlyphIdx]['nContours'];
-            // @phpstan-ignore-next-line
             $points += $this->glyphdata[$originalGlyphIdx]['nPoints'];
         }
         --$depth;
@@ -1126,7 +1121,6 @@ class TtFontFile
 
                     continue;
                 }
-                // @phpstan-ignore-next-line
                 foreach ($glyphToChar[$glyph] as $char) {
                     if ($char != 0 && $char != 65535) {
                         $w = intval(round($scale * $aw));
@@ -1148,7 +1142,6 @@ class TtFontFile
         for ($pos = 0; $pos < $diff; ++$pos) {
             $glyph = $pos + $numberOfHMetrics;
             if (isset($glyphToChar[$glyph])) {
-                // @phpstan-ignore-next-line
                 foreach ($glyphToChar[$glyph] as $char) {
                     if ($char != 0 && $char != 65535) {
                         $w = intval(round($scale * $aw));
@@ -1295,7 +1288,6 @@ class TtFontFile
         $searchRange = $searchRange * 16;
         $rangeShift = $numTables * 16 - $searchRange;
 
-        // @phpstan-ignore-next-line
         if (_TTF_MAC_HEADER) {
             $stm .= pack('Nnnnn', 0x74727565, $numTables, $searchRange, $entrySelector, $rangeShift);    // Mac
         } else {
