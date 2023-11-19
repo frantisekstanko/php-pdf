@@ -912,6 +912,8 @@ class TtFontFile
                 }
             }
 
+            $up = [];
+
             if ($glyphLen > 0) {
                 $up = unpack('n', substr($data, 0, 2));
 
