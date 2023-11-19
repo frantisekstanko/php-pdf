@@ -106,7 +106,7 @@ class Fpdf
     /** @var array<int, array{0: int, 1: float}> */
     protected array $internalLinks;
     protected bool $automaticPageBreak;
-    protected float $PageBreakTrigger;   // threshold used to trigger page breaks
+    protected float $pageBreakThreshold;
     protected bool $InHeader;           // flag set when processing header
     protected bool $InFooter;           // flag set when processing footer
     protected string $AliasNbPages;       // alias for total number of pages
@@ -242,7 +242,7 @@ class Fpdf
         // Set auto page break mode and triggering margin
         $this->automaticPageBreak = $auto;
         $this->pageBreakMargin = $margin;
-        $this->PageBreakTrigger = $this->pageHeight - $margin;
+        $this->pageBreakThreshold = $this->pageHeight - $margin;
     }
 
     public function SetDisplayMode($zoom, $layout = 'default')
@@ -705,7 +705,7 @@ class Fpdf
         // Output a cell
         $txt = (string) $txt;
         $k = $this->scaleFactor;
-        if ($this->currentYPosition + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
+        if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
             // Automatic page break
             $x = $this->currentXPosition;
             $ws = $this->wordSpacing;
@@ -1076,7 +1076,7 @@ class Fpdf
 
         // Flowing mode
         if ($y === null) {
-            if ($this->currentYPosition + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
+            if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
                 $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
@@ -1299,7 +1299,7 @@ class Fpdf
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
             $this->hPt = $this->pageHeight * $this->scaleFactor;
-            $this->PageBreakTrigger = $this->pageHeight - $this->pageBreakMargin;
+            $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = $size;
         }
