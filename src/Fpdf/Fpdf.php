@@ -91,7 +91,7 @@ class Fpdf
     protected float $wordSpacing;
 
     /** @var array<string, array<mixed>> */
-    protected array $images;             // array of used images
+    protected array $usedImages;
 
     /** @var array<int, array<int, array{
      *  0: float,
@@ -135,7 +135,7 @@ class Fpdf
         $this->fontFiles = [];
         $this->encodings = [];
         $this->cmaps = [];
-        $this->images = [];
+        $this->usedImages = [];
         $this->links = [];
         $this->InHeader = false;
         $this->InFooter = false;
@@ -1031,7 +1031,7 @@ class Fpdf
         if ($file == '') {
             $this->Error('Image file name is empty');
         }
-        if (!isset($this->images[$file])) {
+        if (!isset($this->usedImages[$file])) {
             // First use of this image, get info
             if ($type == '') {
                 $pos = strrpos($file, '.');
@@ -1049,10 +1049,10 @@ class Fpdf
                 $this->Error('Unsupported image type: ' . $type);
             }
             $info = $this->{$mtd}($file);
-            $info['i'] = count($this->images) + 1;
-            $this->images[$file] = $info;
+            $info['i'] = count($this->usedImages) + 1;
+            $this->usedImages[$file] = $info;
         } else {
-            $info = $this->images[$file];
+            $info = $this->usedImages[$file];
         }
 
         // Automatic width and height calculation if needed
@@ -2196,9 +2196,9 @@ class Fpdf
 
     protected function _putimages()
     {
-        foreach (array_keys($this->images) as $file) {
-            $this->_putimage($this->images[$file]);
-            unset($this->images[$file]['data'], $this->images[$file]['smask']);
+        foreach (array_keys($this->usedImages) as $file) {
+            $this->_putimage($this->usedImages[$file]);
+            unset($this->usedImages[$file]['data'], $this->usedImages[$file]['smask']);
         }
     }
 
@@ -2252,7 +2252,7 @@ class Fpdf
 
     protected function _putxobjectdict()
     {
-        foreach ($this->images as $image) {
+        foreach ($this->usedImages as $image) {
             $this->_put('/I' . $image['i'] . ' ' . $image['n'] . ' 0 R');
         }
     }
