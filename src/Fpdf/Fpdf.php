@@ -26,7 +26,7 @@ class Fpdf
     protected string $pdfFileBuffer;
 
     /** @var array<int, string> */
-    protected array $pages;              // array containing pages
+    protected array $pages;
     protected $state;              // current document state
     protected $compress;           // compression flag
     protected $k;                  // scale factor (number of points in user unit)
