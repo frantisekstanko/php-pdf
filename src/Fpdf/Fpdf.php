@@ -13,6 +13,7 @@ namespace Stanko\Fpdf;
 
 use DateTimeImmutable;
 use Exception;
+use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
@@ -2075,6 +2076,9 @@ final class Fpdf
                     $cidtogidmap[$cc * 2 + 1] = chr($glyph & 0xFF);
                 }
                 $cidtogidmap = gzcompress($cidtogidmap);
+                if ($cidtogidmap === false) {
+                    throw new CompressionException('gzcompress() returned false');
+                }
                 $this->_newobj();
                 $this->_put('<</Length ' . strlen($cidtogidmap) . '');
                 $this->_put('/Filter /FlateDecode');
