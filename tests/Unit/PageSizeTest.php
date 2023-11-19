@@ -9,11 +9,11 @@ final class PageSizeTest extends TestCase
 {
     /**
      * @testWith
-     * ["a3", "b0abadeb91154766e72ef19ae4e5c2982b88d954"]
-     * ["a4", "f2ffad88a7e9b5e1975b93053915a30f033474dd"]
-     * ["a5", "83e2b01d456a0793af780de2f920d7c36c89ec62"]
-     * ["letter", "077f65bfa850524f5409a0542e218f3967a83e39"]
-     * ["legal", "5d1ed3a9fb8d3f3742943ce3dee92d469fd58c26"]
+     * ["a3", "e455315deb50df5f7b6c6521ea50ccff03873756"]
+     * ["a4", "d22a77735a2152f2aa795ceb450a42bfdc34e470"]
+     * ["a5", "6a1b003c662a24e7f9d5a6cdc989e34d0ba6c0c8"]
+     * ["letter", "967923230e4521d5bcd76554eefaa85f35ebebb0"]
+     * ["legal", "324ca2db375d842c9ded265efe86c97a9f0d4fc8"]
      */
     public function testPageSizes(
         string $pageSize,

@@ -31,8 +31,6 @@ use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
 final class Fpdf
 {
-    public const VERSION = '1.33';
-
     public const PAGE_SIZES = [
         'a3' => [841.89, 1190.55],
         'a4' => [595.28, 841.89],
@@ -219,8 +217,6 @@ final class Fpdf
         $this->SetDisplayMode('default');
         // Enable compression
         $this->SetCompression(true);
-        // Metadata
-        $this->documentMetadata = ['Producer' => 'tFPDF ' . self::VERSION];
         // Set default PDF version number
         $this->pdfVersion = '1.3';
     }

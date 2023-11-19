@@ -126,7 +126,7 @@ final class FullDocumentTest extends TestCase
         $renderedPdf = $pdf->Output('S');
 
         self::assertEquals(
-            '47a4d6d1443512ad6bee709d719dc42aba9da3ae',
+            '1d6aa70b5b991b5822bcd0a3449be27fad330045',
             sha1($renderedPdf)
         );
     }
