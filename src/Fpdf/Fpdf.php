@@ -38,7 +38,7 @@ class Fpdf
     protected array $defaultPageSize;
 
     /** @var array<mixed> */
-    protected array $CurPageSize;        // current page size
+    protected array $currentPageSize;
 
     protected int $CurRotation;        // current page rotation
 
@@ -170,7 +170,7 @@ class Fpdf
             'letter' => [612, 792], 'legal' => [612, 1008]];
         $size = $this->_getpagesize($size);
         $this->defaultPageSize = $size;
-        $this->CurPageSize = $size;
+        $this->currentPageSize = $size;
         // Page orientation
         $orientation = strtolower($orientation);
         if ($orientation == 'p' || $orientation == 'portrait') {
@@ -730,7 +730,7 @@ class Fpdf
                 $this->ws = 0;
                 $this->_out('0 Tw');
             }
-            $this->AddPage($this->currentOrientation, $this->CurPageSize, $this->CurRotation);
+            $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->CurRotation);
             $this->x = $x;
             if ($ws > 0) {
                 $this->ws = $ws;
@@ -1096,7 +1096,7 @@ class Fpdf
             if ($this->y + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
                 // Automatic page break
                 $x2 = $this->x;
-                $this->AddPage($this->currentOrientation, $this->CurPageSize, $this->CurRotation);
+                $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->CurRotation);
                 $this->x = $x2;
             }
             $y = $this->y;
@@ -1305,7 +1305,7 @@ class Fpdf
         } else {
             $size = $this->_getpagesize($size);
         }
-        if ($orientation != $this->currentOrientation || $size[0] != $this->CurPageSize[0] || $size[1] != $this->CurPageSize[1]) {
+        if ($orientation != $this->currentOrientation || $size[0] != $this->currentPageSize[0] || $size[1] != $this->currentPageSize[1]) {
             // New size or orientation
             if ($orientation == 'P') {
                 $this->w = $size[0];
@@ -1318,7 +1318,7 @@ class Fpdf
             $this->hPt = $this->h * $this->scaleFactor;
             $this->PageBreakTrigger = $this->h - $this->bMargin;
             $this->currentOrientation = $orientation;
-            $this->CurPageSize = $size;
+            $this->currentPageSize = $size;
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
             $this->PageInfo[$this->currentPage]['size'] = [$this->wPt, $this->hPt];
