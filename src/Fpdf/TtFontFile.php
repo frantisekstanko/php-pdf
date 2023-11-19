@@ -879,20 +879,7 @@ class TtFontFile
         $pos = 0;
 
         $hmtxstr = '';
-        $xMinT = 0;
-        $yMinT = 0;
-        $xMaxT = 0;
-        $yMaxT = 0;
-        $advanceWidthMax = 0;
-        $minLeftSideBearing = 0;
-        $minRightSideBearing = 0;
-        $xMaxExtent = 0;
-        $maxPoints = 0;            // points in non-compound glyph
-        $maxContours = 0;            // contours in non-compound glyph
-        $maxComponentPoints = 0;    // points in compound glyph
-        $maxComponentContours = 0;    // contours in compound glyph
         $maxComponentElements = 0;    // number of glyphs referenced at top level
-        $maxComponentDepth = 0;        // levels of recursion, set to 0 if font has only simple glyphs
         $this->glyphdata = [];
 
         foreach ($subsetglyphs as $originalGlyphIdx => $uni) {
