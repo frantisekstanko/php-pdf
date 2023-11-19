@@ -1382,6 +1382,7 @@ class Fpdf
             $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
             $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
             $this->currentOrientation = $orientation;
+            // @phpstan-ignore-next-line
             $this->currentPageSize = $size;
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
