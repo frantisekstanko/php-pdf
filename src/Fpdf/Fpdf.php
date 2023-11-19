@@ -819,7 +819,6 @@ class Fpdf
         if (!isset($this->currentFont)) {
             $this->Error('No font has been set');
         }
-        $cw = $this->currentFont['cw'];
         if ($w == 0) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
@@ -932,7 +931,6 @@ class Fpdf
         if (!isset($this->currentFont)) {
             $this->Error('No font has been set');
         }
-        $cw = $this->currentFont['cw'];
         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         $wmax = ($w - 2 * $this->cellMargin);
         $s = str_replace("\r", '', (string) $txt);
