@@ -1173,7 +1173,7 @@ class TtFontFile
         return $hm;
     }
 
-    public function getLOCA($indexToLocFormat, $numGlyphs): void
+    public function getLOCA(int $indexToLocFormat, int $numGlyphs): void
     {
         $start = $this->seek_table('loca');
         $this->glyphPos = [];
