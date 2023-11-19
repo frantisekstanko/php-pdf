@@ -11,7 +11,9 @@
 
 namespace Stanko\Fpdf;
 
+use DateTimeImmutable;
 use Exception;
+use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 
 class Fpdf
 {
@@ -74,7 +76,7 @@ class Fpdf
     protected $ZoomMode;           // zoom display mode
     protected $LayoutMode;         // layout display mode
     protected $metadata;           // document properties
-    protected $CreationDate;       // document creation date
+    protected ?DateTimeImmutable $createdAt = null;
     protected $PDFVersion;         // PDF version number
 
     // Public methods
@@ -1288,6 +1290,11 @@ class Fpdf
         $this->fontpath = $fontPath;
     }
 
+    public function setCreatedAt(DateTimeImmutable $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
     // Protected methods
 
     protected function _dochecks()
@@ -2351,7 +2358,10 @@ class Fpdf
 
     protected function _putinfo()
     {
-        $date = @date('YmdHisO', $this->CreationDate);
+        if ($this->createdAt === null) {
+            throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
+        }
+        $date = $this->createdAt->format('YmdHisO');
         $this->metadata['CreationDate'] = 'D:' . substr($date, 0, -2) . "'" . substr($date, -2) . "'";
         foreach ($this->metadata as $key => $value) {
             $this->_put('/' . $key . ' ' . $this->_textstring($value));
@@ -2395,7 +2405,6 @@ class Fpdf
 
     protected function _enddoc()
     {
-        $this->CreationDate = time();
         $this->_putheader();
         $this->_putpages();
         $this->_putresources();
