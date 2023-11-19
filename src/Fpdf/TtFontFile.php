@@ -1157,7 +1157,7 @@ class TtFontFile
         $this->charWidths[1] = chr($nCharWidths & 0xFF);
     }
 
-    public function getHMetric($numberOfHMetrics, $gid): string
+    public function getHMetric(int $numberOfHMetrics, int $gid): string
     {
         $start = $this->seek_table('hmtx');
         if ($gid < $numberOfHMetrics) {
