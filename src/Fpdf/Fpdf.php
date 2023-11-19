@@ -675,7 +675,7 @@ class Fpdf
         }
     }
 
-    public function SetFontSize($size)
+    public function SetFontSize(float $size): void
     {
         // Set font size in points
         if ($this->currentFontSizeInPoints == $size) {
