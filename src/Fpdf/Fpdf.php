@@ -101,7 +101,7 @@ class Fpdf
      *  4: mixed,
      *  5?: int,
      * }>> */
-    protected array $PageLinks;          // array of links in pages
+    protected array $pageLinks;
 
     /** @var array<int, array{0: int, 1: float}> */
     protected array $links;              // array of internal links
@@ -670,7 +670,7 @@ class Fpdf
     public function Link($x, $y, $w, $h, $link)
     {
         // Put a link on the page
-        $this->PageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->hPt - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
+        $this->pageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->hPt - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
     }
 
     public function Text($x, $y, $txt)
@@ -1272,7 +1272,7 @@ class Fpdf
     {
         ++$this->currentPage;
         $this->pages[$this->currentPage] = '';
-        $this->PageLinks[$this->currentPage] = [];
+        $this->pageLinks[$this->currentPage] = [];
         $this->currentDocumentState = 2;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
@@ -1684,7 +1684,7 @@ class Fpdf
 
     protected function _putlinks($n)
     {
-        foreach ($this->PageLinks[$n] as $pl) {
+        foreach ($this->pageLinks[$n] as $pl) {
             $this->_newobj();
             $rect = sprintf('%.2F %.2F %.2F %.2F', $pl[0], $pl[1], $pl[0] + $pl[2], $pl[1] - $pl[3]);
             $s = '<</Type /Annot /Subtype /Link /Rect [' . $rect . '] /Border [0 0 0] ';
@@ -1716,9 +1716,9 @@ class Fpdf
             $this->_put('/Rotate ' . $this->pageInfo[$n]['rotation']);
         }
         $this->_put('/Resources 2 0 R');
-        if (!empty($this->PageLinks[$n])) {
+        if (!empty($this->pageLinks[$n])) {
             $s = '/Annots [';
-            foreach ($this->PageLinks[$n] as $pl) {
+            foreach ($this->pageLinks[$n] as $pl) {
                 $s .= $pl[5] . ' 0 R ';
             }
             $s .= ']';
@@ -1749,7 +1749,7 @@ class Fpdf
         for ($i = 1; $i <= $nb; ++$i) {
             $this->pageInfo[$i]['n'] = ++$n;
             ++$n;
-            foreach ($this->PageLinks[$i] as &$pl) {
+            foreach ($this->pageLinks[$i] as &$pl) {
                 $pl[5] = ++$n;
             }
             unset($pl);
