@@ -21,6 +21,7 @@ use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontNotFoundException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
+use Stanko\Fpdf\Exception\UnknownPageSizeException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
 final class Fpdf
@@ -1330,7 +1331,7 @@ final class Fpdf
         if (is_string($size)) {
             $size = strtolower($size);
             if (!isset(self::PAGE_SIZES[$size])) {
-                $this->Error('Unknown page size: ' . $size);
+                throw new UnknownPageSizeException($size);
             }
             $a = self::PAGE_SIZES[$size];
 
