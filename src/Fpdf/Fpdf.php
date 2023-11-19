@@ -109,17 +109,6 @@ class Fpdf
         $this->ColorFlag = false;
         $this->WithAlpha = false;
         $this->ws = 0;
-        // Font path
-        if (defined('FPDF_FONTPATH')) {
-            $this->fontpath = FPDF_FONTPATH;
-            if (substr($this->fontpath, -1) != '/' && substr($this->fontpath, -1) != '\\') {
-                $this->fontpath .= '/';
-            }
-        } elseif (is_dir(dirname(__FILE__) . '/font')) {
-            $this->fontpath = dirname(__FILE__) . '/font/';
-        } else {
-            $this->fontpath = '';
-        }
         // Core fonts
         $this->CoreFonts = ['courier', 'helvetica', 'times', 'symbol', 'zapfdingbats'];
         // Scale factor
@@ -1292,6 +1281,11 @@ class Fpdf
         }
 
         return '';
+    }
+
+    public function setFontPath(string $fontPath): void
+    {
+        $this->fontpath = $fontPath;
     }
 
     // Protected methods
