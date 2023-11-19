@@ -118,8 +118,6 @@ class Fpdf
     protected ?DateTimeImmutable $createdAt = null;
     protected string $pdfVersion;
 
-    // Public methods
-
     public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
     {
         // Some checks
