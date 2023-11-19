@@ -643,7 +643,7 @@ class TtFontFile
     }
 
     /**
-     * @param array<mixed> $subset
+     * @param array<int> $subset
      */
     public function makeSubset(string $file, array &$subset): string
     {
