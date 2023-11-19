@@ -1977,6 +1977,9 @@ final class Fpdf
                 $ttfontstream = $ttf->makeSubset($font['ttffile'], $subset);
                 $ttfontsize = strlen($ttfontstream);
                 $fontstream = gzcompress($ttfontstream);
+                if ($fontstream === false) {
+                    throw new CompressionException('gzcompress() returned false');
+                }
                 $codeToGlyph = $ttf->codeToGlyph;
                 unset($codeToGlyph[0]);
 
