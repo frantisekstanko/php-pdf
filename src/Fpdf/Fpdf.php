@@ -215,9 +215,9 @@ class Fpdf
     }
 
     public function SetMargins(
-        $left,
-        $top,
-        $right = null,
+        float $left,
+        float $top,
+        ?float $right = null,
     ): void {
         // Set left, top and right margins
         $this->leftMargin = $left;
