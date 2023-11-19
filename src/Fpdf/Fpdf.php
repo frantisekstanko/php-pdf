@@ -888,6 +888,7 @@ class Fpdf
             --$nb;
         }
         $b = 0;
+        $b2 = '';
         if ($border) {
             if ($border == 1) {
                 $border = 'LTRB';
@@ -910,6 +911,7 @@ class Fpdf
         $l = 0;
         $ns = 0;
         $nl = 1;
+        $ls = 0;
         while ($i < $nb) {
             // Get next character
             $c = mb_substr($s, $i, 1, 'UTF-8');
