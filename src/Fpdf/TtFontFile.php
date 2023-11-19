@@ -308,7 +308,7 @@ class TtFontFile
         return (ord($s[0]) * 16777216) + (ord($s[1]) << 16) + (ord($s[2]) << 8) + ord($s[3]); // 	16777216  = 1<<24
     }
 
-    public function pack_short($val): string
+    public function pack_short(int $val): string
     {
         if ($val < 0) {
             $val = abs($val);
@@ -319,7 +319,7 @@ class TtFontFile
         return pack('n', $val);
     }
 
-    public function splice($stream, $offset, $value): string
+    public function splice(string $stream, int $offset, string $value): string
     {
         return substr($stream, 0, $offset) . $value . substr($stream, $offset + strlen($value));
     }
