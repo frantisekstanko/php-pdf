@@ -58,8 +58,8 @@ class Fpdf
     protected float $rightMargin;
     protected float $pageBreakMargin;
     protected float $cellMargin;
-    protected float $x;
-    protected float $y;              // current position in user unit
+    protected float $currentXPosition;
+    protected float $currentYPosition;
     protected float $lasth;              // height of last printed cell
     protected float $LineWidth;          // line width in user unit
     protected string $fontpath;           // path containing fonts
@@ -223,8 +223,8 @@ class Fpdf
     {
         // Set left margin
         $this->leftMargin = $margin;
-        if ($this->currentPage > 0 && $this->x < $margin) {
-            $this->x = $margin;
+        if ($this->currentPage > 0 && $this->currentXPosition < $margin) {
+            $this->currentXPosition = $margin;
         }
     }
 
@@ -676,7 +676,7 @@ class Fpdf
     {
         // Set destination of internal link
         if ($y == -1) {
-            $y = $this->y;
+            $y = $this->currentYPosition;
         }
         if ($page == -1) {
             $page = $this->currentPage;
@@ -722,23 +722,23 @@ class Fpdf
         // Output a cell
         $txt = (string) $txt;
         $k = $this->scaleFactor;
-        if ($this->y + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
+        if ($this->currentYPosition + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
             // Automatic page break
-            $x = $this->x;
+            $x = $this->currentXPosition;
             $ws = $this->ws;
             if ($ws > 0) {
                 $this->ws = 0;
                 $this->_out('0 Tw');
             }
             $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
-            $this->x = $x;
+            $this->currentXPosition = $x;
             if ($ws > 0) {
                 $this->ws = $ws;
                 $this->_out(sprintf('%.3F Tw', $ws * $k));
             }
         }
         if ($w == 0) {
-            $w = $this->pageWidth - $this->rightMargin - $this->x;
+            $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $s = '';
         if ($fill || $border == 1) {
@@ -747,11 +747,11 @@ class Fpdf
             } else {
                 $op = 'S';
             }
-            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->x * $k, ($this->pageHeight - $this->y) * $k, $w * $k, -$h * $k, $op);
+            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->currentXPosition * $k, ($this->pageHeight - $this->currentYPosition) * $k, $w * $k, -$h * $k, $op);
         }
         if (is_string($border)) {
-            $x = $this->x;
-            $y = $this->y;
+            $x = $this->currentXPosition;
+            $y = $this->currentYPosition;
             if (strpos($border, 'L') !== false) {
                 $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - $y) * $k, $x * $k, ($this->pageHeight - ($y + $h)) * $k);
             }
@@ -785,7 +785,7 @@ class Fpdf
                     $this->CurrentFont['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
-                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->x + $dx) * $k, ($this->pageHeight - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k);
+                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k);
                 $t = explode(' ', $txt);
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
@@ -804,16 +804,16 @@ class Fpdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->CurrentFont['subset'][$uni] = $uni;
                 }
-                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->x + $dx) * $k, ($this->pageHeight - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
+                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
             }
             if ($this->underline) {
-                $s .= ' ' . $this->_dounderline($this->x + $dx, $this->y + .5 * $h + .3 * $this->FontSize, $txt);
+                $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->FontSize, $txt);
             }
             if ($this->ColorFlag) {
                 $s .= ' Q';
             }
             if ($link) {
-                $this->Link($this->x + $dx, $this->y + .5 * $h - .5 * $this->FontSize, $this->GetStringWidth($txt), $this->FontSize, $link);
+                $this->Link($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h - .5 * $this->FontSize, $this->GetStringWidth($txt), $this->FontSize, $link);
             }
         }
         if ($s) {
@@ -822,12 +822,12 @@ class Fpdf
         $this->lasth = $h;
         if ($ln > 0) {
             // Go to next line
-            $this->y += $h;
+            $this->currentYPosition += $h;
             if ($ln == 1) {
-                $this->x = $this->leftMargin;
+                $this->currentXPosition = $this->leftMargin;
             }
         } else {
-            $this->x += $w;
+            $this->currentXPosition += $w;
         }
     }
 
@@ -839,7 +839,7 @@ class Fpdf
         }
         $cw = $this->CurrentFont['cw'];
         if ($w == 0) {
-            $w = $this->pageWidth - $this->rightMargin - $this->x;
+            $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $wmax = ($w - 2 * $this->cellMargin);
         // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
@@ -941,7 +941,7 @@ class Fpdf
             $b .= 'B';
         }
         $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
-        $this->x = $this->leftMargin;
+        $this->currentXPosition = $this->leftMargin;
     }
 
     public function Write($h, $txt, $link = '')
@@ -951,12 +951,12 @@ class Fpdf
             $this->Error('No font has been set');
         }
         $cw = $this->CurrentFont['cw'];
-        $w = $this->pageWidth - $this->rightMargin - $this->x;
+        $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         $wmax = ($w - 2 * $this->cellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
-            $this->x += $this->GetStringWidth($s);
+            $this->currentXPosition += $this->GetStringWidth($s);
 
             return;
         }
@@ -976,8 +976,8 @@ class Fpdf
                 $j = $i;
                 $l = 0;
                 if ($nl == 1) {
-                    $this->x = $this->leftMargin;
-                    $w = $this->pageWidth - $this->rightMargin - $this->x;
+                    $this->currentXPosition = $this->leftMargin;
+                    $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
                     $wmax = ($w - 2 * $this->cellMargin);
                 }
                 ++$nl;
@@ -993,11 +993,11 @@ class Fpdf
             if ($l > $wmax) {
                 // Automatic line break
                 if ($sep == -1) {
-                    if ($this->x > $this->leftMargin) {
+                    if ($this->currentXPosition > $this->leftMargin) {
                         // Move to next line
-                        $this->x = $this->leftMargin;
-                        $this->y += $h;
-                        $w = $this->pageWidth - $this->rightMargin - $this->x;
+                        $this->currentXPosition = $this->leftMargin;
+                        $this->currentYPosition += $h;
+                        $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
                         $wmax = ($w - 2 * $this->cellMargin);
                         ++$i;
                         ++$nl;
@@ -1016,8 +1016,8 @@ class Fpdf
                 $j = $i;
                 $l = 0;
                 if ($nl == 1) {
-                    $this->x = $this->leftMargin;
-                    $w = $this->pageWidth - $this->rightMargin - $this->x;
+                    $this->currentXPosition = $this->leftMargin;
+                    $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
                     $wmax = ($w - 2 * $this->cellMargin);
                 }
                 ++$nl;
@@ -1034,11 +1034,11 @@ class Fpdf
     public function Ln($h = null)
     {
         // Line feed; default value is the last cell height
-        $this->x = $this->leftMargin;
+        $this->currentXPosition = $this->leftMargin;
         if ($h === null) {
-            $this->y += $this->lasth;
+            $this->currentYPosition += $this->lasth;
         } else {
-            $this->y += $h;
+            $this->currentYPosition += $h;
         }
     }
 
@@ -1093,18 +1093,18 @@ class Fpdf
 
         // Flowing mode
         if ($y === null) {
-            if ($this->y + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
+            if ($this->currentYPosition + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
                 // Automatic page break
-                $x2 = $this->x;
+                $x2 = $this->currentXPosition;
                 $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
-                $this->x = $x2;
+                $this->currentXPosition = $x2;
             }
-            $y = $this->y;
-            $this->y += $h;
+            $y = $this->currentYPosition;
+            $this->currentYPosition += $h;
         }
 
         if ($x === null) {
-            $x = $this->x;
+            $x = $this->currentXPosition;
         }
         $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->scaleFactor, $h * $this->scaleFactor, $x * $this->scaleFactor, ($this->pageHeight - ($y + $h)) * $this->scaleFactor, $info['i']));
         if ($link) {
@@ -1127,35 +1127,35 @@ class Fpdf
     public function GetX()
     {
         // Get x position
-        return $this->x;
+        return $this->currentXPosition;
     }
 
     public function SetX($x)
     {
         // Set x position
         if ($x >= 0) {
-            $this->x = $x;
+            $this->currentXPosition = $x;
         } else {
-            $this->x = $this->pageWidth + $x;
+            $this->currentXPosition = $this->pageWidth + $x;
         }
     }
 
     public function GetY()
     {
         // Get y position
-        return $this->y;
+        return $this->currentYPosition;
     }
 
     public function SetY($y, $resetX = true)
     {
         // Set y position and optionally reset x
         if ($y >= 0) {
-            $this->y = $y;
+            $this->currentYPosition = $y;
         } else {
-            $this->y = $this->pageHeight + $y;
+            $this->currentYPosition = $this->pageHeight + $y;
         }
         if ($resetX) {
-            $this->x = $this->leftMargin;
+            $this->currentXPosition = $this->leftMargin;
         }
     }
 
@@ -1291,8 +1291,8 @@ class Fpdf
         $this->pages[$this->currentPage] = '';
         $this->PageLinks[$this->currentPage] = [];
         $this->currentDocumentState = 2;
-        $this->x = $this->leftMargin;
-        $this->y = $this->topMargin;
+        $this->currentXPosition = $this->leftMargin;
+        $this->currentYPosition = $this->topMargin;
         $this->FontFamily = '';
         // Check page size and orientation
         if ($orientation == '') {
