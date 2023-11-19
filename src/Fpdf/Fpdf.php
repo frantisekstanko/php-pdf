@@ -11,6 +11,8 @@
 
 namespace Stanko\Fpdf;
 
+use Exception;
+
 class Fpdf
 {
     public const VERSION = '1.33';
