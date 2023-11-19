@@ -1001,8 +1001,13 @@ class TtFontFile
     }
 
     // Recursively get composite glyph data
-    public function getGlyphData($originalGlyphIdx, &$maxdepth, &$depth, &$points, &$contours): void
-    {
+    public function getGlyphData(
+        $originalGlyphIdx,
+        &$maxdepth,
+        &$depth,
+        &$points,
+        &$contours,
+    ): void {
         ++$depth;
         $maxdepth = max($maxdepth, $depth);
         if (count($this->glyphdata[$originalGlyphIdx]['compGlyphs'])) {
