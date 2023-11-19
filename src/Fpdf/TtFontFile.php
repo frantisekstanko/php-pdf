@@ -258,16 +258,6 @@ class TtFontFile
         return $a;
     }
 
-    public function unpack_short($s): string
-    {
-        $a = (ord($s[0]) << 8) + ord($s[1]);
-        if ($a & (1 << 15)) {
-            $a = ($a - (1 << 16));
-        }
-
-        return $a;
-    }
-
     public function read_ushort(): int
     {
         $this->_pos += 2;
