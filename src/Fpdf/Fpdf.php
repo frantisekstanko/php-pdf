@@ -1728,7 +1728,7 @@ final class Fpdf
         return strlen($this->pdfFileBuffer);
     }
 
-    private function _newobj($n = null): void
+    private function _newobj(?int $n = null): void
     {
         // Begin a new object
         if ($n === null) {
