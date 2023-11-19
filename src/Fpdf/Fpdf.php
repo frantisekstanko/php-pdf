@@ -2075,6 +2075,7 @@ final class Fpdf
                     $cidtogidmap[$cc * 2] = chr($glyph >> 8);
                     $cidtogidmap[$cc * 2 + 1] = chr($glyph & 0xFF);
                 }
+                // @phpstan-ignore-next-line
                 $cidtogidmap = gzcompress($cidtogidmap);
                 if ($cidtogidmap === false) {
                     throw new CompressionException('gzcompress() returned false');
