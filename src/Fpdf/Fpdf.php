@@ -53,11 +53,11 @@ class Fpdf
     protected float $pageHeightInPoints;
     protected float $pageWidth;
     protected float $pageHeight;
-    protected float $lMargin;            // left margin
-    protected float $tMargin;            // top margin
-    protected float $rMargin;            // right margin
-    protected float $bMargin;            // page break margin
-    protected float $cMargin;            // cell margin
+    protected float $leftMargin;
+    protected float $topMargin;
+    protected float $rightMargin;
+    protected float $pageBreakMargin;
+    protected float $cellMargin;
     protected float $x;
     protected float $y;              // current position in user unit
     protected float $lasth;              // height of last printed cell
@@ -193,7 +193,7 @@ class Fpdf
         $margin = 28.35 / $this->scaleFactor;
         $this->SetMargins($margin, $margin);
         // Interior cell margin (1 mm)
-        $this->cMargin = $margin / 10;
+        $this->cellMargin = $margin / 10;
         // Line width (0.2 mm)
         $this->LineWidth = .567 / $this->scaleFactor;
         // Automatic page break
@@ -211,18 +211,18 @@ class Fpdf
     public function SetMargins($left, $top, $right = null)
     {
         // Set left, top and right margins
-        $this->lMargin = $left;
-        $this->tMargin = $top;
+        $this->leftMargin = $left;
+        $this->topMargin = $top;
         if ($right === null) {
             $right = $left;
         }
-        $this->rMargin = $right;
+        $this->rightMargin = $right;
     }
 
     public function SetLeftMargin($margin)
     {
         // Set left margin
-        $this->lMargin = $margin;
+        $this->leftMargin = $margin;
         if ($this->currentPage > 0 && $this->x < $margin) {
             $this->x = $margin;
         }
@@ -231,20 +231,20 @@ class Fpdf
     public function SetTopMargin($margin)
     {
         // Set top margin
-        $this->tMargin = $margin;
+        $this->topMargin = $margin;
     }
 
     public function SetRightMargin($margin)
     {
         // Set right margin
-        $this->rMargin = $margin;
+        $this->rightMargin = $margin;
     }
 
     public function SetAutoPageBreak($auto, $margin = 0)
     {
         // Set auto page break mode and triggering margin
         $this->AutoPageBreak = $auto;
-        $this->bMargin = $margin;
+        $this->pageBreakMargin = $margin;
         $this->PageBreakTrigger = $this->pageHeight - $margin;
     }
 
@@ -738,7 +738,7 @@ class Fpdf
             }
         }
         if ($w == 0) {
-            $w = $this->pageWidth - $this->rMargin - $this->x;
+            $w = $this->pageWidth - $this->rightMargin - $this->x;
         }
         $s = '';
         if ($fill || $border == 1) {
@@ -770,11 +770,11 @@ class Fpdf
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
-                $dx = $w - $this->cMargin - $this->GetStringWidth($txt);
+                $dx = $w - $this->cellMargin - $this->GetStringWidth($txt);
             } elseif ($align == 'C') {
                 $dx = ($w - $this->GetStringWidth($txt)) / 2;
             } else {
-                $dx = $this->cMargin;
+                $dx = $this->cellMargin;
             }
             if ($this->ColorFlag) {
                 $s .= 'q ' . $this->TextColor . ' ';
@@ -824,7 +824,7 @@ class Fpdf
             // Go to next line
             $this->y += $h;
             if ($ln == 1) {
-                $this->x = $this->lMargin;
+                $this->x = $this->leftMargin;
             }
         } else {
             $this->x += $w;
@@ -839,9 +839,9 @@ class Fpdf
         }
         $cw = $this->CurrentFont['cw'];
         if ($w == 0) {
-            $w = $this->pageWidth - $this->rMargin - $this->x;
+            $w = $this->pageWidth - $this->rightMargin - $this->x;
         }
-        $wmax = ($w - 2 * $this->cMargin);
+        $wmax = ($w - 2 * $this->cellMargin);
         // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'utf-8');
@@ -941,7 +941,7 @@ class Fpdf
             $b .= 'B';
         }
         $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
-        $this->x = $this->lMargin;
+        $this->x = $this->leftMargin;
     }
 
     public function Write($h, $txt, $link = '')
@@ -951,8 +951,8 @@ class Fpdf
             $this->Error('No font has been set');
         }
         $cw = $this->CurrentFont['cw'];
-        $w = $this->pageWidth - $this->rMargin - $this->x;
-        $wmax = ($w - 2 * $this->cMargin);
+        $w = $this->pageWidth - $this->rightMargin - $this->x;
+        $wmax = ($w - 2 * $this->cellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
@@ -976,9 +976,9 @@ class Fpdf
                 $j = $i;
                 $l = 0;
                 if ($nl == 1) {
-                    $this->x = $this->lMargin;
-                    $w = $this->pageWidth - $this->rMargin - $this->x;
-                    $wmax = ($w - 2 * $this->cMargin);
+                    $this->x = $this->leftMargin;
+                    $w = $this->pageWidth - $this->rightMargin - $this->x;
+                    $wmax = ($w - 2 * $this->cellMargin);
                 }
                 ++$nl;
 
@@ -993,12 +993,12 @@ class Fpdf
             if ($l > $wmax) {
                 // Automatic line break
                 if ($sep == -1) {
-                    if ($this->x > $this->lMargin) {
+                    if ($this->x > $this->leftMargin) {
                         // Move to next line
-                        $this->x = $this->lMargin;
+                        $this->x = $this->leftMargin;
                         $this->y += $h;
-                        $w = $this->pageWidth - $this->rMargin - $this->x;
-                        $wmax = ($w - 2 * $this->cMargin);
+                        $w = $this->pageWidth - $this->rightMargin - $this->x;
+                        $wmax = ($w - 2 * $this->cellMargin);
                         ++$i;
                         ++$nl;
 
@@ -1016,9 +1016,9 @@ class Fpdf
                 $j = $i;
                 $l = 0;
                 if ($nl == 1) {
-                    $this->x = $this->lMargin;
-                    $w = $this->pageWidth - $this->rMargin - $this->x;
-                    $wmax = ($w - 2 * $this->cMargin);
+                    $this->x = $this->leftMargin;
+                    $w = $this->pageWidth - $this->rightMargin - $this->x;
+                    $wmax = ($w - 2 * $this->cellMargin);
                 }
                 ++$nl;
             } else {
@@ -1034,7 +1034,7 @@ class Fpdf
     public function Ln($h = null)
     {
         // Line feed; default value is the last cell height
-        $this->x = $this->lMargin;
+        $this->x = $this->leftMargin;
         if ($h === null) {
             $this->y += $this->lasth;
         } else {
@@ -1155,7 +1155,7 @@ class Fpdf
             $this->y = $this->pageHeight + $y;
         }
         if ($resetX) {
-            $this->x = $this->lMargin;
+            $this->x = $this->leftMargin;
         }
     }
 
@@ -1291,8 +1291,8 @@ class Fpdf
         $this->pages[$this->currentPage] = '';
         $this->PageLinks[$this->currentPage] = [];
         $this->currentDocumentState = 2;
-        $this->x = $this->lMargin;
-        $this->y = $this->tMargin;
+        $this->x = $this->leftMargin;
+        $this->y = $this->topMargin;
         $this->FontFamily = '';
         // Check page size and orientation
         if ($orientation == '') {
@@ -1316,7 +1316,7 @@ class Fpdf
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
             $this->hPt = $this->pageHeight * $this->scaleFactor;
-            $this->PageBreakTrigger = $this->pageHeight - $this->bMargin;
+            $this->PageBreakTrigger = $this->pageHeight - $this->pageBreakMargin;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = $size;
         }
