@@ -30,8 +30,8 @@ class Fpdf
     protected int $currentDocumentState;
     protected bool $compressionEnabled;
     protected float $scaleFactor;
-    protected $DefOrientation;     // default orientation
-    protected $CurOrientation;     // current orientation
+    protected string $DefOrientation;     // default orientation
+    protected string $CurOrientation;     // current orientation
     protected $StdPageSizes;       // standard page sizes
     protected $DefPageSize;        // default page size
     protected $CurPageSize;        // current page size
