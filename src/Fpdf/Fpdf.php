@@ -18,6 +18,7 @@ use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
+use Stanko\Fpdf\Exception\FontNotFoundException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
@@ -1872,7 +1873,7 @@ final class Fpdf
                 $this->fontFiles[$file]['n'] = $this->currentObjectNumber;
                 $font = file_get_contents($this->fontPath . $file, true);
                 if (!$font) {
-                    $this->Error('Font file not found: ' . $file);
+                    throw new FontNotFoundException($file);
                 }
                 $compressed = (substr($file, -2) == '.z');
                 if (!$compressed && isset($info['length2'])) {
