@@ -104,7 +104,7 @@ class Fpdf
     protected array $pageLinks;
 
     /** @var array<int, array{0: int, 1: float}> */
-    protected array $links;              // array of internal links
+    protected array $internalLinks;
     protected bool $AutoPageBreak;      // automatic page breaking
     protected float $PageBreakTrigger;   // threshold used to trigger page breaks
     protected bool $InHeader;           // flag set when processing header
@@ -136,7 +136,7 @@ class Fpdf
         $this->encodings = [];
         $this->cmaps = [];
         $this->usedImages = [];
-        $this->links = [];
+        $this->internalLinks = [];
         $this->InHeader = false;
         $this->InFooter = false;
         $this->lastPrintedCellHeight = 0;
@@ -649,8 +649,8 @@ class Fpdf
     public function AddLink()
     {
         // Create a new internal link
-        $n = count($this->links) + 1;
-        $this->links[$n] = [0, 0];
+        $n = count($this->internalLinks) + 1;
+        $this->internalLinks[$n] = [0, 0];
 
         return $n;
     }
@@ -664,7 +664,7 @@ class Fpdf
         if ($page == -1) {
             $page = $this->currentPage;
         }
-        $this->links[$link] = [$page, $y];
+        $this->internalLinks[$link] = [$page, $y];
     }
 
     public function Link($x, $y, $w, $h, $link)
@@ -1691,7 +1691,7 @@ class Fpdf
             if (is_string($pl[4])) {
                 $s .= '/A <</S /URI /URI ' . $this->_textstring($pl[4]) . '>>>>';
             } else {
-                $l = $this->links[$pl[4]];
+                $l = $this->internalLinks[$pl[4]];
                 if (isset($this->pageInfo[$l[0]]['size'])) {
                     $h = $this->pageInfo[$l[0]]['size'][1];
                 } else {
