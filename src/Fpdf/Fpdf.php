@@ -632,7 +632,7 @@ class Fpdf
         unset($cw);
     }
 
-    public function SetFont($family, $style = '', $size = 0)
+    public function SetFont(string $family, string $style = '', float $size = 0): void
     {
         // Select a font; size given in points
         if ($family == '') {
