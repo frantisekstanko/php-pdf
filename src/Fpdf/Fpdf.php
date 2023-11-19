@@ -22,7 +22,7 @@ class Fpdf
     protected int $currentObjectNumber;
 
     /** @var array<int, int> */
-    protected array $offsets;            // array of object offsets
+    protected array $objectOffsets;
     protected $buffer;             // buffer holding in-memory PDF
     protected $pages;              // array containing pages
     protected $state;              // current document state
@@ -1634,7 +1634,7 @@ class Fpdf
         if ($n === null) {
             $n = ++$this->currentObjectNumber;
         }
-        $this->offsets[$n] = $this->_getoffset();
+        $this->objectOffsets[$n] = $this->_getoffset();
         $this->_put($n . ' 0 obj');
     }
 
@@ -2330,7 +2330,7 @@ class Fpdf
         $this->_put('0 ' . ($this->currentObjectNumber + 1));
         $this->_put('0000000000 65535 f ');
         for ($i = 1; $i <= $this->currentObjectNumber; ++$i) {
-            $this->_put(sprintf('%010d 00000 n ', $this->offsets[$i]));
+            $this->_put(sprintf('%010d 00000 n ', $this->objectOffsets[$i]));
         }
         // Trailer
         $this->_put('trailer');
