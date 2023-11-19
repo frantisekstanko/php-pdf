@@ -107,8 +107,8 @@ class Fpdf
     protected array $internalLinks;
     protected bool $automaticPageBreak;
     protected float $pageBreakThreshold;
-    protected bool $InHeader;           // flag set when processing header
-    protected bool $InFooter;           // flag set when processing footer
+    protected bool $isDrawingHeader;
+    protected bool $isDrawingFooter;
     protected string $AliasNbPages;       // alias for total number of pages
     protected float|string $ZoomMode;           // zoom display mode
     protected string $LayoutMode;         // layout display mode
@@ -137,8 +137,8 @@ class Fpdf
         $this->cmaps = [];
         $this->usedImages = [];
         $this->internalLinks = [];
-        $this->InHeader = false;
-        $this->InFooter = false;
+        $this->isDrawingHeader = false;
+        $this->isDrawingFooter = false;
         $this->lastPrintedCellHeight = 0;
         $this->currentFontFamily = '';
         $this->currentFontStyle = '';
@@ -322,9 +322,9 @@ class Fpdf
             $this->AddPage();
         }
         // Page footer
-        $this->InFooter = true;
+        $this->isDrawingFooter = true;
         $this->Footer();
-        $this->InFooter = false;
+        $this->isDrawingFooter = false;
         // Close page
         $this->_endpage();
         // Close document
@@ -347,9 +347,9 @@ class Fpdf
         $cf = $this->fillColorEqualsTextColor;
         if ($this->currentPage > 0) {
             // Page footer
-            $this->InFooter = true;
+            $this->isDrawingFooter = true;
             $this->Footer();
-            $this->InFooter = false;
+            $this->isDrawingFooter = false;
             // Close page
             $this->_endpage();
         }
@@ -376,9 +376,9 @@ class Fpdf
         $this->textColor = $tc;
         $this->fillColorEqualsTextColor = $cf;
         // Page header
-        $this->InHeader = true;
+        $this->isDrawingHeader = true;
         $this->Header();
-        $this->InHeader = false;
+        $this->isDrawingHeader = false;
         // Restore line width
         if ($this->lineWidth != $lw) {
             $this->lineWidth = $lw;
@@ -705,7 +705,7 @@ class Fpdf
         // Output a cell
         $txt = (string) $txt;
         $k = $this->scaleFactor;
-        if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
+        if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->isDrawingHeader && !$this->isDrawingFooter && $this->AcceptPageBreak()) {
             // Automatic page break
             $x = $this->currentXPosition;
             $ws = $this->wordSpacing;
@@ -1076,7 +1076,7 @@ class Fpdf
 
         // Flowing mode
         if ($y === null) {
-            if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
+            if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->isDrawingHeader && !$this->isDrawingFooter && $this->AcceptPageBreak()) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
                 $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
