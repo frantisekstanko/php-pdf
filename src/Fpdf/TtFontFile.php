@@ -359,7 +359,7 @@ class TtFontFile
         return $fread;
     }
 
-    public function get_table($tag): string
+    public function get_table(string $tag): string
     {
         [$pos, $length] = $this->get_table_pos($tag);
         if ($length == 0) {
