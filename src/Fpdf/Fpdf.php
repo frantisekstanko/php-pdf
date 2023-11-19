@@ -1071,7 +1071,7 @@ class Fpdf
         }
     }
 
-    public function Ln($h = null)
+    public function Ln(float $h = null): void
     {
         // Line feed; default value is the last cell height
         $this->currentXPosition = $this->leftMargin;
