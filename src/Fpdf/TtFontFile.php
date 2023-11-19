@@ -46,7 +46,13 @@ class TtFontFile
     public int $entrySelector;
     public int $rangeShift;
 
-    /** @var array<mixed> */
+    /** @var array<string, array{
+     *    tag: string,
+     *    checksum: array<int, int>,
+     *    offset: int,
+     *    length: int
+     * }>
+     */
     public array $tables;
 
     /** @var array<mixed> */
