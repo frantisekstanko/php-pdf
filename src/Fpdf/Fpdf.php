@@ -65,7 +65,7 @@ class Fpdf
     protected string $fontPath;
 
     /** @var array<string, array<mixed>> */
-    protected array $fonts;              // array of used fonts
+    protected array $usedFonts;
 
     /** @var array<string, array<mixed>> */
     protected array $fontFiles;
@@ -131,7 +131,7 @@ class Fpdf
         $this->pdfFileBuffer = '';
         $this->pages = [];
         $this->pageInfo = [];
-        $this->fonts = [];
+        $this->usedFonts = [];
         $this->fontFiles = [];
         $this->encodings = [];
         $this->cmaps = [];
@@ -519,7 +519,7 @@ class Fpdf
             $file = str_replace(' ', '', $family) . strtolower($style) . '.ttf';
         }
         $fontkey = $family . $style;
-        if (isset($this->fonts[$fontkey])) {
+        if (isset($this->usedFonts[$fontkey])) {
             return;
         }
         if (defined('_SYSTEM_TTFONTS') && file_exists(_SYSTEM_TTFONTS . $file)) {
@@ -578,13 +578,13 @@ class Fpdf
         } else {
             $cw = @file_get_contents($unifilename . '.cw.dat');
         }
-        $i = count($this->fonts) + 1;
+        $i = count($this->usedFonts) + 1;
         if (!empty($this->AliasNbPages)) {
             $sbarr = range(0, 57);
         } else {
             $sbarr = range(0, 32);
         }
-        $this->fonts[$fontkey] = ['i' => $i, 'type' => $type, 'name' => $name, 'desc' => $desc, 'up' => $up, 'ut' => $ut, 'cw' => $cw, 'ttffile' => $ttffile, 'fontkey' => $fontkey, 'subset' => $sbarr, 'unifilename' => $unifilename];
+        $this->usedFonts[$fontkey] = ['i' => $i, 'type' => $type, 'name' => $name, 'desc' => $desc, 'up' => $up, 'ut' => $ut, 'cw' => $cw, 'ttffile' => $ttffile, 'fontkey' => $fontkey, 'subset' => $sbarr, 'unifilename' => $unifilename];
 
         $this->fontFiles[$fontkey] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
         $this->fontFiles[$file] = ['type' => 'TTF'];
@@ -619,7 +619,7 @@ class Fpdf
 
         // Test if font is already loaded
         $fontkey = $family . $style;
-        if (!isset($this->fonts[$fontkey])) {
+        if (!isset($this->usedFonts[$fontkey])) {
             $this->Error('Undefined font: ' . $family . ' ' . $style);
         }
         // Select it
@@ -627,7 +627,7 @@ class Fpdf
         $this->FontStyle = $style;
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->scaleFactor;
-        $this->CurrentFont = &$this->fonts[$fontkey];
+        $this->CurrentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPage > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
@@ -1807,7 +1807,7 @@ class Fpdf
                 $this->_put('endobj');
             }
         }
-        foreach ($this->fonts as $k => $font) {
+        foreach ($this->usedFonts as $k => $font) {
             // Encoding
             if (isset($font['diff'])) {
                 if (!isset($this->encodings[$font['enc']])) {
@@ -1835,7 +1835,7 @@ class Fpdf
             $name = $font['name'];
             if ($type == 'Core') {
                 // Core font
-                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
+                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
                 $this->_newobj();
                 $this->_put('<</Type /Font');
                 $this->_put('/BaseFont /' . $name);
@@ -1853,7 +1853,7 @@ class Fpdf
                 if (isset($font['subsetted']) && $font['subsetted']) {
                     $name = 'AAAAAA+' . $name;
                 }
-                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
+                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
                 $this->_newobj();
                 $this->_put('<</Type /Font');
                 $this->_put('/BaseFont /' . $name);
@@ -1899,7 +1899,7 @@ class Fpdf
             }
             // TrueType embedded SUBSETS or FULL
             elseif ($type == 'TTF') {
-                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
+                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
 
                 $ttf = new TTFontFile();
                 $fontname = 'MPDFAA+' . $font['name'];
@@ -2017,7 +2017,7 @@ class Fpdf
                 unset($ttf);
             } else {
                 // Allow for additional types
-                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
+                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
                 $mtd = '_put' . strtolower($type);
                 if (!method_exists($this, $mtd)) {
                     $this->Error('Unsupported font type: ' . $type);
@@ -2261,7 +2261,7 @@ class Fpdf
     {
         $this->_put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->_put('/Font <<');
-        foreach ($this->fonts as $font) {
+        foreach ($this->usedFonts as $font) {
             $this->_put('/F' . $font['i'] . ' ' . $font['n'] . ' 0 R');
         }
         $this->_put('>>');
