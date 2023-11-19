@@ -350,7 +350,13 @@ class TtFontFile
             return '';
         }
 
-        return fread($this->fh, $length);
+        $fread = fread($this->fh, $length);
+
+        if ($fread === false) {
+            throw new FileStreamException('fread() returned false');
+        }
+
+        return $fread;
     }
 
     public function get_table($tag): string
