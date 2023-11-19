@@ -83,9 +83,9 @@ class Fpdf
     protected array $currentFont;
     protected float $currentFontSizeInPoints;
     protected float $currentFontSize;
-    protected string $DrawColor;          // commands for drawing color
-    protected string $FillColor;          // commands for filling color
-    protected string $TextColor;          // commands for text color
+    protected string $drawColor;
+    protected string $fillColor;
+    protected string $textColor;
     protected bool $ColorFlag;          // indicates whether fill and text colors are different
     protected bool $WithAlpha;          // indicates whether alpha channel is used
     protected float $ws;                 // word spacing
@@ -144,9 +144,9 @@ class Fpdf
         $this->currentFontStyle = '';
         $this->currentFontSizeInPoints = 12;
         $this->isUnderline = false;
-        $this->DrawColor = '0 G';
-        $this->FillColor = '0 g';
-        $this->TextColor = '0 g';
+        $this->drawColor = '0 G';
+        $this->fillColor = '0 g';
+        $this->textColor = '0 g';
         $this->ColorFlag = false;
         $this->WithAlpha = false;
         $this->ws = 0;
@@ -341,9 +341,9 @@ class Fpdf
         $style = $this->currentFontStyle . ($this->isUnderline ? 'U' : '');
         $fontsize = $this->currentFontSizeInPoints;
         $lw = $this->lineWidth;
-        $dc = $this->DrawColor;
-        $fc = $this->FillColor;
-        $tc = $this->TextColor;
+        $dc = $this->drawColor;
+        $fc = $this->fillColor;
+        $tc = $this->textColor;
         $cf = $this->ColorFlag;
         if ($this->currentPage > 0) {
             // Page footer
@@ -365,15 +365,15 @@ class Fpdf
             $this->SetFont($family, $style, $fontsize);
         }
         // Set colors
-        $this->DrawColor = $dc;
+        $this->drawColor = $dc;
         if ($dc != '0 G') {
             $this->_out($dc);
         }
-        $this->FillColor = $fc;
+        $this->fillColor = $fc;
         if ($fc != '0 g') {
             $this->_out($fc);
         }
-        $this->TextColor = $tc;
+        $this->textColor = $tc;
         $this->ColorFlag = $cf;
         // Page header
         $this->InHeader = true;
@@ -389,15 +389,15 @@ class Fpdf
             $this->SetFont($family, $style, $fontsize);
         }
         // Restore colors
-        if ($this->DrawColor != $dc) {
-            $this->DrawColor = $dc;
+        if ($this->drawColor != $dc) {
+            $this->drawColor = $dc;
             $this->_out($dc);
         }
-        if ($this->FillColor != $fc) {
-            $this->FillColor = $fc;
+        if ($this->fillColor != $fc) {
+            $this->fillColor = $fc;
             $this->_out($fc);
         }
-        $this->TextColor = $tc;
+        $this->textColor = $tc;
         $this->ColorFlag = $cf;
     }
 
@@ -421,12 +421,12 @@ class Fpdf
     {
         // Set color for all stroking operations
         if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->DrawColor = sprintf('%.3F G', $r / 255);
+            $this->drawColor = sprintf('%.3F G', $r / 255);
         } else {
-            $this->DrawColor = sprintf('%.3F %.3F %.3F RG', $r / 255, $g / 255, $b / 255);
+            $this->drawColor = sprintf('%.3F %.3F %.3F RG', $r / 255, $g / 255, $b / 255);
         }
         if ($this->currentPage > 0) {
-            $this->_out($this->DrawColor);
+            $this->_out($this->drawColor);
         }
     }
 
@@ -434,13 +434,13 @@ class Fpdf
     {
         // Set color for all filling operations
         if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->FillColor = sprintf('%.3F g', $r / 255);
+            $this->fillColor = sprintf('%.3F g', $r / 255);
         } else {
-            $this->FillColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
+            $this->fillColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
         }
-        $this->ColorFlag = ($this->FillColor != $this->TextColor);
+        $this->ColorFlag = ($this->fillColor != $this->textColor);
         if ($this->currentPage > 0) {
-            $this->_out($this->FillColor);
+            $this->_out($this->fillColor);
         }
     }
 
@@ -448,11 +448,11 @@ class Fpdf
     {
         // Set color for text
         if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->TextColor = sprintf('%.3F g', $r / 255);
+            $this->textColor = sprintf('%.3F g', $r / 255);
         } else {
-            $this->TextColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
+            $this->textColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
         }
-        $this->ColorFlag = ($this->FillColor != $this->TextColor);
+        $this->ColorFlag = ($this->fillColor != $this->textColor);
     }
 
     public function GetStringWidth($s)
@@ -689,7 +689,7 @@ class Fpdf
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
         if ($this->ColorFlag) {
-            $s = 'q ' . $this->TextColor . ' ' . $s . ' Q';
+            $s = 'q ' . $this->textColor . ' ' . $s . ' Q';
         }
         $this->_out($s);
     }
@@ -760,7 +760,7 @@ class Fpdf
                 $dx = $this->cellMargin;
             }
             if ($this->ColorFlag) {
-                $s .= 'q ' . $this->TextColor . ' ';
+                $s .= 'q ' . $this->textColor . ' ';
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
             if ($this->ws) {
