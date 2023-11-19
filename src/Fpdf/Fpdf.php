@@ -63,7 +63,6 @@ class Fpdf
     protected float $lastPrintedCellHeight;
     protected float $lineWidth;
     protected string $fontPath;
-    protected $CoreFonts;          // array of core font names
 
     /** @var array<string, array<mixed>> */
     protected array $fonts;              // array of used fonts
@@ -151,8 +150,6 @@ class Fpdf
         $this->ColorFlag = false;
         $this->WithAlpha = false;
         $this->ws = 0;
-        // Core fonts
-        $this->CoreFonts = ['courier', 'helvetica', 'times', 'symbol', 'zapfdingbats'];
         // Scale factor
         if ($unit == 'pt') {
             $this->scaleFactor = 1;
@@ -623,21 +620,7 @@ class Fpdf
         // Test if font is already loaded
         $fontkey = $family . $style;
         if (!isset($this->fonts[$fontkey])) {
-            // Test if one of the core fonts
-            if ($family == 'arial') {
-                $family = 'helvetica';
-            }
-            if (in_array($family, $this->CoreFonts)) {
-                if ($family == 'symbol' || $family == 'zapfdingbats') {
-                    $style = '';
-                }
-                $fontkey = $family . $style;
-                if (!isset($this->fonts[$fontkey])) {
-                    $this->AddFont($family, $style);
-                }
-            } else {
-                $this->Error('Undefined font: ' . $family . ' ' . $style);
-            }
+            $this->Error('Undefined font: ' . $family . ' ' . $style);
         }
         // Select it
         $this->FontFamily = $family;
