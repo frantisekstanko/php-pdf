@@ -520,7 +520,7 @@ class Fpdf
                 $ttffile = $ttffilename;
 
                 require_once $this->fontpath . 'unifont/ttfonts.php';
-                $ttf = new TTFontFile();
+                $ttf = new TtFontFile();
                 $ttf->getMetrics($ttffile);
                 $cw = $ttf->charWidths;
                 $name = preg_replace('/[ ()]/', '', $ttf->fullName);

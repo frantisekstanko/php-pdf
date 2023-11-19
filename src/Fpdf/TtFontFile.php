@@ -16,6 +16,8 @@
 *                                                                              *
 */
 
+namespace Stanko\Fpdf;
+
 // Define the value used in the "head" table of a created TTF file
 // 0x74727565 "true" for Mac
 // 0x00010000 for Windows
@@ -30,7 +32,7 @@ define('GF_MORE', 1 << 5);
 define('GF_XYSCALE', 1 << 6);
 define('GF_TWOBYTWO', 1 << 7);
 
-class TTFontFile
+class TtFontFile
 {
     public $maxUni;
     public $maxUniChar;
