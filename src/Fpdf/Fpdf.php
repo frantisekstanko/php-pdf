@@ -19,15 +19,15 @@ use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontNotFoundException;
+use Stanko\Fpdf\Exception\IncorrectPngFileException;
+use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
+use Stanko\Fpdf\Exception\UnknownCompressionMethodException;
+use Stanko\Fpdf\Exception\UnknownFilterMethodException;
 use Stanko\Fpdf\Exception\UnknownPageSizeException;
 use Stanko\Fpdf\Exception\UnpackException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
-use Stanko\Fpdf\Fpdf\Exception\IncorrectPngFileException;
-use Stanko\Fpdf\Fpdf\Exception\InterlacingNotSupportedException;
-use Stanko\Fpdf\Fpdf\Exception\UnknownCompressionMethodException;
-use Stanko\Fpdf\Fpdf\Exception\UnknownFilterMethodException;
 
 final class Fpdf
 {
