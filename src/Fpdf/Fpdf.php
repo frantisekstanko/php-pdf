@@ -1526,9 +1526,12 @@ final class Fpdf
 
         // Read header chunk
         $this->_readstream($f, 4);
-        if ($this->_readstream($f, 4) != 'IHDR') {
+
+        $fileTypeByte = $this->_readstream($f, 4);
+        if ($fileTypeByte != 'IHDR') {
             throw new IncorrectPngFileException($file);
         }
+
         $w = $this->_readint($f);
         $h = $this->_readint($f);
         $bpc = ord($this->_readstream($f, 1));
