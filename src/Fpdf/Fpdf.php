@@ -17,6 +17,7 @@ use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
+use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
@@ -1691,8 +1692,8 @@ final class Fpdf
         $data = ob_get_clean();
         imagedestroy($im);
         $f = fopen('php://temp', 'rb+');
-        if (!$f) {
-            $this->Error('Unable to create memory stream');
+        if ($f === false) {
+            throw new MemoryStreamException('fopen() returned false');
         }
         fwrite($f, $data);
         rewind($f);
