@@ -27,7 +27,7 @@ class Fpdf
 
     /** @var array<int, string> */
     protected array $pages;
-    protected $state;              // current document state
+    protected int $state;              // current document state
     protected $compress;           // compression flag
     protected $k;                  // scale factor (number of points in user unit)
     protected $DefOrientation;     // default orientation
