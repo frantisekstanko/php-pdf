@@ -22,6 +22,7 @@ use Stanko\Fpdf\Exception\FontNotFoundException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownPageSizeException;
+use Stanko\Fpdf\Exception\UnpackException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
 final class Fpdf
@@ -1671,6 +1672,10 @@ final class Fpdf
     {
         // Read a 4-byte integer from stream
         $a = unpack('Ni', $this->_readstream($f, 4));
+
+        if ($a === false) {
+            throw new UnpackException('unpack() returned false');
+        }
 
         return $a['i'];
     }
