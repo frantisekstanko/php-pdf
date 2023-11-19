@@ -1021,6 +1021,7 @@ class TtFontFile
     }
 
     // Recursively get composite glyph data
+    // @phpstan-ignore-next-line
     public function getGlyphData(
         $originalGlyphIdx,
         &$maxdepth,
@@ -1030,12 +1031,16 @@ class TtFontFile
     ): void {
         ++$depth;
         $maxdepth = max($maxdepth, $depth);
+        // @phpstan-ignore-next-line
         if (count($this->glyphdata[$originalGlyphIdx]['compGlyphs'])) {
+            // @phpstan-ignore-next-line
             foreach ($this->glyphdata[$originalGlyphIdx]['compGlyphs'] as $glyphIdx) {
                 $this->getGlyphData($glyphIdx, $maxdepth, $depth, $points, $contours);
             }
+        // @phpstan-ignore-next-line
         } elseif (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {    // simple
             $contours += $this->glyphdata[$originalGlyphIdx]['nContours'];
+            // @phpstan-ignore-next-line
             $points += $this->glyphdata[$originalGlyphIdx]['nPoints'];
         }
         --$depth;
