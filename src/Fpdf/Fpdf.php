@@ -50,7 +50,7 @@ class Fpdf
      */
     protected array $pageInfo;
     protected float $pageWidthInPoints;
-    protected float $hPt;          // dimensions of current page in points
+    protected float $pageHeightInPoints;
     protected float $w;
     protected float $h;              // dimensions of current page in user unit
     protected float $lMargin;            // left margin
