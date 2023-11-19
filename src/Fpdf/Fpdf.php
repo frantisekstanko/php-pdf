@@ -18,6 +18,15 @@ use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 class Fpdf
 {
     public const VERSION = '1.33';
+
+    public const PAGE_SIZES = [
+        'a3' => [841.89, 1190.55],
+        'a4' => [595.28, 841.89],
+        'a5' => [420.94, 595.28],
+        'letter' => [612, 792],
+        'legal' => [612, 1008],
+    ];
+
     protected int $currentPage;
     protected int $currentObjectNumber;
 
@@ -32,7 +41,6 @@ class Fpdf
     protected float $scaleFactor;
     protected string $defaultOrientation;
     protected string $currentOrientation;
-    protected $StdPageSizes;       // standard page sizes
 
     /** @var array<mixed> */
     protected array $defaultPageSize;
@@ -160,9 +168,6 @@ class Fpdf
         } else {
             $this->Error('Incorrect unit: ' . $unit);
         }
-        // Page sizes
-        $this->StdPageSizes = ['a3' => [841.89, 1190.55], 'a4' => [595.28, 841.89], 'a5' => [420.94, 595.28],
-            'letter' => [612, 792], 'legal' => [612, 1008]];
         $size = $this->_getpagesize($size);
         $this->defaultPageSize = $size;
         $this->currentPageSize = $size;
@@ -1251,10 +1256,10 @@ class Fpdf
     {
         if (is_string($size)) {
             $size = strtolower($size);
-            if (!isset($this->StdPageSizes[$size])) {
+            if (!isset(self::PAGE_SIZES[$size])) {
                 $this->Error('Unknown page size: ' . $size);
             }
-            $a = $this->StdPageSizes[$size];
+            $a = self::PAGE_SIZES[$size];
 
             return [$a[0] / $this->scaleFactor, $a[1] / $this->scaleFactor];
         }
