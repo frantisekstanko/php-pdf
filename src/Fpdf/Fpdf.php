@@ -186,7 +186,7 @@ class Fpdf
         }
         $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-        $this->hPt = $this->pageHeight * $this->scaleFactor;
+        $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
         // Page rotation
         $this->currentPageOrientation = 0;
         // Page margins (1 cm)
@@ -673,7 +673,7 @@ class Fpdf
     public function Link($x, $y, $w, $h, $link)
     {
         // Put a link on the page
-        $this->pageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->hPt - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
+        $this->pageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->pageHeightInPoints - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
     }
 
     public function Text($x, $y, $txt)
@@ -1301,13 +1301,13 @@ class Fpdf
                 $this->pageHeight = $size[0];
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-            $this->hPt = $this->pageHeight * $this->scaleFactor;
+            $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
             $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = $size;
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
-            $this->pageInfo[$this->currentPage]['size'] = [$this->pageWidthInPoints, $this->hPt];
+            $this->pageInfo[$this->currentPage]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
         }
         if ($rotation != 0) {
             if ($rotation % 90 != 0) {
