@@ -1251,7 +1251,7 @@ class TtFontFile
     }
 
     // Put the TTF file together
-    public function endTTFile(&$stm): string
+    public function endTTFile(string &$stm): string
     {
         $stm = '';
         $numTables = count($this->otables);
