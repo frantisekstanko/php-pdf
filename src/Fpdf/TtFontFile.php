@@ -1037,6 +1037,11 @@ class TtFontFile
                     $subsetglyphs[$glyphIdx] = true;
                 }
                 $savepos = ftell($this->fh);
+
+                if ($savepos === false) {
+                    throw new FileStreamException('ftell() returned false');
+                }
+
                 $this->getGlyphs($glyphIdx, $start, $glyphSet, $subsetglyphs);
                 $this->seek($savepos);
                 if ($flags & GF_WORDS) {
