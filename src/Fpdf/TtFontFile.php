@@ -1085,11 +1085,14 @@ class TtFontFile
         }
     }
 
+    /**
+     * @param array<mixed> $glyphToChar
+     */
     public function getHMTX(
-        $numberOfHMetrics,
-        $numGlyphs,
-        &$glyphToChar,
-        $scale,
+        int $numberOfHMetrics,
+        int $numGlyphs,
+        array &$glyphToChar,
+        float $scale,
     ): void {
         $start = $this->seek_table('hmtx');
         $aw = 0;
