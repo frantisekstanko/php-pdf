@@ -325,7 +325,7 @@ class TtFontFile
         return substr($stream, 0, $offset) . $value . substr($stream, $offset + strlen($value));
     }
 
-    public function _set_ushort(string $stream, int $offset, string $value): string
+    public function _set_ushort(string $stream, int $offset, int $value): string
     {
         $up = pack('n', $value);
 
