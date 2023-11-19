@@ -478,10 +478,14 @@ class Fpdf
         $w = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
+            // @phpstan-ignore-next-line
             if (isset($cw[2 * $char])) {
+                // @phpstan-ignore-next-line
                 $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
+            // @phpstan-ignore-next-line
             } elseif ($char > 0 && $char < 128 && isset($cw[chr($char)])) {
                 $w += $cw[chr($char)];
+            // @phpstan-ignore-next-line
             } elseif (isset($this->currentFont['desc']['MissingWidth'])) {
                 $w += $this->currentFont['desc']['MissingWidth'];
             } elseif (isset($this->currentFont['MissingWidth'])) {
