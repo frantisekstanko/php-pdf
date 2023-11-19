@@ -29,7 +29,7 @@ class Fpdf
     protected array $pages;
     protected int $currentDocumentState;
     protected bool $compressionEnabled;
-    protected $k;                  // scale factor (number of points in user unit)
+    protected float $k;                  // scale factor (number of points in user unit)
     protected $DefOrientation;     // default orientation
     protected $CurOrientation;     // current orientation
     protected $StdPageSizes;       // standard page sizes
