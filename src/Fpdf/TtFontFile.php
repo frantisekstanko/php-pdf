@@ -868,6 +868,7 @@ class TtFontFile
 
         // glyf - Glyph data
         [$glyfOffset, $glyfLength] = $this->get_table_pos('glyf');
+        $glyphData = '';
         if ($glyfLength < $this->maxStrLenRead) {
             $glyphData = $this->get_table('glyf');
         }
