@@ -18,7 +18,7 @@ use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 class Fpdf
 {
     public const VERSION = '1.33';
-    protected $page;               // current page number
+    protected int $page;               // current page number
     protected $n;                  // current object number
     protected $offsets;            // array of object offsets
     protected $buffer;             // buffer holding in-memory PDF
