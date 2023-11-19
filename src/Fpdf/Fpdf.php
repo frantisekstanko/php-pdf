@@ -249,7 +249,7 @@ class Fpdf
         $this->rightMargin = $margin;
     }
 
-    public function SetAutoPageBreak($auto, $margin = 0)
+    public function SetAutoPageBreak(bool $auto, float $margin = 0): void
     {
         // Set auto page break mode and triggering margin
         $this->automaticPageBreak = $auto;
@@ -257,7 +257,7 @@ class Fpdf
         $this->pageBreakThreshold = $this->pageHeight - $margin;
     }
 
-    public function SetDisplayMode($zoom, $layout = 'default')
+    public function SetDisplayMode(float|string $zoom, string $layout = 'default'): void
     {
         // Set display mode in viewer
         if ($zoom == 'fullpage' || $zoom == 'fullwidth' || $zoom == 'real' || $zoom == 'default' || !is_string($zoom)) {
@@ -272,7 +272,7 @@ class Fpdf
         }
     }
 
-    public function SetCompression($compress)
+    public function SetCompression(bool $compress): void
     {
         // Set page compression
         if (function_exists('gzcompress')) {
@@ -282,49 +282,49 @@ class Fpdf
         }
     }
 
-    public function SetTitle($title, $isUTF8 = false)
+    public function SetTitle(string $title, bool $isUTF8 = false): void
     {
         // Title of document
         $this->documentMetadata['Title'] = $isUTF8 ? $title : $this->_UTF8encode($title);
     }
 
-    public function SetAuthor($author, $isUTF8 = false)
+    public function SetAuthor(string $author, bool $isUTF8 = false): void
     {
         // Author of document
         $this->documentMetadata['Author'] = $isUTF8 ? $author : $this->_UTF8encode($author);
     }
 
-    public function SetSubject($subject, $isUTF8 = false)
+    public function SetSubject(string $subject, bool $isUTF8 = false): void
     {
         // Subject of document
         $this->documentMetadata['Subject'] = $isUTF8 ? $subject : $this->_UTF8encode($subject);
     }
 
-    public function SetKeywords($keywords, $isUTF8 = false)
+    public function SetKeywords(string $keywords, bool $isUTF8 = false): void
     {
         // Keywords of document
         $this->documentMetadata['Keywords'] = $isUTF8 ? $keywords : $this->_UTF8encode($keywords);
     }
 
-    public function SetCreator($creator, $isUTF8 = false)
+    public function SetCreator(string $creator, bool $isUTF8 = false): void
     {
         // Creator of document
         $this->documentMetadata['Creator'] = $isUTF8 ? $creator : $this->_UTF8encode($creator);
     }
 
-    public function AliasNbPages($alias = '{nb}')
+    public function AliasNbPages(string $alias = '{nb}'): void
     {
         // Define an alias for total number of pages
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
-    public function Error($msg)
+    public function Error(string $msg): never
     {
         // Fatal error
         throw new Exception('tFPDF error: ' . $msg);
     }
 
-    public function Close()
+    public function Close(): void
     {
         // Terminate document
         if ($this->currentDocumentState == 3) {
@@ -343,7 +343,10 @@ class Fpdf
         $this->_enddoc();
     }
 
-    public function AddPage($orientation = '', $size = '', $rotation = 0)
+    /**
+     * @param array<float> $size
+     */
+    public function AddPage(string $orientation = '', array|string $size = '', int $rotation = 0): void
     {
         // Start a new page
         if ($this->currentDocumentState == 3) {
@@ -413,23 +416,23 @@ class Fpdf
         $this->fillColorEqualsTextColor = $cf;
     }
 
-    public function Header()
+    public function Header(): void
     {
         // To be implemented in your own inherited class
     }
 
-    public function Footer()
+    public function Footer(): void
     {
         // To be implemented in your own inherited class
     }
 
-    public function PageNo()
+    public function PageNo(): int
     {
         // Get current page number
         return $this->currentPage;
     }
 
-    public function SetDrawColor($r, $g = null, $b = null)
+    public function SetDrawColor(int $r, ?int $g = null, ?int $b = null): void
     {
         // Set color for all stroking operations
         if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
@@ -442,7 +445,7 @@ class Fpdf
         }
     }
 
-    public function SetFillColor($r, $g = null, $b = null)
+    public function SetFillColor(int $r, ?int $g = null, ?int $b = null): void
     {
         // Set color for all filling operations
         if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
@@ -456,7 +459,7 @@ class Fpdf
         }
     }
 
-    public function SetTextColor($r, $g = null, $b = null)
+    public function SetTextColor(int $r, ?int $g = null, ?int $b = null): void
     {
         // Set color for text
         if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
@@ -467,7 +470,7 @@ class Fpdf
         $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
     }
 
-    public function GetStringWidth($s)
+    public function GetStringWidth(string $s): float|int
     {
         // Get width of a string in the current font
         $s = (string) $s;
@@ -491,7 +494,7 @@ class Fpdf
         return $w * $this->currentFontSize / 1000;
     }
 
-    public function SetLineWidth($width)
+    public function SetLineWidth(float $width): void
     {
         // Set line width
         $this->lineWidth = $width;
@@ -500,13 +503,13 @@ class Fpdf
         }
     }
 
-    public function Line($x1, $y1, $x2, $y2)
+    public function Line(float $x1, float $y1, float $x2, float $y2): void
     {
         // Draw a line
         $this->_out(sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->scaleFactor, ($this->pageHeight - $y1) * $this->scaleFactor, $x2 * $this->scaleFactor, ($this->pageHeight - $y2) * $this->scaleFactor));
     }
 
-    public function Rect($x, $y, $w, $h, $style = '')
+    public function Rect(float $x, float $y, float $w, float $h, string $style = ''): void
     {
         // Draw a rectangle
         if ($style == 'F') {
@@ -1155,7 +1158,7 @@ class Fpdf
         $this->SetY($y, false);
     }
 
-    public function Output($dest = '', $name = '', $isUTF8 = false)
+    public function Output($dest = '', $name = '', bool $isUTF8 = false)
     {
         // Output PDF to some destination
         $this->Close();
