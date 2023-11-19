@@ -1180,12 +1180,22 @@ class TtFontFile
         if ($indexToLocFormat == 0) {
             $data = $this->get_chunk($start, ($numGlyphs * 2) + 2);
             $arr = unpack('n*', $data);
+
+            if ($arr === false) {
+                throw new CompressionException('unpack() returned false');
+            }
+
             for ($n = 0; $n <= $numGlyphs; ++$n) {
                 $this->glyphPos[] = ($arr[$n + 1] * 2);
             }
         } elseif ($indexToLocFormat == 1) {
             $data = $this->get_chunk($start, ($numGlyphs * 4) + 4);
             $arr = unpack('N*', $data);
+
+            if ($arr === false) {
+                throw new CompressionException('unpack() returned false');
+            }
+
             for ($n = 0; $n <= $numGlyphs; ++$n) {
                 $this->glyphPos[] = $arr[$n + 1];
             }
