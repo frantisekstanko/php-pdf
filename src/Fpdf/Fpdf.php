@@ -13,6 +13,7 @@ namespace Stanko\Fpdf;
 
 use DateTimeImmutable;
 use Exception;
+use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 
@@ -1305,7 +1306,11 @@ class Fpdf
         }
         if (ob_get_length()) {
             // The output buffer is not empty
-            if (preg_match('/^(\xEF\xBB\xBF)?\s*$/', ob_get_contents())) {
+            $outputBufferContent = ob_get_contents();
+            if ($outputBufferContent === false) {
+                throw new ContentBufferException('ob_get_contents() returned false');
+            }
+            if (preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent)) {
                 // It contains only a UTF-8 BOM and/or whitespace, let's clean it
                 ob_clean();
             } else {
