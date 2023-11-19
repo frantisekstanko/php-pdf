@@ -29,28 +29,28 @@ class Fpdf
         'legal' => [612, 1008],
     ];
 
-    protected int $currentPage;
-    protected int $currentObjectNumber;
+    private int $currentPage;
+    private int $currentObjectNumber;
 
     /** @var array<int, int> */
-    protected array $objectOffsets;
-    protected string $pdfFileBuffer;
+    private array $objectOffsets;
+    private string $pdfFileBuffer;
 
     /** @var array<int, string> */
-    protected array $pages;
-    protected int $currentDocumentState;
-    protected bool $compressionEnabled;
-    protected float $scaleFactor;
-    protected string $defaultOrientation;
-    protected string $currentOrientation;
+    private array $pages;
+    private int $currentDocumentState;
+    private bool $compressionEnabled;
+    private float $scaleFactor;
+    private string $defaultOrientation;
+    private string $currentOrientation;
 
     /** @var array<mixed> */
-    protected array $defaultPageSize;
+    private array $defaultPageSize;
 
     /** @var array{0: float, 1: float} */
-    protected array $currentPageSize;
+    private array $currentPageSize;
 
-    protected int $currentPageOrientation;
+    private int $currentPageOrientation;
 
     /** @var array<int, array{
      *   size: array<float>,
@@ -58,50 +58,50 @@ class Fpdf
      *   n: int,
      * }>
      */
-    protected array $pageInfo;
-    protected float $pageWidthInPoints;
-    protected float $pageHeightInPoints;
-    protected float $pageWidth;
-    protected float $pageHeight;
-    protected float $leftMargin;
-    protected float $topMargin;
-    protected float $rightMargin;
-    protected float $pageBreakMargin;
-    protected float $cellMargin;
-    protected float $currentXPosition;
-    protected float $currentYPosition;
-    protected float $lastPrintedCellHeight;
-    protected float $lineWidth;
-    protected string $fontPath;
+    private array $pageInfo;
+    private float $pageWidthInPoints;
+    private float $pageHeightInPoints;
+    private float $pageWidth;
+    private float $pageHeight;
+    private float $leftMargin;
+    private float $topMargin;
+    private float $rightMargin;
+    private float $pageBreakMargin;
+    private float $cellMargin;
+    private float $currentXPosition;
+    private float $currentYPosition;
+    private float $lastPrintedCellHeight;
+    private float $lineWidth;
+    private string $fontPath;
 
     /** @var array<string, array<mixed>> */
-    protected array $usedFonts;
+    private array $usedFonts;
 
     /** @var array<string, array<mixed>> */
-    protected array $fontFiles;
+    private array $fontFiles;
 
     /** @var array<mixed> */
-    protected array $encodings;
+    private array $encodings;
 
     /** @var array<mixed> */
-    protected array $cmaps;              // array of ToUnicode CMaps
-    protected string $currentFontFamily;
-    protected string $currentFontStyle;
-    protected bool $isUnderline;
+    private array $cmaps;              // array of ToUnicode CMaps
+    private string $currentFontFamily;
+    private string $currentFontStyle;
+    private bool $isUnderline;
 
     /** @var array<mixed> */
-    protected array $currentFont;
-    protected float $currentFontSizeInPoints;
-    protected float $currentFontSize;
-    protected string $drawColor;
-    protected string $fillColor;
-    protected string $textColor;
-    protected bool $fillColorEqualsTextColor;
-    protected bool $transparencyEnabled;
-    protected float $wordSpacing;
+    private array $currentFont;
+    private float $currentFontSizeInPoints;
+    private float $currentFontSize;
+    private string $drawColor;
+    private string $fillColor;
+    private string $textColor;
+    private bool $fillColorEqualsTextColor;
+    private bool $transparencyEnabled;
+    private float $wordSpacing;
 
     /** @var array<string, array<mixed>> */
-    protected array $usedImages;
+    private array $usedImages;
 
     /** @var array<int, array<int, array{
      *  0: float,
@@ -111,22 +111,22 @@ class Fpdf
      *  4: mixed,
      *  5?: int,
      * }>> */
-    protected array $pageLinks;
+    private array $pageLinks;
 
     /** @var array<int, array{0: int, 1: float}> */
-    protected array $internalLinks;
-    protected bool $automaticPageBreak;
-    protected float $pageBreakThreshold;
-    protected bool $isDrawingHeader;
-    protected bool $isDrawingFooter;
-    protected string $aliasForTotalNumberOfPages;
-    protected float|string $zoomMode;
-    protected string $layoutMode;
+    private array $internalLinks;
+    private bool $automaticPageBreak;
+    private float $pageBreakThreshold;
+    private bool $isDrawingHeader;
+    private bool $isDrawingFooter;
+    private string $aliasForTotalNumberOfPages;
+    private float|string $zoomMode;
+    private string $layoutMode;
 
     /** @var array<mixed> */
-    protected array $documentMetadata;
-    protected ?DateTimeImmutable $createdAt = null;
-    protected string $pdfVersion;
+    private array $documentMetadata;
+    private ?DateTimeImmutable $createdAt = null;
+    private string $pdfVersion;
 
     /**
      * @param array<float> $size
@@ -1289,7 +1289,7 @@ class Fpdf
         $this->createdAt = $createdAt;
     }
 
-    protected function _dochecks(): void
+    private function _dochecks(): void
     {
         // Check availability of mbstring
         if (!function_exists('mb_strlen')) {
@@ -1297,7 +1297,7 @@ class Fpdf
         }
     }
 
-    protected function _checkoutput(): void
+    private function _checkoutput(): void
     {
         if (PHP_SAPI != 'cli') {
             if (headers_sent($file, $line)) {
@@ -1324,7 +1324,7 @@ class Fpdf
      *
      * @return array{0: float, 1: float}
      */
-    protected function _getpagesize(array|string $size): array
+    private function _getpagesize(array|string $size): array
     {
         if (is_string($size)) {
             $size = strtolower($size);
@@ -1346,7 +1346,7 @@ class Fpdf
     /**
      * @param array<float> $size
      */
-    protected function _beginpage(
+    private function _beginpage(
         string $orientation,
         array|string $size,
         int $rotation,
@@ -1397,7 +1397,7 @@ class Fpdf
         $this->currentPageOrientation = $rotation;
     }
 
-    protected function _endpage(): void
+    private function _endpage(): void
     {
         $this->currentDocumentState = 1;
     }
@@ -1405,7 +1405,7 @@ class Fpdf
     /**
      * @return array<mixed>
      */
-    protected function _loadfont(string $font): array
+    private function _loadfont(string $font): array
     {
         // Load a font definition file from the font directory
         if (strpos($font, '/') !== false || strpos($font, '\\') !== false) {
@@ -1426,7 +1426,7 @@ class Fpdf
         return get_defined_vars();
     }
 
-    protected function _isascii($s)
+    private function _isascii($s)
     {
         // Test if string is ASCII
         $nb = strlen($s);
@@ -1439,7 +1439,7 @@ class Fpdf
         return true;
     }
 
-    protected function _httpencode($param, $value, $isUTF8)
+    private function _httpencode($param, $value, $isUTF8)
     {
         // Encode HTTP header field parameter
         if ($this->_isascii($value)) {
@@ -1452,19 +1452,19 @@ class Fpdf
         return $param . "*=UTF-8''" . rawurlencode($value);
     }
 
-    protected function _UTF8encode($s)
+    private function _UTF8encode($s)
     {
         // Convert ISO-8859-1 to UTF-8
         return mb_convert_encoding($s, 'UTF-8', 'ISO-8859-1');
     }
 
-    protected function _UTF8toUTF16($s)
+    private function _UTF8toUTF16($s)
     {
         // Convert UTF-8 to UTF-16BE with BOM
         return "\xFE\xFF" . mb_convert_encoding($s, 'UTF-16BE', 'UTF-8');
     }
 
-    protected function _escape($s)
+    private function _escape($s)
     {
         // Escape special characters
         if (strpos($s, '(') !== false || strpos($s, ')') !== false || strpos($s, '\\') !== false || strpos($s, "\r") !== false) {
@@ -1474,7 +1474,7 @@ class Fpdf
         return $s;
     }
 
-    protected function _textstring($s)
+    private function _textstring($s)
     {
         // Format a text string
         if (!$this->_isascii($s)) {
@@ -1484,7 +1484,7 @@ class Fpdf
         return '(' . $this->_escape($s) . ')';
     }
 
-    protected function _dounderline($x, $y, $txt)
+    private function _dounderline($x, $y, $txt)
     {
         // Underline text
         $up = $this->currentFont['up'];
@@ -1494,7 +1494,7 @@ class Fpdf
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
 
-    protected function _parsejpg($file)
+    private function _parsejpg($file)
     {
         // Extract info from a JPEG file
         $a = getimagesize($file);
@@ -1517,7 +1517,7 @@ class Fpdf
         return ['w' => $a[0], 'h' => $a[1], 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data];
     }
 
-    protected function _parsepng($file)
+    private function _parsepng($file)
     {
         // Extract info from a PNG file
         $f = fopen($file, 'rb');
@@ -1530,7 +1530,7 @@ class Fpdf
         return $info;
     }
 
-    protected function _parsepngstream($f, $file)
+    private function _parsepngstream($f, $file)
     {
         // Check signature
         if ($this->_readstream($f, 8) != chr(137) . 'PNG' . chr(13) . chr(10) . chr(26) . chr(10)) {
@@ -1654,7 +1654,7 @@ class Fpdf
         return $info;
     }
 
-    protected function _readstream($f, $n)
+    private function _readstream($f, $n)
     {
         // Read n bytes from stream
         $res = '';
@@ -1673,7 +1673,7 @@ class Fpdf
         return $res;
     }
 
-    protected function _readint($f)
+    private function _readint($f)
     {
         // Read a 4-byte integer from stream
         $a = unpack('Ni', $this->_readstream($f, 4));
@@ -1681,7 +1681,7 @@ class Fpdf
         return $a['i'];
     }
 
-    protected function _parsegif($file)
+    private function _parsegif($file)
     {
         // Extract info from a GIF file (via PNG conversion)
         if (!function_exists('imagepng')) {
@@ -1711,7 +1711,7 @@ class Fpdf
         return $info;
     }
 
-    protected function _out($s)
+    private function _out($s)
     {
         // Add a line to the document
         if ($this->currentDocumentState == 2) {
@@ -1725,17 +1725,17 @@ class Fpdf
         }
     }
 
-    protected function _put($s)
+    private function _put($s)
     {
         $this->pdfFileBuffer .= $s . "\n";
     }
 
-    protected function _getoffset()
+    private function _getoffset()
     {
         return strlen($this->pdfFileBuffer);
     }
 
-    protected function _newobj($n = null)
+    private function _newobj($n = null)
     {
         // Begin a new object
         if ($n === null) {
@@ -1745,14 +1745,14 @@ class Fpdf
         $this->_put($n . ' 0 obj');
     }
 
-    protected function _putstream($data)
+    private function _putstream($data)
     {
         $this->_put('stream');
         $this->_put($data);
         $this->_put('endstream');
     }
 
-    protected function _putstreamobject($data)
+    private function _putstreamobject($data)
     {
         if ($this->compressionEnabled) {
             $entries = '/Filter /FlateDecode ';
@@ -1767,7 +1767,7 @@ class Fpdf
         $this->_put('endobj');
     }
 
-    protected function _putlinks($n)
+    private function _putlinks($n)
     {
         foreach ($this->pageLinks[$n] as $pl) {
             $this->_newobj();
@@ -1789,7 +1789,7 @@ class Fpdf
         }
     }
 
-    protected function _putpage($n)
+    private function _putpage($n)
     {
         $this->_newobj();
         $this->_put('<</Type /Page');
@@ -1827,7 +1827,7 @@ class Fpdf
         $this->_putlinks($n);
     }
 
-    protected function _putpages()
+    private function _putpages()
     {
         $nb = $this->currentPage;
         $n = $this->currentObjectNumber;
@@ -1864,7 +1864,7 @@ class Fpdf
         $this->_put('endobj');
     }
 
-    protected function _putfonts()
+    private function _putfonts()
     {
         foreach ($this->fontFiles as $file => $info) {
             if (!isset($info['type']) || $info['type'] != 'TTF') {
@@ -2112,7 +2112,7 @@ class Fpdf
         }
     }
 
-    protected function _putTTfontwidths($font, $maxUni)
+    private function _putTTfontwidths($font, $maxUni)
     {
         if (file_exists($font['unifilename'] . '.cw127.php')) {
             include $font['unifilename'] . '.cw127.php';
@@ -2234,7 +2234,7 @@ class Fpdf
         $this->_out('/W [' . $w . ' ]');
     }
 
-    protected function _tounicodecmap($uv)
+    private function _tounicodecmap($uv)
     {
         $ranges = '';
         $nbr = 0;
@@ -2280,7 +2280,7 @@ class Fpdf
         return $s;
     }
 
-    protected function _putimages()
+    private function _putimages()
     {
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
@@ -2288,7 +2288,7 @@ class Fpdf
         }
     }
 
-    protected function _putimage(&$info)
+    private function _putimage(&$info)
     {
         $this->_newobj();
         $info['n'] = $this->currentObjectNumber;
@@ -2336,14 +2336,14 @@ class Fpdf
         }
     }
 
-    protected function _putxobjectdict()
+    private function _putxobjectdict()
     {
         foreach ($this->usedImages as $image) {
             $this->_put('/I' . $image['i'] . ' ' . $image['n'] . ' 0 R');
         }
     }
 
-    protected function _putresourcedict()
+    private function _putresourcedict()
     {
         $this->_put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->_put('/Font <<');
@@ -2356,7 +2356,7 @@ class Fpdf
         $this->_put('>>');
     }
 
-    protected function _putresources()
+    private function _putresources()
     {
         $this->_putfonts();
         $this->_putimages();
@@ -2368,7 +2368,7 @@ class Fpdf
         $this->_put('endobj');
     }
 
-    protected function _putinfo()
+    private function _putinfo()
     {
         if ($this->createdAt === null) {
             throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
@@ -2380,7 +2380,7 @@ class Fpdf
         }
     }
 
-    protected function _putcatalog()
+    private function _putcatalog()
     {
         $n = $this->pageInfo[1]['n'];
         $this->_put('/Type /Catalog');
@@ -2403,19 +2403,19 @@ class Fpdf
         }
     }
 
-    protected function _putheader()
+    private function _putheader()
     {
         $this->_put('%PDF-' . $this->pdfVersion);
     }
 
-    protected function _puttrailer()
+    private function _puttrailer()
     {
         $this->_put('/Size ' . ($this->currentObjectNumber + 1));
         $this->_put('/Root ' . $this->currentObjectNumber . ' 0 R');
         $this->_put('/Info ' . ($this->currentObjectNumber - 1) . ' 0 R');
     }
 
-    protected function _enddoc()
+    private function _enddoc()
     {
         $this->_putheader();
         $this->_putpages();
@@ -2453,7 +2453,7 @@ class Fpdf
 
     // ********* NEW FUNCTIONS *********
     // Converts UTF-8 strings to UTF16-BE.
-    protected function UTF8ToUTF16BE($str, $setbom = true)
+    private function UTF8ToUTF16BE($str, $setbom = true)
     {
         $outstr = '';
         if ($setbom) {
@@ -2465,7 +2465,7 @@ class Fpdf
     }
 
     // Converts UTF-8 strings to codepoints array
-    protected function UTF8StringToArray($str)
+    private function UTF8StringToArray($str)
     {
         $out = [];
         $len = strlen($str);
