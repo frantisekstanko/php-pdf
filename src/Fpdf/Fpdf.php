@@ -2221,6 +2221,7 @@ final class Fpdf
         $this->_out('/W [' . $w . ' ]');
     }
 
+    /** @param array<int, array<int, int>|int> $uv */
     private function _tounicodecmap(array $uv): string
     {
         $ranges = '';
@@ -2275,6 +2276,7 @@ final class Fpdf
         }
     }
 
+    /** @param array<mixed> $info */
     private function _putimage(&$info): void
     {
         $this->_newobj();
