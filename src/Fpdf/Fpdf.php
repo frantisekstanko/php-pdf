@@ -1544,15 +1544,22 @@ final class Fpdf
         } else {
             throw new UnknownColorTypeException();
         }
-        if (ord($this->_readstream($f, 1)) != 0) {
+
+        $compressionByte = ord($this->_readstream($f, 1));
+        if ($compressionByte != 0) {
             throw new UnknownCompressionMethodException($file);
         }
-        if (ord($this->_readstream($f, 1)) != 0) {
+
+        $filterByte = ord($this->_readstream($f, 1));
+        if ($filterByte != 0) {
             throw new UnknownFilterMethodException($file);
         }
-        if (ord($this->_readstream($f, 1)) != 0) {
+
+        $interlacingByte = ord($this->_readstream($f, 1));
+        if ($interlacingByte != 0) {
             throw new InterlacingNotSupportedException($file);
         }
+
         $this->_readstream($f, 4);
         $dp = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
 
