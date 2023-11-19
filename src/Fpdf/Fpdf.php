@@ -553,14 +553,16 @@ class Fpdf
             $cw = $ttf->charWidths;
             $name = preg_replace('/[ ()]/', '', $ttf->fullName);
 
-            $desc = ['Ascent' => round($ttf->ascent),
+            $desc = [
+                'Ascent' => round($ttf->ascent),
                 'Descent' => round($ttf->descent),
                 'CapHeight' => round($ttf->capHeight),
                 'Flags' => $ttf->flags,
                 'FontBBox' => '[' . round($ttf->bbox[0]) . ' ' . round($ttf->bbox[1]) . ' ' . round($ttf->bbox[2]) . ' ' . round($ttf->bbox[3]) . ']',
                 'ItalicAngle' => $ttf->italicAngle,
                 'StemV' => round($ttf->stemV),
-                'MissingWidth' => round($ttf->defaultWidth)];
+                'MissingWidth' => round($ttf->defaultWidth),
+            ];
             $up = round($ttf->underlinePosition);
             $ut = round($ttf->underlineThickness);
             $originalsize = $ttfstat['size'] + 0;
@@ -595,7 +597,19 @@ class Fpdf
         } else {
             $sbarr = range(0, 32);
         }
-        $this->usedFonts[$fontkey] = ['i' => $i, 'type' => $type, 'name' => $name, 'desc' => $desc, 'up' => $up, 'ut' => $ut, 'cw' => $cw, 'ttffile' => $ttffile, 'fontkey' => $fontkey, 'subset' => $sbarr, 'unifilename' => $unifilename];
+        $this->usedFonts[$fontkey] = [
+            'i' => $i,
+            'type' => $type,
+            'name' => $name,
+            'desc' => $desc,
+            'up' => $up,
+            'ut' => $ut,
+            'cw' => $cw,
+            'ttffile' => $ttffile,
+            'fontkey' => $fontkey,
+            'subset' => $sbarr,
+            'unifilename' => $unifilename,
+        ];
 
         $this->fontFiles[$fontkey] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
         $this->fontFiles[$file] = ['type' => 'TTF'];
@@ -1992,7 +2006,7 @@ class Fpdf
                     if ($kd == 'Flags') {
                         $v = $v | 4;
                         $v = $v & ~32;
-                    }	// SYMBOLIC font flag
+                    }    // SYMBOLIC font flag
                     $this->_out(' /' . $kd . ' ' . $v);
                 }
                 $this->_put('/FontFile2 ' . ($this->currentObjectNumber + 2) . ' 0 R');
@@ -2072,7 +2086,8 @@ class Fpdf
                 }
             }
             if ((!isset($font['cw'][$cid * 2]) || !isset($font['cw'][$cid * 2 + 1]))
-                        || ($font['cw'][$cid * 2] == "\00" && $font['cw'][$cid * 2 + 1] == "\00")) {
+                || ($font['cw'][$cid * 2] == "\00" && $font['cw'][$cid * 2 + 1] == "\00")
+            ) {
                 continue;
             }
 
@@ -2402,11 +2417,11 @@ class Fpdf
                     $uni = ($h & 0x1F) << 6 | (ord($str[++$i]) & 0x3F);
                 } elseif (($h <= 0xEF) && ($i < $len - 2)) {
                     $uni = ($h & 0x0F) << 12 | (ord($str[++$i]) & 0x3F) << 6
-                                               | (ord($str[++$i]) & 0x3F);
+                        | (ord($str[++$i]) & 0x3F);
                 } elseif (($h <= 0xF4) && ($i < $len - 3)) {
                     $uni = ($h & 0x0F) << 18 | (ord($str[++$i]) & 0x3F) << 12
-                                               | (ord($str[++$i]) & 0x3F) << 6
-                                               | (ord($str[++$i]) & 0x3F);
+                        | (ord($str[++$i]) & 0x3F) << 6
+                        | (ord($str[++$i]) & 0x3F);
                 }
             }
             if ($uni >= 0) {
