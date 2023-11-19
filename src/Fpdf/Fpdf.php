@@ -228,7 +228,7 @@ class Fpdf
         $this->rightMargin = $right;
     }
 
-    public function SetLeftMargin($margin)
+    public function SetLeftMargin(float $margin): void
     {
         // Set left margin
         $this->leftMargin = $margin;
@@ -237,13 +237,13 @@ class Fpdf
         }
     }
 
-    public function SetTopMargin($margin)
+    public function SetTopMargin(float $margin): void
     {
         // Set top margin
         $this->topMargin = $margin;
     }
 
-    public function SetRightMargin($margin)
+    public function SetRightMargin(float $margin): void
     {
         // Set right margin
         $this->rightMargin = $margin;
