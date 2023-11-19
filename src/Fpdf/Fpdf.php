@@ -24,6 +24,9 @@ use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownPageSizeException;
 use Stanko\Fpdf\Exception\UnpackException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
+use Stanko\Fpdf\Fpdf\Exception\InterlacingNotSupportedException;
+use Stanko\Fpdf\Fpdf\Exception\UnknownCompressionMethodException;
+use Stanko\Fpdf\Fpdf\Exception\UnknownFilterMethodException;
 
 final class Fpdf
 {
@@ -1542,13 +1545,13 @@ final class Fpdf
             throw new UnknownColorTypeException();
         }
         if (ord($this->_readstream($f, 1)) != 0) {
-            $this->Error('Unknown compression method: ' . $file);
+            throw new UnknownCompressionMethodException($file);
         }
         if (ord($this->_readstream($f, 1)) != 0) {
-            $this->Error('Unknown filter method: ' . $file);
+            throw new UnknownFilterMethodException($file);
         }
         if (ord($this->_readstream($f, 1)) != 0) {
-            $this->Error('Interlacing not supported: ' . $file);
+            throw new InterlacingNotSupportedException($file);
         }
         $this->_readstream($f, 4);
         $dp = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
