@@ -1090,6 +1090,7 @@ class TtFontFile
         $aw = 0;
         $this->charWidths = str_pad('', 256 * 256 * 2, "\x00");
         $nCharWidths = 0;
+        $arr = [];
         if (($numberOfHMetrics * 4) < $this->maxStrLenRead) {
             $data = $this->get_chunk($start, $numberOfHMetrics * 4);
             $arr = unpack('n*', $data);
