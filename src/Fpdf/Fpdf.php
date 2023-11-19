@@ -1810,6 +1810,7 @@ final class Fpdf
         if (!empty($this->pageLinks[$n])) {
             $s = '/Annots [';
             foreach ($this->pageLinks[$n] as $pl) {
+                // @phpstan-ignore-next-line
                 $s .= $pl[5] . ' 0 R ';
             }
             $s .= ']';
