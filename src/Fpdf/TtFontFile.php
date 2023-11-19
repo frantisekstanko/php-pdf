@@ -64,7 +64,7 @@ class TtFontFile
     public $fh;
     public int $hmetrics;
 
-    /** @var array<mixed> */
+    /** @var array<int> */
     public array $glyphPos;
 
     /** @var array<mixed> */
