@@ -19,7 +19,7 @@ class Fpdf
 {
     public const VERSION = '1.33';
     protected int $currentPage;
-    protected int $n;                  // current object number
+    protected int $currentObjectNumber;
     protected $offsets;            // array of object offsets
     protected $buffer;             // buffer holding in-memory PDF
     protected $pages;              // array containing pages
@@ -87,7 +87,7 @@ class Fpdf
         // Initialization of properties
         $this->state = 0;
         $this->currentPage = 0;
-        $this->n = 2;
+        $this->currentObjectNumber = 2;
         $this->buffer = '';
         $this->pages = [];
         $this->PageInfo = [];
@@ -1630,7 +1630,7 @@ class Fpdf
     {
         // Begin a new object
         if ($n === null) {
-            $n = ++$this->n;
+            $n = ++$this->currentObjectNumber;
         }
         $this->offsets[$n] = $this->_getoffset();
         $this->_put($n . ' 0 obj');
@@ -1703,7 +1703,7 @@ class Fpdf
         if ($this->WithAlpha) {
             $this->_put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
         }
-        $this->_put('/Contents ' . ($this->n + 1) . ' 0 R>>');
+        $this->_put('/Contents ' . ($this->currentObjectNumber + 1) . ' 0 R>>');
         $this->_put('endobj');
         // Page content
         if (!empty($this->AliasNbPages)) {
@@ -1721,7 +1721,7 @@ class Fpdf
     protected function _putpages()
     {
         $nb = $this->currentPage;
-        $n = $this->n;
+        $n = $this->currentObjectNumber;
         for ($i = 1; $i <= $nb; ++$i) {
             $this->PageInfo[$i]['n'] = ++$n;
             ++$n;
@@ -1761,7 +1761,7 @@ class Fpdf
             if (!isset($info['type']) || $info['type'] != 'TTF') {
                 // Font file embedding
                 $this->_newobj();
-                $this->FontFiles[$file]['n'] = $this->n;
+                $this->FontFiles[$file]['n'] = $this->currentObjectNumber;
                 $font = file_get_contents($this->fontpath . $file, true);
                 if (!$font) {
                     $this->Error('Font file not found: ' . $file);
@@ -1790,7 +1790,7 @@ class Fpdf
                     $this->_newobj();
                     $this->_put('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [' . $font['diff'] . ']>>');
                     $this->_put('endobj');
-                    $this->encodings[$font['enc']] = $this->n;
+                    $this->encodings[$font['enc']] = $this->currentObjectNumber;
                 }
             }
             // ToUnicode CMap
@@ -1803,7 +1803,7 @@ class Fpdf
                 if (!isset($this->cmaps[$cmapkey])) {
                     $cmap = $this->_tounicodecmap($font['uv']);
                     $this->_putstreamobject($cmap);
-                    $this->cmaps[$cmapkey] = $this->n;
+                    $this->cmaps[$cmapkey] = $this->currentObjectNumber;
                 }
             }
             // Font object
@@ -1811,7 +1811,7 @@ class Fpdf
             $name = $font['name'];
             if ($type == 'Core') {
                 // Core font
-                $this->fonts[$k]['n'] = $this->n + 1;
+                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
                 $this->_newobj();
                 $this->_put('<</Type /Font');
                 $this->_put('/BaseFont /' . $name);
@@ -1829,14 +1829,14 @@ class Fpdf
                 if (isset($font['subsetted']) && $font['subsetted']) {
                     $name = 'AAAAAA+' . $name;
                 }
-                $this->fonts[$k]['n'] = $this->n + 1;
+                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
                 $this->_newobj();
                 $this->_put('<</Type /Font');
                 $this->_put('/BaseFont /' . $name);
                 $this->_put('/Subtype /' . $type);
                 $this->_put('/FirstChar 32 /LastChar 255');
-                $this->_put('/Widths ' . ($this->n + 1) . ' 0 R');
-                $this->_put('/FontDescriptor ' . ($this->n + 2) . ' 0 R');
+                $this->_put('/Widths ' . ($this->currentObjectNumber + 1) . ' 0 R');
+                $this->_put('/FontDescriptor ' . ($this->currentObjectNumber + 2) . ' 0 R');
 
                 if ($font['enc']) {
                     if (isset($font['diff'])) {
@@ -1875,7 +1875,7 @@ class Fpdf
             }
             // TrueType embedded SUBSETS or FULL
             elseif ($type == 'TTF') {
-                $this->fonts[$k]['n'] = $this->n + 1;
+                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
 
                 $ttf = new TTFontFile();
                 $fontname = 'MPDFAA+' . $font['name'];
@@ -1894,8 +1894,8 @@ class Fpdf
                 $this->_put('/Subtype /Type0');
                 $this->_put('/BaseFont /' . $fontname . '');
                 $this->_put('/Encoding /Identity-H');
-                $this->_put('/DescendantFonts [' . ($this->n + 1) . ' 0 R]');
-                $this->_put('/ToUnicode ' . ($this->n + 2) . ' 0 R');
+                $this->_put('/DescendantFonts [' . ($this->currentObjectNumber + 1) . ' 0 R]');
+                $this->_put('/ToUnicode ' . ($this->currentObjectNumber + 2) . ' 0 R');
                 $this->_put('>>');
                 $this->_put('endobj');
 
@@ -1905,15 +1905,15 @@ class Fpdf
                 $this->_put('<</Type /Font');
                 $this->_put('/Subtype /CIDFontType2');
                 $this->_put('/BaseFont /' . $fontname . '');
-                $this->_put('/CIDSystemInfo ' . ($this->n + 2) . ' 0 R');
-                $this->_put('/FontDescriptor ' . ($this->n + 3) . ' 0 R');
+                $this->_put('/CIDSystemInfo ' . ($this->currentObjectNumber + 2) . ' 0 R');
+                $this->_put('/FontDescriptor ' . ($this->currentObjectNumber + 3) . ' 0 R');
                 if (isset($font['desc']['MissingWidth'])) {
                     $this->_out('/DW ' . $font['desc']['MissingWidth'] . '');
                 }
 
                 $this->_putTTfontwidths($font, $ttf->maxUni);
 
-                $this->_put('/CIDToGIDMap ' . ($this->n + 4) . ' 0 R');
+                $this->_put('/CIDToGIDMap ' . ($this->currentObjectNumber + 4) . ' 0 R');
                 $this->_put('>>');
                 $this->_put('endobj');
 
@@ -1962,7 +1962,7 @@ class Fpdf
                     }	// SYMBOLIC font flag
                     $this->_out(' /' . $kd . ' ' . $v);
                 }
-                $this->_put('/FontFile2 ' . ($this->n + 2) . ' 0 R');
+                $this->_put('/FontFile2 ' . ($this->currentObjectNumber + 2) . ' 0 R');
                 $this->_put('>>');
                 $this->_put('endobj');
 
@@ -1993,7 +1993,7 @@ class Fpdf
                 unset($ttf);
             } else {
                 // Allow for additional types
-                $this->fonts[$k]['n'] = $this->n + 1;
+                $this->fonts[$k]['n'] = $this->currentObjectNumber + 1;
                 $mtd = '_put' . strtolower($type);
                 if (!method_exists($this, $mtd)) {
                     $this->Error('Unsupported font type: ' . $type);
@@ -2181,13 +2181,13 @@ class Fpdf
     protected function _putimage(&$info)
     {
         $this->_newobj();
-        $info['n'] = $this->n;
+        $info['n'] = $this->currentObjectNumber;
         $this->_put('<</Type /XObject');
         $this->_put('/Subtype /Image');
         $this->_put('/Width ' . $info['w']);
         $this->_put('/Height ' . $info['h']);
         if ($info['cs'] == 'Indexed') {
-            $this->_put('/ColorSpace [/Indexed /DeviceRGB ' . (strlen($info['pal']) / 3 - 1) . ' ' . ($this->n + 1) . ' 0 R]');
+            $this->_put('/ColorSpace [/Indexed /DeviceRGB ' . (strlen($info['pal']) / 3 - 1) . ' ' . ($this->currentObjectNumber + 1) . ' 0 R]');
         } else {
             $this->_put('/ColorSpace /' . $info['cs']);
             if ($info['cs'] == 'DeviceCMYK') {
@@ -2209,7 +2209,7 @@ class Fpdf
             $this->_put('/Mask [' . $trns . ']');
         }
         if (isset($info['smask'])) {
-            $this->_put('/SMask ' . ($this->n + 1) . ' 0 R');
+            $this->_put('/SMask ' . ($this->currentObjectNumber + 1) . ' 0 R');
         }
         $this->_put('/Length ' . strlen($info['data']) . '>>');
         $this->_putstream($info['data']);
@@ -2300,9 +2300,9 @@ class Fpdf
 
     protected function _puttrailer()
     {
-        $this->_put('/Size ' . ($this->n + 1));
-        $this->_put('/Root ' . $this->n . ' 0 R');
-        $this->_put('/Info ' . ($this->n - 1) . ' 0 R');
+        $this->_put('/Size ' . ($this->currentObjectNumber + 1));
+        $this->_put('/Root ' . $this->currentObjectNumber . ' 0 R');
+        $this->_put('/Info ' . ($this->currentObjectNumber - 1) . ' 0 R');
     }
 
     protected function _enddoc()
@@ -2325,9 +2325,9 @@ class Fpdf
         // Cross-ref
         $offset = $this->_getoffset();
         $this->_put('xref');
-        $this->_put('0 ' . ($this->n + 1));
+        $this->_put('0 ' . ($this->currentObjectNumber + 1));
         $this->_put('0000000000 65535 f ');
-        for ($i = 1; $i <= $this->n; ++$i) {
+        for ($i = 1; $i <= $this->currentObjectNumber; ++$i) {
             $this->_put(sprintf('%010d 00000 n ', $this->offsets[$i]));
         }
         // Trailer
