@@ -1195,7 +1195,11 @@ class TtFontFile
     }
 
     // CMAP Format 4
-    public function getCMAP4($unicode_cmap_offset, &$glyphToChar, &$charToGlyph): void
+    /**
+     * @param array<int> $glyphToChar
+     * @param array<int> $charToGlyph
+     */
+    public function getCMAP4(int $unicode_cmap_offset, array &$glyphToChar, array &$charToGlyph): void
     {
         $this->maxUniChar = 0;
         $this->seek($unicode_cmap_offset + 2);
