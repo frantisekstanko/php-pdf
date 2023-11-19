@@ -1687,7 +1687,7 @@ final class Fpdf
         if ($im === false) {
             throw new CannotOpenImageFileException($file);
         }
-        imageinterlace($im, 0);
+        imageinterlace($im, false);
         ob_start();
         imagepng($im);
         $data = ob_get_clean();
