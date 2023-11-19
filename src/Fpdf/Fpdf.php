@@ -49,7 +49,7 @@ class Fpdf
      * }>
      */
     protected array $pageInfo;
-    protected float $wPt;
+    protected float $pageWidthInPoints;
     protected float $hPt;          // dimensions of current page in points
     protected float $w;
     protected float $h;              // dimensions of current page in user unit
@@ -185,7 +185,7 @@ class Fpdf
             $this->Error('Incorrect orientation: ' . $orientation);
         }
         $this->currentOrientation = $this->defaultOrientation;
-        $this->wPt = $this->w * $this->scaleFactor;
+        $this->pageWidthInPoints = $this->w * $this->scaleFactor;
         $this->hPt = $this->h * $this->scaleFactor;
         // Page rotation
         $this->currentPageOrientation = 0;
@@ -1314,14 +1314,14 @@ class Fpdf
                 $this->w = $size[1];
                 $this->h = $size[0];
             }
-            $this->wPt = $this->w * $this->scaleFactor;
+            $this->pageWidthInPoints = $this->w * $this->scaleFactor;
             $this->hPt = $this->h * $this->scaleFactor;
             $this->PageBreakTrigger = $this->h - $this->bMargin;
             $this->currentOrientation = $orientation;
             $this->currentPageSize = $size;
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
-            $this->pageInfo[$this->currentPage]['size'] = [$this->wPt, $this->hPt];
+            $this->pageInfo[$this->currentPage]['size'] = [$this->pageWidthInPoints, $this->hPt];
         }
         if ($rotation != 0) {
             if ($rotation % 90 != 0) {
