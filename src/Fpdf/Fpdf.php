@@ -28,7 +28,7 @@ class Fpdf
     /** @var array<int, string> */
     protected array $pages;
     protected int $currentDocumentState;
-    protected bool $compress;           // compression flag
+    protected bool $compressionEnabled;
     protected $k;                  // scale factor (number of points in user unit)
     protected $DefOrientation;     // default orientation
     protected $CurOrientation;     // current orientation
@@ -230,9 +230,9 @@ class Fpdf
     {
         // Set page compression
         if (function_exists('gzcompress')) {
-            $this->compress = $compress;
+            $this->compressionEnabled = $compress;
         } else {
-            $this->compress = false;
+            $this->compressionEnabled = false;
         }
     }
 
@@ -1649,7 +1649,7 @@ class Fpdf
 
     protected function _putstreamobject($data)
     {
-        if ($this->compress) {
+        if ($this->compressionEnabled) {
             $entries = '/Filter /FlateDecode ';
             $data = gzcompress($data);
         } else {
