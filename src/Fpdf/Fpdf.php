@@ -1601,6 +1601,9 @@ final class Fpdf
                 $this->Error('Zlib not available, can\'t handle alpha channel: ' . $file);
             }
             $data = gzuncompress($data);
+            if ($data === false) {
+                throw new CompressionException('gzuncompress() returned false');
+            }
             $color = '';
             $alpha = '';
             if ($ct == 4) {
