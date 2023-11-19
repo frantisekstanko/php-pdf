@@ -27,7 +27,7 @@ class Fpdf
 
     /** @var array<int, string> */
     protected array $pages;
-    protected int $state;              // current document state
+    protected int $currentDocumentState;
     protected $compress;           // compression flag
     protected $k;                  // scale factor (number of points in user unit)
     protected $DefOrientation;     // default orientation
@@ -89,7 +89,7 @@ class Fpdf
         // Some checks
         $this->_dochecks();
         // Initialization of properties
-        $this->state = 0;
+        $this->currentDocumentState = 0;
         $this->currentPage = 0;
         $this->currentObjectNumber = 2;
         $this->pdfFileBuffer = '';
@@ -281,7 +281,7 @@ class Fpdf
     public function Close()
     {
         // Terminate document
-        if ($this->state == 3) {
+        if ($this->currentDocumentState == 3) {
             return;
         }
         if ($this->currentPage == 0) {
@@ -300,7 +300,7 @@ class Fpdf
     public function AddPage($orientation = '', $size = '', $rotation = 0)
     {
         // Start a new page
-        if ($this->state == 3) {
+        if ($this->currentDocumentState == 3) {
             $this->Error('The document is closed');
         }
         $family = $this->FontFamily;
@@ -1253,7 +1253,7 @@ class Fpdf
         ++$this->currentPage;
         $this->pages[$this->currentPage] = '';
         $this->PageLinks[$this->currentPage] = [];
-        $this->state = 2;
+        $this->currentDocumentState = 2;
         $this->x = $this->lMargin;
         $this->y = $this->tMargin;
         $this->FontFamily = '';
@@ -1297,7 +1297,7 @@ class Fpdf
 
     protected function _endpage()
     {
-        $this->state = 1;
+        $this->currentDocumentState = 1;
     }
 
     protected function _loadfont($font)
@@ -1609,13 +1609,13 @@ class Fpdf
     protected function _out($s)
     {
         // Add a line to the document
-        if ($this->state == 2) {
+        if ($this->currentDocumentState == 2) {
             $this->pages[$this->currentPage] .= $s . "\n";
-        } elseif ($this->state == 1) {
+        } elseif ($this->currentDocumentState == 1) {
             $this->_put($s);
-        } elseif ($this->state == 0) {
+        } elseif ($this->currentDocumentState == 0) {
             $this->Error('No page has been added yet');
-        } elseif ($this->state == 3) {
+        } elseif ($this->currentDocumentState == 3) {
             $this->Error('The document is closed');
         }
     }
@@ -2342,7 +2342,7 @@ class Fpdf
         $this->_put('startxref');
         $this->_put($offset);
         $this->_put('%%EOF');
-        $this->state = 3;
+        $this->currentDocumentState = 3;
     }
 
     // ********* NEW FUNCTIONS *********
