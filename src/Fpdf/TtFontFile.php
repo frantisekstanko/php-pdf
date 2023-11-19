@@ -147,7 +147,13 @@ class TtFontFile
         }
     }
 
-    public function sub32($x, $y): array
+    /**
+     * @param array<mixed> $x
+     * @param array<mixed> $y
+     *
+     * @return array<mixed>
+     */
+    public function sub32(array $x, array $y): array
     {
         $xlo = $x[1];
         $xhi = $x[0];
