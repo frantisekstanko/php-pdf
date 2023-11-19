@@ -1346,8 +1346,11 @@ class Fpdf
     /**
      * @param array<float> $size
      */
-    protected function _beginpage(string $orientation, array|string $size, int $rotation): void
-    {
+    protected function _beginpage(
+        string $orientation,
+        array|string $size,
+        int $rotation,
+    ): void {
         ++$this->currentPage;
         $this->pages[$this->currentPage] = '';
         $this->pageLinks[$this->currentPage] = [];
