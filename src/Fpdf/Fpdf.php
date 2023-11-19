@@ -689,7 +689,7 @@ class Fpdf
         }
     }
 
-    public function AddLink()
+    public function AddLink(): int
     {
         // Create a new internal link
         $n = count($this->internalLinks) + 1;
@@ -698,7 +698,7 @@ class Fpdf
         return $n;
     }
 
-    public function SetLink($link, $y = 0, $page = -1)
+    public function SetLink(int $link, float $y = 0, int $page = -1): void
     {
         // Set destination of internal link
         if ($y == -1) {
@@ -710,7 +710,7 @@ class Fpdf
         $this->internalLinks[$link] = [$page, $y];
     }
 
-    public function Link($x, $y, $w, $h, $link)
+    public function Link(float $x, float $y, float $w, float $h, mixed $link): void
     {
         // Put a link on the page
         $this->pageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->pageHeightInPoints - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
