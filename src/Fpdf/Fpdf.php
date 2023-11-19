@@ -545,7 +545,7 @@ class Fpdf
             return;
         }
         $ttffilename = $this->fontPath . '/' . $file;
-        $unifilename = $this->fontPath . 'unifont/' . strtolower(substr($file, 0, strpos($file, '.')));
+        $unifilename = $this->fontPath . 'unifont/' . strtolower(substr($file, 0, (int) strpos($file, '.')));
         $name = '';
         $originalsize = 0;
         $ttfstat = stat($ttffilename);
