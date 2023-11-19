@@ -565,7 +565,7 @@ class TtFontFile
         // /////////////////////////////////
         $this->seek_table('post');
         $this->skip(4);
-        $this->italicAngle = $this->read_short() + $this->read_ushort() / 65536.0;
+        $this->italicAngle = $this->read_short() + $this->read_ushort() / 65536;
         $this->underlinePosition = $this->read_short() * $scale;
         $this->underlineThickness = $this->read_short() * $scale;
         $isFixedPitch = $this->read_ulong();
