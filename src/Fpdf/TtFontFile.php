@@ -362,7 +362,7 @@ class TtFontFile
     public function get_table(string $tag): string
     {
         [$pos, $length] = $this->get_table_pos($tag);
-        if ($length == 0) {
+        if ($length <= 0) {
             exit('Truetype font (' . $this->filename . '): error reading table: ' . $tag);
         }
         fseek($this->fh, $pos);
