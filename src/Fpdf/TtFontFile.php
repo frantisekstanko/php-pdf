@@ -1017,7 +1017,7 @@ class TtFontFile
     }
 
     // Recursively get composite glyphs
-    public function getGlyphs($originalGlyphIdx, &$start, &$glyphSet, &$subsetglyphs): void
+    public function getGlyphs(int $originalGlyphIdx, int &$start, array &$glyphSet, array &$subsetglyphs): void
     {
         $glyphPos = $this->glyphPos[$originalGlyphIdx];
         $glyphLen = $this->glyphPos[$originalGlyphIdx + 1] - $glyphPos;
