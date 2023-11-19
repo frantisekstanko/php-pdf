@@ -76,7 +76,7 @@ class Fpdf
     /** @var array<mixed> */
     protected array $cmaps;              // array of ToUnicode CMaps
     protected string $currentFontFamily;
-    protected string $FontStyle;          // current font style
+    protected string $currentFontStyle;
     protected bool $underline;          // underlining flag
 
     /** @var array<mixed> */
@@ -141,7 +141,7 @@ class Fpdf
         $this->InFooter = false;
         $this->lastPrintedCellHeight = 0;
         $this->currentFontFamily = '';
-        $this->FontStyle = '';
+        $this->currentFontStyle = '';
         $this->FontSizePt = 12;
         $this->underline = false;
         $this->DrawColor = '0 G';
@@ -338,7 +338,7 @@ class Fpdf
             $this->Error('The document is closed');
         }
         $family = $this->currentFontFamily;
-        $style = $this->FontStyle . ($this->underline ? 'U' : '');
+        $style = $this->currentFontStyle . ($this->underline ? 'U' : '');
         $fontsize = $this->FontSizePt;
         $lw = $this->lineWidth;
         $dc = $this->DrawColor;
@@ -613,7 +613,7 @@ class Fpdf
             $size = $this->FontSizePt;
         }
         // Test if font is already selected
-        if ($this->currentFontFamily == $family && $this->FontStyle == $style && $this->FontSizePt == $size) {
+        if ($this->currentFontFamily == $family && $this->currentFontStyle == $style && $this->FontSizePt == $size) {
             return;
         }
 
@@ -624,7 +624,7 @@ class Fpdf
         }
         // Select it
         $this->currentFontFamily = $family;
-        $this->FontStyle = $style;
+        $this->currentFontStyle = $style;
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->scaleFactor;
         $this->CurrentFont = &$this->usedFonts[$fontkey];
