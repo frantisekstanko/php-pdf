@@ -207,19 +207,19 @@ class TtFontFile
         return [$offset, $length];
     }
 
-    public function seek($pos): void
+    public function seek(int $pos): void
     {
         $this->_pos = $pos;
         fseek($this->fh, $this->_pos);
     }
 
-    public function skip($delta): void
+    public function skip(int $delta): void
     {
         $this->_pos = $this->_pos + $delta;
         fseek($this->fh, $this->_pos);
     }
 
-    public function seek_table($tag, $offset_in_table = 0): int
+    public function seek_table(string $tag, int $offset_in_table = 0): int
     {
         $tpos = $this->get_table_pos($tag);
         $this->_pos = $tpos[0] + $offset_in_table;
