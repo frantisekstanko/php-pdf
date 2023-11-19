@@ -62,7 +62,7 @@ class Fpdf
     protected float $currentYPosition;
     protected float $lastPrintedCellHeight;
     protected float $lineWidth;
-    protected string $fontpath;           // path containing fonts
+    protected string $fontPath;
     protected $CoreFonts;          // array of core font names
 
     /** @var array<string, array<mixed>> */
@@ -528,9 +528,9 @@ class Fpdf
         if (defined('_SYSTEM_TTFONTS') && file_exists(_SYSTEM_TTFONTS . $file)) {
             $ttffilename = _SYSTEM_TTFONTS . $file;
         } else {
-            $ttffilename = $this->fontpath . '/' . $file;
+            $ttffilename = $this->fontPath . '/' . $file;
         }
-        $unifilename = $this->fontpath . 'unifont/' . strtolower(substr($file, 0, strpos($file, '.')));
+        $unifilename = $this->fontPath . 'unifont/' . strtolower(substr($file, 0, strpos($file, '.')));
         $name = '';
         $originalsize = 0;
         $ttfstat = stat($ttffilename);
@@ -568,7 +568,7 @@ class Fpdf
             $s .= '$originalsize=' . $originalsize . ";\n";
             $s .= '$fontkey=\'' . $fontkey . "';\n";
             $s .= '?>';
-            if (is_writable(dirname($this->fontpath . 'unifont/x'))) {
+            if (is_writable(dirname($this->fontPath . 'unifont/x'))) {
                 $fh = fopen($unifilename . '.mtx.php', 'w');
                 fwrite($fh, $s, strlen($s));
                 fclose($fh);
@@ -1230,7 +1230,7 @@ class Fpdf
 
     public function setFontPath(string $fontPath): void
     {
-        $this->fontpath = $fontPath;
+        $this->fontPath = $fontPath;
     }
 
     public function setCreatedAt(DateTimeImmutable $createdAt): void
@@ -1344,7 +1344,7 @@ class Fpdf
             $this->Error('Incorrect font definition file name: ' . $font);
         }
 
-        include $this->fontpath . $font;
+        include $this->fontPath . $font;
         if (!isset($name)) {
             $this->Error('Could not include font definition file');
         }
@@ -1803,7 +1803,7 @@ class Fpdf
                 // Font file embedding
                 $this->_newobj();
                 $this->FontFiles[$file]['n'] = $this->currentObjectNumber;
-                $font = file_get_contents($this->fontpath . $file, true);
+                $font = file_get_contents($this->fontPath . $file, true);
                 if (!$font) {
                     $this->Error('Font file not found: ' . $file);
                 }
@@ -2062,7 +2062,7 @@ class Fpdf
         // for each character
         for ($cid = $startcid; $cid < $cwlen; ++$cid) {
             if ($cid == 128 && (!file_exists($font['unifilename'] . '.cw127.php'))) {
-                if (is_writable(dirname($this->fontpath . 'unifont/x'))) {
+                if (is_writable(dirname($this->fontPath . 'unifont/x'))) {
                     $fh = fopen($font['unifilename'] . '.cw127.php', 'wb');
                     $cw127 = '<?php' . "\n";
                     $cw127 .= '$rangeid=' . $rangeid . ";\n";
