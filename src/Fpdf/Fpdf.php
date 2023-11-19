@@ -1638,7 +1638,10 @@ final class Fpdf
         return $info;
     }
 
-    private function _readstream($f, $n)
+    /**
+     * @param resource $f
+     */
+    private function _readstream($f, int $n): string
     {
         // Read n bytes from stream
         $res = '';
