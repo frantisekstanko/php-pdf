@@ -114,7 +114,7 @@ class Fpdf
     protected string $layoutMode;
 
     /** @var array<mixed> */
-    protected array $metadata;           // document properties
+    protected array $documentMetadata;
     protected ?DateTimeImmutable $createdAt = null;
     protected string $PDFVersion;         // PDF version number
 
@@ -200,7 +200,7 @@ class Fpdf
         // Enable compression
         $this->SetCompression(true);
         // Metadata
-        $this->metadata = ['Producer' => 'tFPDF ' . self::VERSION];
+        $this->documentMetadata = ['Producer' => 'tFPDF ' . self::VERSION];
         // Set default PDF version number
         $this->PDFVersion = '1.3';
     }
@@ -273,31 +273,31 @@ class Fpdf
     public function SetTitle($title, $isUTF8 = false)
     {
         // Title of document
-        $this->metadata['Title'] = $isUTF8 ? $title : $this->_UTF8encode($title);
+        $this->documentMetadata['Title'] = $isUTF8 ? $title : $this->_UTF8encode($title);
     }
 
     public function SetAuthor($author, $isUTF8 = false)
     {
         // Author of document
-        $this->metadata['Author'] = $isUTF8 ? $author : $this->_UTF8encode($author);
+        $this->documentMetadata['Author'] = $isUTF8 ? $author : $this->_UTF8encode($author);
     }
 
     public function SetSubject($subject, $isUTF8 = false)
     {
         // Subject of document
-        $this->metadata['Subject'] = $isUTF8 ? $subject : $this->_UTF8encode($subject);
+        $this->documentMetadata['Subject'] = $isUTF8 ? $subject : $this->_UTF8encode($subject);
     }
 
     public function SetKeywords($keywords, $isUTF8 = false)
     {
         // Keywords of document
-        $this->metadata['Keywords'] = $isUTF8 ? $keywords : $this->_UTF8encode($keywords);
+        $this->documentMetadata['Keywords'] = $isUTF8 ? $keywords : $this->_UTF8encode($keywords);
     }
 
     public function SetCreator($creator, $isUTF8 = false)
     {
         // Creator of document
-        $this->metadata['Creator'] = $isUTF8 ? $creator : $this->_UTF8encode($creator);
+        $this->documentMetadata['Creator'] = $isUTF8 ? $creator : $this->_UTF8encode($creator);
     }
 
     public function AliasNbPages($alias = '{nb}')
@@ -2288,8 +2288,8 @@ class Fpdf
             throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
         }
         $date = $this->createdAt->format('YmdHisO');
-        $this->metadata['CreationDate'] = 'D:' . substr($date, 0, -2) . "'" . substr($date, -2) . "'";
-        foreach ($this->metadata as $key => $value) {
+        $this->documentMetadata['CreationDate'] = 'D:' . substr($date, 0, -2) . "'" . substr($date, -2) . "'";
+        foreach ($this->documentMetadata as $key => $value) {
             $this->_put('/' . $key . ' ' . $this->_textstring($value));
         }
     }
