@@ -174,7 +174,7 @@ class TtFontFile
     }
 
     /** @return array<int> */
-    public function calcChecksum($data): array
+    public function calcChecksum(string $data): array
     {
         if (strlen($data) % 4) {
             $data .= str_repeat("\0", 4 - (strlen($data) % 4));
@@ -192,7 +192,8 @@ class TtFontFile
         return [$hi, $lo];
     }
 
-    public function get_table_pos($tag): array
+    /** @return array<mixed> */
+    public function get_table_pos(string $tag): array
     {
         $offset = $this->tables[$tag]['offset'];
         $length = $this->tables[$tag]['length'];
