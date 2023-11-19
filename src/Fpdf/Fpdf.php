@@ -91,8 +91,6 @@ final class Fpdf
     /** @var array<mixed> */
     private array $encodings;
 
-    /** @var array<mixed> */
-    private array $cmaps;              // array of ToUnicode CMaps
     private string $currentFontFamily;
     private string $currentFontStyle;
     private bool $isUnderline;
@@ -156,7 +154,6 @@ final class Fpdf
         $this->usedFonts = [];
         $this->fontFiles = [];
         $this->encodings = [];
-        $this->cmaps = [];
         $this->usedImages = [];
         $this->internalLinks = [];
         $this->isDrawingHeader = false;
