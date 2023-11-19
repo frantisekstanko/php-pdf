@@ -214,7 +214,7 @@ class Fpdf
         $this->pdfVersion = '1.3';
     }
 
-    public function SetMargins($left, $top, $right = null)
+    public function SetMargins($left, $top, $right = null): void
     {
         // Set left, top and right margins
         $this->leftMargin = $left;
