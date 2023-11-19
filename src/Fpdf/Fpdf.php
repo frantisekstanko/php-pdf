@@ -2448,7 +2448,7 @@ final class Fpdf
         $this->_puttrailer();
         $this->_put('>>');
         $this->_put('startxref');
-        $this->_put($offset);
+        $this->_put((string) $offset);
         $this->_put('%%EOF');
         $this->currentDocumentState = 3;
     }
