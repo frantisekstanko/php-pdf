@@ -1126,6 +1126,7 @@ class TtFontFile
 
                     continue;
                 }
+                // @phpstan-ignore-next-line
                 foreach ($glyphToChar[$glyph] as $char) {
                     if ($char != 0 && $char != 65535) {
                         $w = intval(round($scale * $aw));
@@ -1147,6 +1148,7 @@ class TtFontFile
         for ($pos = 0; $pos < $diff; ++$pos) {
             $glyph = $pos + $numberOfHMetrics;
             if (isset($glyphToChar[$glyph])) {
+                // @phpstan-ignore-next-line
                 foreach ($glyphToChar[$glyph] as $char) {
                     if ($char != 0 && $char != 65535) {
                         $w = intval(round($scale * $aw));
