@@ -24,6 +24,7 @@ use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownPageSizeException;
 use Stanko\Fpdf\Exception\UnpackException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
+use Stanko\Fpdf\Fpdf\Exception\IncorrectPngFileException;
 use Stanko\Fpdf\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Fpdf\Exception\UnknownCompressionMethodException;
 use Stanko\Fpdf\Fpdf\Exception\UnknownFilterMethodException;
@@ -1526,7 +1527,7 @@ final class Fpdf
         // Read header chunk
         $this->_readstream($f, 4);
         if ($this->_readstream($f, 4) != 'IHDR') {
-            $this->Error('Incorrect PNG file: ' . $file);
+            throw new IncorrectPngFileException($file);
         }
         $w = $this->_readint($f);
         $h = $this->_readint($f);
