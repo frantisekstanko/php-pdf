@@ -35,7 +35,7 @@ class Fpdf
     protected $StdPageSizes;       // standard page sizes
 
     /** @var array<mixed> */
-    protected array $DefPageSize;        // default page size
+    protected array $defaultPageSize;
 
     /** @var array<mixed> */
     protected array $CurPageSize;        // current page size
@@ -169,7 +169,7 @@ class Fpdf
         $this->StdPageSizes = ['a3' => [841.89, 1190.55], 'a4' => [595.28, 841.89], 'a5' => [420.94, 595.28],
             'letter' => [612, 792], 'legal' => [612, 1008]];
         $size = $this->_getpagesize($size);
-        $this->DefPageSize = $size;
+        $this->defaultPageSize = $size;
         $this->CurPageSize = $size;
         // Page orientation
         $orientation = strtolower($orientation);
@@ -1301,7 +1301,7 @@ class Fpdf
             $orientation = strtoupper($orientation[0]);
         }
         if ($size == '') {
-            $size = $this->DefPageSize;
+            $size = $this->defaultPageSize;
         } else {
             $size = $this->_getpagesize($size);
         }
@@ -1320,7 +1320,7 @@ class Fpdf
             $this->currentOrientation = $orientation;
             $this->CurPageSize = $size;
         }
-        if ($orientation != $this->defaultOrientation || $size[0] != $this->DefPageSize[0] || $size[1] != $this->DefPageSize[1]) {
+        if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
             $this->PageInfo[$this->currentPage]['size'] = [$this->wPt, $this->hPt];
         }
         if ($rotation != 0) {
@@ -1712,7 +1712,7 @@ class Fpdf
                 if (isset($this->PageInfo[$l[0]]['size'])) {
                     $h = $this->PageInfo[$l[0]]['size'][1];
                 } else {
-                    $h = ($this->defaultOrientation == 'P') ? $this->DefPageSize[1] * $this->scaleFactor : $this->DefPageSize[0] * $this->scaleFactor;
+                    $h = ($this->defaultOrientation == 'P') ? $this->defaultPageSize[1] * $this->scaleFactor : $this->defaultPageSize[0] * $this->scaleFactor;
                 }
                 $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->PageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
             }
@@ -1785,11 +1785,11 @@ class Fpdf
         $this->_put($kids);
         $this->_put('/Count ' . $nb);
         if ($this->defaultOrientation == 'P') {
-            $w = $this->DefPageSize[0];
-            $h = $this->DefPageSize[1];
+            $w = $this->defaultPageSize[0];
+            $h = $this->defaultPageSize[1];
         } else {
-            $w = $this->DefPageSize[1];
-            $h = $this->DefPageSize[0];
+            $w = $this->defaultPageSize[1];
+            $h = $this->defaultPageSize[0];
         }
         $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $w * $this->scaleFactor, $h * $this->scaleFactor));
         $this->_put('>>');
