@@ -14,6 +14,7 @@ namespace Stanko\Fpdf;
 use DateTimeImmutable;
 use Exception;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
+use Stanko\Fpdf\Exception\FileStreamException;
 
 class Fpdf
 {
@@ -589,9 +590,15 @@ class Fpdf
             $s .= '?>';
             if (is_writable(dirname($this->fontPath . 'unifont/x'))) {
                 $fh = fopen($unifilename . '.mtx.php', 'w');
+                if ($fh === false) {
+                    throw new FileStreamException('fopen() returned false');
+                }
                 fwrite($fh, $s, strlen($s));
                 fclose($fh);
                 $fh = fopen($unifilename . '.cw.dat', 'wb');
+                if ($fh === false) {
+                    throw new FileStreamException('fopen() returned false');
+                }
                 fwrite($fh, $cw, strlen($cw));
                 fclose($fh);
                 @unlink($unifilename . '.cw127.php');
