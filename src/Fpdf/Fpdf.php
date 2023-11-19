@@ -116,7 +116,7 @@ class Fpdf
     /** @var array<mixed> */
     protected array $documentMetadata;
     protected ?DateTimeImmutable $createdAt = null;
-    protected string $PDFVersion;         // PDF version number
+    protected string $pdfVersion;
 
     // Public methods
 
@@ -202,7 +202,7 @@ class Fpdf
         // Metadata
         $this->documentMetadata = ['Producer' => 'tFPDF ' . self::VERSION];
         // Set default PDF version number
-        $this->PDFVersion = '1.3';
+        $this->pdfVersion = '1.3';
     }
 
     public function SetMargins($left, $top, $right = null)
@@ -1560,8 +1560,8 @@ class Fpdf
             $data = gzcompress($color);
             $info['smask'] = gzcompress($alpha);
             $this->transparencyEnabled = true;
-            if ($this->PDFVersion < '1.4') {
-                $this->PDFVersion = '1.4';
+            if ($this->pdfVersion < '1.4') {
+                $this->pdfVersion = '1.4';
             }
         }
         $info['data'] = $data;
@@ -2319,7 +2319,7 @@ class Fpdf
 
     protected function _putheader()
     {
-        $this->_put('%PDF-' . $this->PDFVersion);
+        $this->_put('%PDF-' . $this->pdfVersion);
     }
 
     protected function _puttrailer()
