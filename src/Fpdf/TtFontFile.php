@@ -376,7 +376,7 @@ class TtFontFile
         return $fread;
     }
 
-    public function add($tag, $data): void
+    public function add(string $tag, string $data): void
     {
         if ($tag == 'head') {
             $data = $this->splice($data, 8, "\0\0\0\0");
