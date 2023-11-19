@@ -109,7 +109,7 @@ class Fpdf
     protected float $pageBreakThreshold;
     protected bool $isDrawingHeader;
     protected bool $isDrawingFooter;
-    protected string $AliasNbPages;       // alias for total number of pages
+    protected string $aliasForTotalNumberOfPages;
     protected float|string $ZoomMode;           // zoom display mode
     protected string $LayoutMode;         // layout display mode
 
@@ -303,7 +303,7 @@ class Fpdf
     public function AliasNbPages($alias = '{nb}')
     {
         // Define an alias for total number of pages
-        $this->AliasNbPages = $alias;
+        $this->aliasForTotalNumberOfPages = $alias;
     }
 
     public function Error($msg)
@@ -579,7 +579,7 @@ class Fpdf
             $cw = @file_get_contents($unifilename . '.cw.dat');
         }
         $i = count($this->usedFonts) + 1;
-        if (!empty($this->AliasNbPages)) {
+        if (!empty($this->aliasForTotalNumberOfPages)) {
             $sbarr = range(0, 57);
         } else {
             $sbarr = range(0, 32);
@@ -1730,12 +1730,12 @@ class Fpdf
         $this->_put('/Contents ' . ($this->currentObjectNumber + 1) . ' 0 R>>');
         $this->_put('endobj');
         // Page content
-        if (!empty($this->AliasNbPages)) {
-            $alias = $this->UTF8ToUTF16BE($this->AliasNbPages, false);
+        if (!empty($this->aliasForTotalNumberOfPages)) {
+            $alias = $this->UTF8ToUTF16BE($this->aliasForTotalNumberOfPages, false);
             $r = $this->UTF8ToUTF16BE($this->currentPage, false);
             $this->pages[$n] = str_replace($alias, $r, $this->pages[$n]);
             // Now repeat for no pages in non-subset fonts
-            $this->pages[$n] = str_replace($this->AliasNbPages, $this->currentPage, $this->pages[$n]);
+            $this->pages[$n] = str_replace($this->aliasForTotalNumberOfPages, $this->currentPage, $this->pages[$n]);
         }
         $this->_putstreamobject($this->pages[$n]);
         // Link annotations
