@@ -641,9 +641,6 @@ class TtFontFile
         $this->getHMTX($numberOfHMetrics, $numGlyphs, $glyphToChar, $scale);
     }
 
-    // ///////////////////////////////////////////////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * @param array<mixed> $subset
      */
@@ -1003,7 +1000,6 @@ class TtFontFile
         return $stm;
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////
     // Recursively get composite glyph data
     public function getGlyphData($originalGlyphIdx, &$maxdepth, &$depth, &$points, &$contours): void
     {
@@ -1020,7 +1016,6 @@ class TtFontFile
         --$depth;
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////
     // Recursively get composite glyphs
     public function getGlyphs($originalGlyphIdx, &$start, &$glyphSet, &$subsetglyphs): void
     {
@@ -1059,8 +1054,6 @@ class TtFontFile
             }
         }
     }
-
-    // ////////////////////////////////////////////////////////////////////////////////
 
     public function getHMTX($numberOfHMetrics, $numGlyphs, &$glyphToChar, $scale): void
     {
