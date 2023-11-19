@@ -1082,8 +1082,15 @@ class Fpdf
         }
     }
 
-    public function Image($file, $x = null, $y = null, $w = 0, $h = 0, $type = '', $link = '')
-    {
+    public function Image(
+        $file,
+        $x = null,
+        $y = null,
+        $w = 0,
+        $h = 0,
+        $type = '',
+        $link = '',
+    ) {
         // Put an image on the page
         if ($file == '') {
             $this->Error('Image file name is empty');
