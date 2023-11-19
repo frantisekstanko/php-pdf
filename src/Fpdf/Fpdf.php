@@ -1738,14 +1738,14 @@ final class Fpdf
         $this->_put($n . ' 0 obj');
     }
 
-    private function _putstream($data): void
+    private function _putstream(string $data): void
     {
         $this->_put('stream');
         $this->_put($data);
         $this->_put('endstream');
     }
 
-    private function _putstreamobject($data): void
+    private function _putstreamobject(string $data): void
     {
         if ($this->compressionEnabled) {
             $entries = '/Filter /FlateDecode ';
