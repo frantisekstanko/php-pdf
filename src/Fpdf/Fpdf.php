@@ -110,8 +110,8 @@ class Fpdf
     protected bool $isDrawingHeader;
     protected bool $isDrawingFooter;
     protected string $aliasForTotalNumberOfPages;
-    protected float|string $ZoomMode;           // zoom display mode
-    protected string $LayoutMode;         // layout display mode
+    protected float|string $zoomMode;
+    protected string $layoutMode;
 
     /** @var array<mixed> */
     protected array $metadata;           // document properties
@@ -249,12 +249,12 @@ class Fpdf
     {
         // Set display mode in viewer
         if ($zoom == 'fullpage' || $zoom == 'fullwidth' || $zoom == 'real' || $zoom == 'default' || !is_string($zoom)) {
-            $this->ZoomMode = $zoom;
+            $this->zoomMode = $zoom;
         } else {
             $this->Error('Incorrect zoom display mode: ' . $zoom);
         }
         if ($layout == 'single' || $layout == 'continuous' || $layout == 'two' || $layout == 'default') {
-            $this->LayoutMode = $layout;
+            $this->layoutMode = $layout;
         } else {
             $this->Error('Incorrect layout display mode: ' . $layout);
         }
@@ -2299,20 +2299,20 @@ class Fpdf
         $n = $this->pageInfo[1]['n'];
         $this->_put('/Type /Catalog');
         $this->_put('/Pages 1 0 R');
-        if ($this->ZoomMode == 'fullpage') {
+        if ($this->zoomMode == 'fullpage') {
             $this->_put('/OpenAction [' . $n . ' 0 R /Fit]');
-        } elseif ($this->ZoomMode == 'fullwidth') {
+        } elseif ($this->zoomMode == 'fullwidth') {
             $this->_put('/OpenAction [' . $n . ' 0 R /FitH null]');
-        } elseif ($this->ZoomMode == 'real') {
+        } elseif ($this->zoomMode == 'real') {
             $this->_put('/OpenAction [' . $n . ' 0 R /XYZ null null 1]');
-        } elseif (!is_string($this->ZoomMode)) {
-            $this->_put('/OpenAction [' . $n . ' 0 R /XYZ null null ' . sprintf('%.2F', $this->ZoomMode / 100) . ']');
+        } elseif (!is_string($this->zoomMode)) {
+            $this->_put('/OpenAction [' . $n . ' 0 R /XYZ null null ' . sprintf('%.2F', $this->zoomMode / 100) . ']');
         }
-        if ($this->LayoutMode == 'single') {
+        if ($this->layoutMode == 'single') {
             $this->_put('/PageLayout /SinglePage');
-        } elseif ($this->LayoutMode == 'continuous') {
+        } elseif ($this->layoutMode == 'continuous') {
             $this->_put('/PageLayout /OneColumn');
-        } elseif ($this->LayoutMode == 'two') {
+        } elseif ($this->layoutMode == 'two') {
             $this->_put('/PageLayout /TwoColumnLeft');
         }
     }
