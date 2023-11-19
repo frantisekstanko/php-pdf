@@ -1908,19 +1908,6 @@ final class Fpdf
                     $this->encodings[$font['enc']] = $this->currentObjectNumber;
                 }
             }
-            // ToUnicode CMap
-            if (isset($font['uv'])) {
-                if (isset($font['enc'])) {
-                    $cmapkey = $font['enc'];
-                } else {
-                    $cmapkey = $font['name'];
-                }
-                if (!isset($this->cmaps[$cmapkey])) {
-                    $cmap = $this->_tounicodecmap($font['uv']);
-                    $this->_putstreamobject($cmap);
-                    $this->cmaps[$cmapkey] = $this->currentObjectNumber;
-                }
-            }
             // Font object
             $type = $font['type'];
             $name = $font['name'];
@@ -1946,9 +1933,6 @@ final class Fpdf
                     }
                 }
 
-                if (isset($font['uv'])) {
-                    $this->_put('/ToUnicode ' . $this->cmaps[$cmapkey] . ' 0 R');
-                }
                 $this->_put('>>');
                 $this->_put('endobj');
                 // Widths
@@ -2244,53 +2228,6 @@ final class Fpdf
             }
         }
         $this->_out('/W [' . $w . ' ]');
-    }
-
-    /** @param array<int, array<int, int>|int> $uv */
-    private function _tounicodecmap(array $uv): string
-    {
-        $ranges = '';
-        $nbr = 0;
-        $chars = '';
-        $nbc = 0;
-        foreach ($uv as $c => $v) {
-            if (is_array($v)) {
-                $ranges .= sprintf("<%02X> <%02X> <%04X>\n", $c, $c + $v[1] - 1, $v[0]);
-                ++$nbr;
-            } else {
-                $chars .= sprintf("<%02X> <%04X>\n", $c, $v);
-                ++$nbc;
-            }
-        }
-        $s = "/CIDInit /ProcSet findresource begin\n";
-        $s .= "12 dict begin\n";
-        $s .= "begincmap\n";
-        $s .= "/CIDSystemInfo\n";
-        $s .= "<</Registry (Adobe)\n";
-        $s .= "/Ordering (UCS)\n";
-        $s .= "/Supplement 0\n";
-        $s .= ">> def\n";
-        $s .= "/CMapName /Adobe-Identity-UCS def\n";
-        $s .= "/CMapType 2 def\n";
-        $s .= "1 begincodespacerange\n";
-        $s .= "<00> <FF>\n";
-        $s .= "endcodespacerange\n";
-        if ($nbr > 0) {
-            $s .= "{$nbr} beginbfrange\n";
-            $s .= $ranges;
-            $s .= "endbfrange\n";
-        }
-        if ($nbc > 0) {
-            $s .= "{$nbc} beginbfchar\n";
-            $s .= $chars;
-            $s .= "endbfchar\n";
-        }
-        $s .= "endcmap\n";
-        $s .= "CMapName currentdict /CMap defineresource pop\n";
-        $s .= "end\n";
-        $s .= 'end';
-
-        return $s;
     }
 
     private function _putimages(): void
