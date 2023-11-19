@@ -9,7 +9,9 @@
 * License:  LGPL                                                               *
 */
 
-class tFPDF
+namespace Stanko\Fpdf;
+
+class Fpdf
 {
     public const VERSION = '1.33';
     protected $unifontSubset;
