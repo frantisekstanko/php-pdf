@@ -61,7 +61,7 @@ class Fpdf
     protected float $currentXPosition;
     protected float $currentYPosition;
     protected float $lastPrintedCellHeight;
-    protected float $LineWidth;          // line width in user unit
+    protected float $lineWidth;
     protected string $fontpath;           // path containing fonts
     protected $CoreFonts;          // array of core font names
 
@@ -195,7 +195,7 @@ class Fpdf
         // Interior cell margin (1 mm)
         $this->cellMargin = $margin / 10;
         // Line width (0.2 mm)
-        $this->LineWidth = .567 / $this->scaleFactor;
+        $this->lineWidth = .567 / $this->scaleFactor;
         // Automatic page break
         $this->SetAutoPageBreak(true, 2 * $margin);
         // Default display mode
@@ -343,7 +343,7 @@ class Fpdf
         $family = $this->FontFamily;
         $style = $this->FontStyle . ($this->underline ? 'U' : '');
         $fontsize = $this->FontSizePt;
-        $lw = $this->LineWidth;
+        $lw = $this->lineWidth;
         $dc = $this->DrawColor;
         $fc = $this->FillColor;
         $tc = $this->TextColor;
@@ -361,7 +361,7 @@ class Fpdf
         // Set line cap style to square
         $this->_out('2 J');
         // Set line width
-        $this->LineWidth = $lw;
+        $this->lineWidth = $lw;
         $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         // Set font
         if ($family) {
@@ -383,8 +383,8 @@ class Fpdf
         $this->Header();
         $this->InHeader = false;
         // Restore line width
-        if ($this->LineWidth != $lw) {
-            $this->LineWidth = $lw;
+        if ($this->lineWidth != $lw) {
+            $this->lineWidth = $lw;
             $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         }
         // Restore font
@@ -485,7 +485,7 @@ class Fpdf
     public function SetLineWidth($width)
     {
         // Set line width
-        $this->LineWidth = $width;
+        $this->lineWidth = $width;
         if ($this->currentPage > 0) {
             $this->_out(sprintf('%.2F w', $width * $this->scaleFactor));
         }
