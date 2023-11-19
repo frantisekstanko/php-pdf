@@ -34,44 +34,60 @@ define('GF_TWOBYTWO', 1 << 7);
 
 class TtFontFile
 {
-    public $maxUni;
-    public $maxUniChar;
-    public $sFamilyClass;
-    public $sFamilySubClass;
-    public $_pos;
-    public $numTables;
-    public $searchRange;
-    public $entrySelector;
-    public $rangeShift;
-    public $tables;
-    public $otables;
-    public $filename;
-    public $fh;
-    public $hmetrics;
-    public $glyphPos;
-    public $charToGlyph;
-    public $codeToGlyph;
-    public $glyphdata;
-    public $ascent;
-    public $descent;
-    public $TTCFonts;
-    public $version;
-    public $name;
-    public $familyName;
-    public $styleName;
-    public $fullName;
-    public $uniqueFontID;
-    public $unitsPerEm;
-    public $bbox;
-    public $capHeight;
-    public $stemV;
-    public $italicAngle;
-    public $flags;
-    public $underlinePosition;
-    public $underlineThickness;
-    public $charWidths;
-    public $defaultWidth;
-    public $maxStrLenRead;
+    public int $maxUni;
+    public int $maxUniChar;
+    public int $sFamilyClass;
+    public int $sFamilySubClass;
+    public int $_pos;
+    public int $numTables;
+    public int $searchRange;
+    public int $entrySelector;
+    public int $rangeShift;
+
+    /** @var array<mixed> */
+    public array $tables;
+
+    /** @var array<mixed> */
+    public array $otables;
+    public string $filename;
+    public mixed $fh;
+    public int $hmetrics;
+
+    /** @var array<mixed> */
+    public array $glyphPos;
+
+    /** @var array<mixed> */
+    public array $charToGlyph;
+
+    /** @var array<mixed> */
+    public array $codeToGlyph;
+
+    /** @var array<mixed> */
+    public array $glyphdata;
+    public float $ascent;
+    public float $descent;
+
+    /** @var array<mixed> */
+    public array $TTCFonts;
+    public int $version;
+    public string $name;
+    public string $familyName;
+    public string $styleName;
+    public string $fullName;
+    public string $uniqueFontID;
+    public float $unitsPerEm;
+
+    /** @var array<float> */
+    public array $bbox;
+    public float $capHeight;
+    public int $stemV;
+    public int $italicAngle;
+    public int $flags;
+    public int $underlinePosition;
+    public int $underlineThickness;
+    public string $charWidths;
+    public int $defaultWidth;
+    public int $maxStrLenRead;
 
     public function __construct()
     {
