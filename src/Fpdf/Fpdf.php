@@ -2103,7 +2103,10 @@ final class Fpdf
         }
     }
 
-    private function _putTTfontwidths($font, $maxUni): void
+    /**
+     * @param array<mixed> $font
+     */
+    private function _putTTfontwidths(array $font, int $maxUni): void
     {
         if (file_exists($font['unifilename'] . '.cw127.php')) {
             include $font['unifilename'] . '.cw127.php';
