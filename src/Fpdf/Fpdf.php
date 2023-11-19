@@ -2455,11 +2455,9 @@ final class Fpdf
 
     // Converts UTF-8 strings to codepoints array
     /**
-     * @param mixed $str
-     *
      * @return array<int>
      */
-    private function UTF8StringToArray($str): array
+    private function UTF8StringToArray(string $str): array
     {
         $out = [];
         $len = strlen($str);
