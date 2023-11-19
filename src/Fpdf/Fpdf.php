@@ -519,7 +519,6 @@ class Fpdf
             if (!isset($type) || !isset($name) || $originalsize != $ttfstat['size']) {
                 $ttffile = $ttffilename;
 
-                require_once $this->fontpath . 'unifont/ttfonts.php';
                 $ttf = new TtFontFile();
                 $ttf->getMetrics($ttffile);
                 $cw = $ttf->charWidths;
@@ -1973,7 +1972,6 @@ class Fpdf
             elseif ($type == 'TTF') {
                 $this->fonts[$k]['n'] = $this->n + 1;
 
-                require_once $this->fontpath . 'unifont/ttfonts.php';
                 $ttf = new TTFontFile();
                 $fontname = 'MPDFAA+' . $font['name'];
                 $subset = $font['subset'];
