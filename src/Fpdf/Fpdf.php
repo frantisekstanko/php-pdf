@@ -77,7 +77,7 @@ class Fpdf
     protected array $cmaps;              // array of ToUnicode CMaps
     protected string $currentFontFamily;
     protected string $currentFontStyle;
-    protected bool $underline;          // underlining flag
+    protected bool $isUnderline;
 
     /** @var array<mixed> */
     protected array $CurrentFont;        // current font info
@@ -143,7 +143,7 @@ class Fpdf
         $this->currentFontFamily = '';
         $this->currentFontStyle = '';
         $this->FontSizePt = 12;
-        $this->underline = false;
+        $this->isUnderline = false;
         $this->DrawColor = '0 G';
         $this->FillColor = '0 g';
         $this->TextColor = '0 g';
@@ -338,7 +338,7 @@ class Fpdf
             $this->Error('The document is closed');
         }
         $family = $this->currentFontFamily;
-        $style = $this->currentFontStyle . ($this->underline ? 'U' : '');
+        $style = $this->currentFontStyle . ($this->isUnderline ? 'U' : '');
         $fontsize = $this->FontSizePt;
         $lw = $this->lineWidth;
         $dc = $this->DrawColor;
@@ -601,10 +601,10 @@ class Fpdf
         }
         $style = strtoupper($style);
         if (strpos($style, 'U') !== false) {
-            $this->underline = true;
+            $this->isUnderline = true;
             $style = str_replace('U', '', $style);
         } else {
-            $this->underline = false;
+            $this->isUnderline = false;
         }
         if ($style == 'IB') {
             $style = 'BI';
@@ -685,7 +685,7 @@ class Fpdf
             $this->CurrentFont['subset'][$uni] = $uni;
         }
         $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $txt2);
-        if ($this->underline && $txt != '') {
+        if ($this->isUnderline && $txt != '') {
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
         if ($this->ColorFlag) {
@@ -789,7 +789,7 @@ class Fpdf
                 }
                 $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
             }
-            if ($this->underline) {
+            if ($this->isUnderline) {
                 $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->FontSize, $txt);
             }
             if ($this->ColorFlag) {
