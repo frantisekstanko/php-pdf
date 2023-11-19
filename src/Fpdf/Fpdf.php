@@ -46,7 +46,7 @@ class Fpdf
     /** @var array<mixed> */
     protected array $defaultPageSize;
 
-    /** @var array<mixed> */
+    /** @var array{0: float, 1: float} */
     protected array $currentPageSize;
 
     protected int $currentPageOrientation;
@@ -1298,7 +1298,12 @@ class Fpdf
         }
     }
 
-    protected function _getpagesize($size)
+    /**
+     * @param array<float> $size
+     *
+     * @return array{0: float, 1: float}
+     */
+    protected function _getpagesize(array|string $size): array
     {
         if (is_string($size)) {
             $size = strtolower($size);
