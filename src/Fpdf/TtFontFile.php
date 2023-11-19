@@ -198,7 +198,7 @@ class TtFontFile
         return [$hi, $lo];
     }
 
-    /** @return array<mixed> */
+    /** @return array<int> */
     public function get_table_pos(string $tag): array
     {
         $offset = $this->tables[$tag]['offset'];
