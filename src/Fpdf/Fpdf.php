@@ -13,6 +13,7 @@ namespace Stanko\Fpdf;
 
 use DateTimeImmutable;
 use Exception;
+use Stanko\Fpdf\Exception\CannotOpenImageFileException;
 use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
@@ -1683,8 +1684,8 @@ final class Fpdf
             $this->Error('GD has no GIF read support');
         }
         $im = imagecreatefromgif($file);
-        if (!$im) {
-            $this->Error('Missing or incorrect image file: ' . $file);
+        if ($im === false) {
+            throw new CannotOpenImageFileException($file);
         }
         imageinterlace($im, 0);
         ob_start();
