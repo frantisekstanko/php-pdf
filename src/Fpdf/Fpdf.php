@@ -60,7 +60,7 @@ class Fpdf
     protected float $cellMargin;
     protected float $currentXPosition;
     protected float $currentYPosition;
-    protected float $lasth;              // height of last printed cell
+    protected float $lastPrintedCellHeight;
     protected float $LineWidth;          // line width in user unit
     protected string $fontpath;           // path containing fonts
     protected $CoreFonts;          // array of core font names
@@ -140,7 +140,7 @@ class Fpdf
         $this->links = [];
         $this->InHeader = false;
         $this->InFooter = false;
-        $this->lasth = 0;
+        $this->lastPrintedCellHeight = 0;
         $this->FontFamily = '';
         $this->FontStyle = '';
         $this->FontSizePt = 12;
@@ -819,7 +819,7 @@ class Fpdf
         if ($s) {
             $this->_out($s);
         }
-        $this->lasth = $h;
+        $this->lastPrintedCellHeight = $h;
         if ($ln > 0) {
             // Go to next line
             $this->currentYPosition += $h;
@@ -1036,7 +1036,7 @@ class Fpdf
         // Line feed; default value is the last cell height
         $this->currentXPosition = $this->leftMargin;
         if ($h === null) {
-            $this->currentYPosition += $this->lasth;
+            $this->currentYPosition += $this->lastPrintedCellHeight;
         } else {
             $this->currentYPosition += $h;
         }
