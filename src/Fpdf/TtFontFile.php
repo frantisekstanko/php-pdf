@@ -58,7 +58,7 @@ class TtFontFile
      */
     public array $tables;
 
-    /** @var array<mixed> */
+    /** @var array<string, string> */
     public array $otables;
     public string $filename;
 
