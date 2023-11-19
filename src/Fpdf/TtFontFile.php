@@ -618,7 +618,7 @@ class TtFontFile
             if (($platformID == 3 && $encodingID == 1) || $platformID == 0) { // Microsoft, Unicode
                 $format = $this->get_ushort($cmap_offset + $offset);
                 if ($format == 4) {
-                    if (!$unicode_cmap_offset) {
+                    if ($unicode_cmap_offset === 0) {
                         $unicode_cmap_offset = $cmap_offset + $offset;
                     }
 
