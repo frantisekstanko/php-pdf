@@ -71,7 +71,7 @@ class Fpdf
     protected array $fontFiles;
 
     /** @var array<mixed> */
-    protected array $encodings;          // array of encodings
+    protected array $encodings;
 
     /** @var array<mixed> */
     protected array $cmaps;              // array of ToUnicode CMaps
