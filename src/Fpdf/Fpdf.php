@@ -18,7 +18,7 @@ use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 class Fpdf
 {
     public const VERSION = '1.33';
-    protected int $page;               // current page number
+    protected int $currentPage;
     protected $n;                  // current object number
     protected $offsets;            // array of object offsets
     protected $buffer;             // buffer holding in-memory PDF
@@ -86,7 +86,7 @@ class Fpdf
         $this->_dochecks();
         // Initialization of properties
         $this->state = 0;
-        $this->page = 0;
+        $this->currentPage = 0;
         $this->n = 2;
         $this->buffer = '';
         $this->pages = [];
@@ -182,7 +182,7 @@ class Fpdf
     {
         // Set left margin
         $this->lMargin = $margin;
-        if ($this->page > 0 && $this->x < $margin) {
+        if ($this->currentPage > 0 && $this->x < $margin) {
             $this->x = $margin;
         }
     }
@@ -280,7 +280,7 @@ class Fpdf
         if ($this->state == 3) {
             return;
         }
-        if ($this->page == 0) {
+        if ($this->currentPage == 0) {
             $this->AddPage();
         }
         // Page footer
@@ -307,7 +307,7 @@ class Fpdf
         $fc = $this->FillColor;
         $tc = $this->TextColor;
         $cf = $this->ColorFlag;
-        if ($this->page > 0) {
+        if ($this->currentPage > 0) {
             // Page footer
             $this->InFooter = true;
             $this->Footer();
@@ -376,7 +376,7 @@ class Fpdf
     public function PageNo()
     {
         // Get current page number
-        return $this->page;
+        return $this->currentPage;
     }
 
     public function SetDrawColor($r, $g = null, $b = null)
@@ -387,7 +387,7 @@ class Fpdf
         } else {
             $this->DrawColor = sprintf('%.3F %.3F %.3F RG', $r / 255, $g / 255, $b / 255);
         }
-        if ($this->page > 0) {
+        if ($this->currentPage > 0) {
             $this->_out($this->DrawColor);
         }
     }
@@ -401,7 +401,7 @@ class Fpdf
             $this->FillColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
         }
         $this->ColorFlag = ($this->FillColor != $this->TextColor);
-        if ($this->page > 0) {
+        if ($this->currentPage > 0) {
             $this->_out($this->FillColor);
         }
     }
@@ -445,7 +445,7 @@ class Fpdf
     {
         // Set line width
         $this->LineWidth = $width;
-        if ($this->page > 0) {
+        if ($this->currentPage > 0) {
             $this->_out(sprintf('%.2F w', $width * $this->k));
         }
     }
@@ -604,7 +604,7 @@ class Fpdf
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->k;
         $this->CurrentFont = &$this->fonts[$fontkey];
-        if ($this->page > 0) {
+        if ($this->currentPage > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
     }
@@ -617,7 +617,7 @@ class Fpdf
         }
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->k;
-        if ($this->page > 0) {
+        if ($this->currentPage > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
     }
@@ -638,7 +638,7 @@ class Fpdf
             $y = $this->y;
         }
         if ($page == -1) {
-            $page = $this->page;
+            $page = $this->currentPage;
         }
         $this->links[$link] = [$page, $y];
     }
@@ -646,7 +646,7 @@ class Fpdf
     public function Link($x, $y, $w, $h, $link)
     {
         // Put a link on the page
-        $this->PageLinks[$this->page][] = [$x * $this->k, $this->hPt - $y * $this->k, $w * $this->k, $h * $this->k, $link];
+        $this->PageLinks[$this->currentPage][] = [$x * $this->k, $this->hPt - $y * $this->k, $w * $this->k, $h * $this->k, $link];
     }
 
     public function Text($x, $y, $txt)
@@ -1246,9 +1246,9 @@ class Fpdf
 
     protected function _beginpage($orientation, $size, $rotation)
     {
-        ++$this->page;
-        $this->pages[$this->page] = '';
-        $this->PageLinks[$this->page] = [];
+        ++$this->currentPage;
+        $this->pages[$this->currentPage] = '';
+        $this->PageLinks[$this->currentPage] = [];
         $this->state = 2;
         $this->x = $this->lMargin;
         $this->y = $this->tMargin;
@@ -1280,13 +1280,13 @@ class Fpdf
             $this->CurPageSize = $size;
         }
         if ($orientation != $this->DefOrientation || $size[0] != $this->DefPageSize[0] || $size[1] != $this->DefPageSize[1]) {
-            $this->PageInfo[$this->page]['size'] = [$this->wPt, $this->hPt];
+            $this->PageInfo[$this->currentPage]['size'] = [$this->wPt, $this->hPt];
         }
         if ($rotation != 0) {
             if ($rotation % 90 != 0) {
                 $this->Error('Incorrect rotation value: ' . $rotation);
             }
-            $this->PageInfo[$this->page]['rotation'] = $rotation;
+            $this->PageInfo[$this->currentPage]['rotation'] = $rotation;
         }
         $this->CurRotation = $rotation;
     }
@@ -1606,7 +1606,7 @@ class Fpdf
     {
         // Add a line to the document
         if ($this->state == 2) {
-            $this->pages[$this->page] .= $s . "\n";
+            $this->pages[$this->currentPage] .= $s . "\n";
         } elseif ($this->state == 1) {
             $this->_put($s);
         } elseif ($this->state == 0) {
@@ -1708,10 +1708,10 @@ class Fpdf
         // Page content
         if (!empty($this->AliasNbPages)) {
             $alias = $this->UTF8ToUTF16BE($this->AliasNbPages, false);
-            $r = $this->UTF8ToUTF16BE($this->page, false);
+            $r = $this->UTF8ToUTF16BE($this->currentPage, false);
             $this->pages[$n] = str_replace($alias, $r, $this->pages[$n]);
             // Now repeat for no pages in non-subset fonts
-            $this->pages[$n] = str_replace($this->AliasNbPages, $this->page, $this->pages[$n]);
+            $this->pages[$n] = str_replace($this->AliasNbPages, $this->currentPage, $this->pages[$n]);
         }
         $this->_putstreamobject($this->pages[$n]);
         // Link annotations
@@ -1720,7 +1720,7 @@ class Fpdf
 
     protected function _putpages()
     {
-        $nb = $this->page;
+        $nb = $this->currentPage;
         $n = $this->n;
         for ($i = 1; $i <= $nb; ++$i) {
             $this->PageInfo[$i]['n'] = ++$n;
