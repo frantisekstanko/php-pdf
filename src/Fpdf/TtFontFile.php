@@ -324,14 +324,14 @@ class TtFontFile
         return substr($stream, 0, $offset) . $value . substr($stream, $offset + strlen($value));
     }
 
-    public function _set_ushort($stream, $offset, $value): string
+    public function _set_ushort(string $stream, int $offset, string $value): string
     {
         $up = pack('n', $value);
 
         return $this->splice($stream, $offset, $up);
     }
 
-    public function _set_short($stream, $offset, $val): string
+    public function _set_short(string $stream, int $offset, string $val): string
     {
         if ($val < 0) {
             $val = abs($val);
@@ -343,7 +343,7 @@ class TtFontFile
         return $this->splice($stream, $offset, $up);
     }
 
-    public function get_chunk($pos, $length): string
+    public function get_chunk(int $pos, int $length): string
     {
         fseek($this->fh, $pos);
         if ($length < 1) {
