@@ -68,7 +68,7 @@ class TtFontFile
     /** @var array<int> */
     public array $glyphPos;
 
-    /** @var array<mixed> */
+    /** @var array<int> */
     public array $charToGlyph;
 
     /** @var array<mixed> */
