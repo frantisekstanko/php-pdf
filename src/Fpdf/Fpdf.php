@@ -1660,7 +1660,10 @@ final class Fpdf
         return $res;
     }
 
-    private function _readint($f)
+    /**
+     * @param resource $f
+     */
+    private function _readint($f): int
     {
         // Read a 4-byte integer from stream
         $a = unpack('Ni', $this->_readstream($f, 4));
