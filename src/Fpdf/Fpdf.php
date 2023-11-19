@@ -88,7 +88,7 @@ class Fpdf
     protected string $textColor;
     protected bool $fillColorEqualsTextColor;
     protected bool $transparencyEnabled;
-    protected float $ws;                 // word spacing
+    protected float $wordSpacing;
 
     /** @var array<string, array<mixed>> */
     protected array $images;             // array of used images
@@ -149,7 +149,7 @@ class Fpdf
         $this->textColor = '0 g';
         $this->fillColorEqualsTextColor = false;
         $this->transparencyEnabled = false;
-        $this->ws = 0;
+        $this->wordSpacing = 0;
         // Scale factor
         if ($unit == 'pt') {
             $this->scaleFactor = 1;
@@ -708,15 +708,15 @@ class Fpdf
         if ($this->currentYPosition + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
             // Automatic page break
             $x = $this->currentXPosition;
-            $ws = $this->ws;
+            $ws = $this->wordSpacing;
             if ($ws > 0) {
-                $this->ws = 0;
+                $this->wordSpacing = 0;
                 $this->_out('0 Tw');
             }
             $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
             $this->currentXPosition = $x;
             if ($ws > 0) {
-                $this->ws = $ws;
+                $this->wordSpacing = $ws;
                 $this->_out(sprintf('%.3F Tw', $ws * $k));
             }
         }
@@ -763,7 +763,7 @@ class Fpdf
                 $s .= 'q ' . $this->textColor . ' ';
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
-            if ($this->ws) {
+            if ($this->wordSpacing) {
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->currentFont['subset'][$uni] = $uni;
                 }
@@ -776,7 +776,7 @@ class Fpdf
                     $tx = '(' . $this->_escape($this->UTF8ToUTF16BE($tx, false)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
-                        $adj = -($this->ws * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
+                        $adj = -($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
                         $s .= sprintf('%d(%s) ', $adj, $space);
                     }
                 }
@@ -859,8 +859,8 @@ class Fpdf
             $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
-                if ($this->ws > 0) {
-                    $this->ws = 0;
+                if ($this->wordSpacing > 0) {
+                    $this->wordSpacing = 0;
                     $this->_out('0 Tw');
                 }
                 $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
@@ -890,15 +890,15 @@ class Fpdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    if ($this->ws > 0) {
-                        $this->ws = 0;
+                    if ($this->wordSpacing > 0) {
+                        $this->wordSpacing = 0;
                         $this->_out('0 Tw');
                     }
                     $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
-                        $this->ws = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
-                        $this->_out(sprintf('%.3F Tw', $this->ws * $this->scaleFactor));
+                        $this->wordSpacing = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
+                        $this->_out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
                     }
                     $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
                     $i = $sep + 1;
@@ -916,8 +916,8 @@ class Fpdf
             }
         }
         // Last chunk
-        if ($this->ws > 0) {
-            $this->ws = 0;
+        if ($this->wordSpacing > 0) {
+            $this->wordSpacing = 0;
             $this->_out('0 Tw');
         }
         if ($border && strpos($border, 'B') !== false) {
@@ -1404,7 +1404,7 @@ class Fpdf
         // Underline text
         $up = $this->currentFont['up'];
         $ut = $this->currentFont['ut'];
-        $w = $this->GetStringWidth($txt) + $this->ws * substr_count($txt, ' ');
+        $w = $this->GetStringWidth($txt) + $this->wordSpacing * substr_count($txt, ' ');
 
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
