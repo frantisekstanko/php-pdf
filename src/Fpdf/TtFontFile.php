@@ -1163,6 +1163,10 @@ class TtFontFile
         if ($gid < $numberOfHMetrics) {
             $this->seek($start + ($gid * 4));
             $hm = fread($this->fh, 4);
+
+            if ($hm === false) {
+                throw new FileStreamException('fread() returned false');
+            }
         } else {
             $this->seek($start + (($numberOfHMetrics - 1) * 4));
             $hm = fread($this->fh, 2);
