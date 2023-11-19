@@ -1288,8 +1288,6 @@ class Fpdf
         $this->createdAt = $createdAt;
     }
 
-    // Protected methods
-
     protected function _dochecks()
     {
         // Check availability of mbstring
