@@ -232,13 +232,24 @@ class TtFontFile
     {
         $this->_pos += 4;
 
-        return fread($this->fh, 4);
+        $fread = fread($this->fh, 4);
+
+        if ($fread === false) {
+            throw new FileStreamException('fread() returned false');
+        }
+
+        return $fread;
     }
 
     public function read_short(): int
     {
         $this->_pos += 2;
         $s = fread($this->fh, 2);
+
+        if ($s === false) {
+            throw new FileStreamException('fread() returned false');
+        }
+
         $a = (ord($s[0]) << 8) + ord($s[1]);
         if ($a & (1 << 15)) {
             $a = ($a - (1 << 16));
