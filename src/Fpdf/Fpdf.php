@@ -51,7 +51,7 @@ class Fpdf
     protected array $pageInfo;
     protected float $pageWidthInPoints;
     protected float $pageHeightInPoints;
-    protected float $w;
+    protected float $pageWidth;
     protected float $h;              // dimensions of current page in user unit
     protected float $lMargin;            // left margin
     protected float $tMargin;            // top margin
@@ -175,17 +175,17 @@ class Fpdf
         $orientation = strtolower($orientation);
         if ($orientation == 'p' || $orientation == 'portrait') {
             $this->defaultOrientation = 'P';
-            $this->w = $size[0];
+            $this->pageWidth = $size[0];
             $this->h = $size[1];
         } elseif ($orientation == 'l' || $orientation == 'landscape') {
             $this->defaultOrientation = 'L';
-            $this->w = $size[1];
+            $this->pageWidth = $size[1];
             $this->h = $size[0];
         } else {
             $this->Error('Incorrect orientation: ' . $orientation);
         }
         $this->currentOrientation = $this->defaultOrientation;
-        $this->pageWidthInPoints = $this->w * $this->scaleFactor;
+        $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->hPt = $this->h * $this->scaleFactor;
         // Page rotation
         $this->currentPageOrientation = 0;
@@ -738,7 +738,7 @@ class Fpdf
             }
         }
         if ($w == 0) {
-            $w = $this->w - $this->rMargin - $this->x;
+            $w = $this->pageWidth - $this->rMargin - $this->x;
         }
         $s = '';
         if ($fill || $border == 1) {
@@ -839,7 +839,7 @@ class Fpdf
         }
         $cw = $this->CurrentFont['cw'];
         if ($w == 0) {
-            $w = $this->w - $this->rMargin - $this->x;
+            $w = $this->pageWidth - $this->rMargin - $this->x;
         }
         $wmax = ($w - 2 * $this->cMargin);
         // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
@@ -951,7 +951,7 @@ class Fpdf
             $this->Error('No font has been set');
         }
         $cw = $this->CurrentFont['cw'];
-        $w = $this->w - $this->rMargin - $this->x;
+        $w = $this->pageWidth - $this->rMargin - $this->x;
         $wmax = ($w - 2 * $this->cMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
@@ -977,7 +977,7 @@ class Fpdf
                 $l = 0;
                 if ($nl == 1) {
                     $this->x = $this->lMargin;
-                    $w = $this->w - $this->rMargin - $this->x;
+                    $w = $this->pageWidth - $this->rMargin - $this->x;
                     $wmax = ($w - 2 * $this->cMargin);
                 }
                 ++$nl;
@@ -997,7 +997,7 @@ class Fpdf
                         // Move to next line
                         $this->x = $this->lMargin;
                         $this->y += $h;
-                        $w = $this->w - $this->rMargin - $this->x;
+                        $w = $this->pageWidth - $this->rMargin - $this->x;
                         $wmax = ($w - 2 * $this->cMargin);
                         ++$i;
                         ++$nl;
@@ -1017,7 +1017,7 @@ class Fpdf
                 $l = 0;
                 if ($nl == 1) {
                     $this->x = $this->lMargin;
-                    $w = $this->w - $this->rMargin - $this->x;
+                    $w = $this->pageWidth - $this->rMargin - $this->x;
                     $wmax = ($w - 2 * $this->cMargin);
                 }
                 ++$nl;
@@ -1115,7 +1115,7 @@ class Fpdf
     public function GetPageWidth()
     {
         // Get current page width
-        return $this->w;
+        return $this->pageWidth;
     }
 
     public function GetPageHeight()
@@ -1136,7 +1136,7 @@ class Fpdf
         if ($x >= 0) {
             $this->x = $x;
         } else {
-            $this->x = $this->w + $x;
+            $this->x = $this->pageWidth + $x;
         }
     }
 
@@ -1308,13 +1308,13 @@ class Fpdf
         if ($orientation != $this->currentOrientation || $size[0] != $this->currentPageSize[0] || $size[1] != $this->currentPageSize[1]) {
             // New size or orientation
             if ($orientation == 'P') {
-                $this->w = $size[0];
+                $this->pageWidth = $size[0];
                 $this->h = $size[1];
             } else {
-                $this->w = $size[1];
+                $this->pageWidth = $size[1];
                 $this->h = $size[0];
             }
-            $this->pageWidthInPoints = $this->w * $this->scaleFactor;
+            $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
             $this->hPt = $this->h * $this->scaleFactor;
             $this->PageBreakTrigger = $this->h - $this->bMargin;
             $this->currentOrientation = $orientation;
