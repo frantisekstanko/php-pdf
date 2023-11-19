@@ -99,7 +99,7 @@ class TtFontFile
     public int $underlinePosition;
     public int $underlineThickness;
     public string $charWidths;
-    public int $defaultWidth;
+    public float $defaultWidth;
     public int $maxStrLenRead;
 
     public function __construct()
