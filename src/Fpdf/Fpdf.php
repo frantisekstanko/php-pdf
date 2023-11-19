@@ -978,7 +978,7 @@ class Fpdf
             $this->wordSpacing = 0;
             $this->_out('0 Tw');
         }
-        if ($border && strpos($border, 'B') !== false) {
+        if ($border && strpos((string) $border, 'B') !== false) {
             $b .= 'B';
         }
         $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
