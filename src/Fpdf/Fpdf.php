@@ -1402,7 +1402,7 @@ final class Fpdf
         $this->currentDocumentState = 1;
     }
 
-    private function _isascii($s)
+    private function _isascii(string $s): bool
     {
         // Test if string is ASCII
         $nb = strlen($s);
@@ -1415,7 +1415,7 @@ final class Fpdf
         return true;
     }
 
-    private function _httpencode($param, $value, $isUTF8)
+    private function _httpencode(string $param, string $value, bool $isUTF8): string
     {
         // Encode HTTP header field parameter
         if ($this->_isascii($value)) {
@@ -1428,19 +1428,19 @@ final class Fpdf
         return $param . "*=UTF-8''" . rawurlencode($value);
     }
 
-    private function _UTF8encode($s)
+    private function _UTF8encode(string $s): string
     {
         // Convert ISO-8859-1 to UTF-8
         return mb_convert_encoding($s, 'UTF-8', 'ISO-8859-1');
     }
 
-    private function _UTF8toUTF16($s)
+    private function _UTF8toUTF16(string $s): string
     {
         // Convert UTF-8 to UTF-16BE with BOM
         return "\xFE\xFF" . mb_convert_encoding($s, 'UTF-16BE', 'UTF-8');
     }
 
-    private function _escape($s)
+    private function _escape(string $s): string
     {
         // Escape special characters
         if (strpos($s, '(') !== false || strpos($s, ')') !== false || strpos($s, '\\') !== false || strpos($s, "\r") !== false) {
@@ -1450,7 +1450,7 @@ final class Fpdf
         return $s;
     }
 
-    private function _textstring($s)
+    private function _textstring(string $s): string
     {
         // Format a text string
         if (!$this->_isascii($s)) {
@@ -1460,7 +1460,7 @@ final class Fpdf
         return '(' . $this->_escape($s) . ')';
     }
 
-    private function _dounderline($x, $y, $txt)
+    private function _dounderline(float $x, float $y, string $txt): string
     {
         // Underline text
         $up = $this->currentFont['up'];
@@ -1470,7 +1470,8 @@ final class Fpdf
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
 
-    private function _parsejpg($file)
+    /** @return array<mixed> */
+    private function _parsejpg(string $file): array
     {
         // Extract info from a JPEG file
         $a = getimagesize($file);
@@ -1493,7 +1494,8 @@ final class Fpdf
         return ['w' => $a[0], 'h' => $a[1], 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data];
     }
 
-    private function _parsepng($file)
+    /** @return array<mixed> */
+    private function _parsepng(string $file): array
     {
         // Extract info from a PNG file
         $f = fopen($file, 'rb');
@@ -1506,7 +1508,12 @@ final class Fpdf
         return $info;
     }
 
-    private function _parsepngstream($f, $file)
+    /**
+     * @param resource $f
+     *
+     * @return array<mixed>
+     */
+    private function _parsepngstream($f, string $file): array
     {
         // Check signature
         if ($this->_readstream($f, 8) != chr(137) . 'PNG' . chr(13) . chr(10) . chr(26) . chr(10)) {
