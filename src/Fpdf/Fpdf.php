@@ -17,7 +17,7 @@ use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 
-class Fpdf
+final class Fpdf
 {
     public const VERSION = '1.33';
 
