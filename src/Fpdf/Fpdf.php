@@ -18,7 +18,6 @@ use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 class Fpdf
 {
     public const VERSION = '1.33';
-    protected $unifontSubset;
     protected $page;               // current page number
     protected $n;                  // current object number
     protected $offsets;            // array of object offsets
@@ -424,25 +423,18 @@ class Fpdf
         $s = (string) $s;
         $cw = $this->CurrentFont['cw'];
         $w = 0;
-        if ($this->unifontSubset) {
-            $unicode = $this->UTF8StringToArray($s);
-            foreach ($unicode as $char) {
-                if (isset($cw[2 * $char])) {
-                    $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
-                } elseif ($char > 0 && $char < 128 && isset($cw[chr($char)])) {
-                    $w += $cw[chr($char)];
-                } elseif (isset($this->CurrentFont['desc']['MissingWidth'])) {
-                    $w += $this->CurrentFont['desc']['MissingWidth'];
-                } elseif (isset($this->CurrentFont['MissingWidth'])) {
-                    $w += $this->CurrentFont['MissingWidth'];
-                } else {
-                    $w += 500;
-                }
-            }
-        } else {
-            $l = strlen($s);
-            for ($i = 0; $i < $l; ++$i) {
-                $w += $cw[$s[$i]];
+        $unicode = $this->UTF8StringToArray($s);
+        foreach ($unicode as $char) {
+            if (isset($cw[2 * $char])) {
+                $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
+            } elseif ($char > 0 && $char < 128 && isset($cw[chr($char)])) {
+                $w += $cw[chr($char)];
+            } elseif (isset($this->CurrentFont['desc']['MissingWidth'])) {
+                $w += $this->CurrentFont['desc']['MissingWidth'];
+            } elseif (isset($this->CurrentFont['MissingWidth'])) {
+                $w += $this->CurrentFont['MissingWidth'];
+            } else {
+                $w += 500;
             }
         }
 
@@ -612,11 +604,6 @@ class Fpdf
         $this->FontSizePt = $size;
         $this->FontSize = $size / $this->k;
         $this->CurrentFont = &$this->fonts[$fontkey];
-        if ($this->fonts[$fontkey]['type'] == 'TTF') {
-            $this->unifontSubset = true;
-        } else {
-            $this->unifontSubset = false;
-        }
         if ($this->page > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->CurrentFont['i'], $this->FontSizePt));
         }
@@ -669,13 +656,9 @@ class Fpdf
         if (!isset($this->CurrentFont)) {
             $this->Error('No font has been set');
         }
-        if ($this->unifontSubset) {
-            $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
-            foreach ($this->UTF8StringToArray($txt) as $uni) {
-                $this->CurrentFont['subset'][$uni] = $uni;
-            }
-        } else {
-            $txt2 = '(' . $this->_escape($txt) . ')';
+        $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
+        foreach ($this->UTF8StringToArray($txt) as $uni) {
+            $this->CurrentFont['subset'][$uni] = $uni;
         }
         $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->k, ($this->h - $y) * $this->k, $txt2);
         if ($this->underline && $txt != '') {
@@ -756,7 +739,7 @@ class Fpdf
                 $s .= 'q ' . $this->TextColor . ' ';
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
-            if ($this->ws && $this->unifontSubset) {
+            if ($this->ws) {
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->CurrentFont['subset'][$uni] = $uni;
                 }
@@ -776,13 +759,9 @@ class Fpdf
                 $s .= '] TJ';
                 $s .= ' ET';
             } else {
-                if ($this->unifontSubset) {
-                    $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
-                    foreach ($this->UTF8StringToArray($txt) as $uni) {
-                        $this->CurrentFont['subset'][$uni] = $uni;
-                    }
-                } else {
-                    $txt2 = '(' . $this->_escape($txt) . ')';
+                $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
+                foreach ($this->UTF8StringToArray($txt) as $uni) {
+                    $this->CurrentFont['subset'][$uni] = $uni;
                 }
                 $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->x + $dx) * $k, ($this->h - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
             }
@@ -824,16 +803,9 @@ class Fpdf
         $wmax = ($w - 2 * $this->cMargin);
         // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
         $s = str_replace("\r", '', (string) $txt);
-        if ($this->unifontSubset) {
-            $nb = mb_strlen($s, 'utf-8');
-            while ($nb > 0 && mb_substr($s, $nb - 1, 1, 'utf-8') == "\n") {
-                --$nb;
-            }
-        } else {
-            $nb = strlen($s);
-            if ($nb > 0 && $s[$nb - 1] == "\n") {
-                --$nb;
-            }
+        $nb = mb_strlen($s, 'utf-8');
+        while ($nb > 0 && mb_substr($s, $nb - 1, 1, 'utf-8') == "\n") {
+            --$nb;
         }
         $b = 0;
         if ($border) {
@@ -860,22 +832,14 @@ class Fpdf
         $nl = 1;
         while ($i < $nb) {
             // Get next character
-            if ($this->unifontSubset) {
-                $c = mb_substr($s, $i, 1, 'UTF-8');
-            } else {
-                $c = $s[$i];
-            }
+            $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
                 if ($this->ws > 0) {
                     $this->ws = 0;
                     $this->_out('0 Tw');
                 }
-                if ($this->unifontSubset) {
-                    $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
-                } else {
-                    $this->Cell($w, $h, substr($s, $j, $i - $j), $b, 2, $align, $fill);
-                }
+                $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -894,11 +858,7 @@ class Fpdf
                 ++$ns;
             }
 
-            if ($this->unifontSubset) {
-                $l += $this->GetStringWidth($c);
-            } else {
-                $l += $cw[$c] * $this->FontSize / 1000;
-            }
+            $l += $this->GetStringWidth($c);
 
             if ($l > $wmax) {
                 // Automatic line break
@@ -910,21 +870,13 @@ class Fpdf
                         $this->ws = 0;
                         $this->_out('0 Tw');
                     }
-                    if ($this->unifontSubset) {
-                        $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
-                    } else {
-                        $this->Cell($w, $h, substr($s, $j, $i - $j), $b, 2, $align, $fill);
-                    }
+                    $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
                         $this->ws = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
                         $this->_out(sprintf('%.3F Tw', $this->ws * $this->k));
                     }
-                    if ($this->unifontSubset) {
-                        $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
-                    } else {
-                        $this->Cell($w, $h, substr($s, $j, $sep - $j), $b, 2, $align, $fill);
-                    }
+                    $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -947,11 +899,7 @@ class Fpdf
         if ($border && strpos($border, 'B') !== false) {
             $b .= 'B';
         }
-        if ($this->unifontSubset) {
-            $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
-        } else {
-            $this->Cell($w, $h, substr($s, $j, $i - $j), $b, 2, $align, $fill);
-        }
+        $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
         $this->x = $this->lMargin;
     }
 
@@ -965,15 +913,11 @@ class Fpdf
         $w = $this->w - $this->rMargin - $this->x;
         $wmax = ($w - 2 * $this->cMargin);
         $s = str_replace("\r", '', (string) $txt);
-        if ($this->unifontSubset) {
-            $nb = mb_strlen($s, 'UTF-8');
-            if ($nb == 1 && $s == ' ') {
-                $this->x += $this->GetStringWidth($s);
+        $nb = mb_strlen($s, 'UTF-8');
+        if ($nb == 1 && $s == ' ') {
+            $this->x += $this->GetStringWidth($s);
 
-                return;
-            }
-        } else {
-            $nb = strlen($s);
+            return;
         }
         $sep = -1;
         $i = 0;
@@ -982,18 +926,10 @@ class Fpdf
         $nl = 1;
         while ($i < $nb) {
             // Get next character
-            if ($this->unifontSubset) {
-                $c = mb_substr($s, $i, 1, 'UTF-8');
-            } else {
-                $c = $s[$i];
-            }
+            $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
-                if ($this->unifontSubset) {
-                    $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
-                } else {
-                    $this->Cell($w, $h, substr($s, $j, $i - $j), 0, 2, '', false, $link);
-                }
+                $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -1011,11 +947,7 @@ class Fpdf
                 $sep = $i;
             }
 
-            if ($this->unifontSubset) {
-                $l += $this->GetStringWidth($c);
-            } else {
-                $l += $cw[$c] * $this->FontSize / 1000;
-            }
+            $l += $this->GetStringWidth($c);
 
             if ($l > $wmax) {
                 // Automatic line break
@@ -1034,17 +966,9 @@ class Fpdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    if ($this->unifontSubset) {
-                        $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
-                    } else {
-                        $this->Cell($w, $h, substr($s, $j, $i - $j), 0, 2, '', false, $link);
-                    }
+                    $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 } else {
-                    if ($this->unifontSubset) {
-                        $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
-                    } else {
-                        $this->Cell($w, $h, substr($s, $j, $sep - $j), 0, 2, '', false, $link);
-                    }
+                    $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -1062,11 +986,7 @@ class Fpdf
         }
         // Last chunk
         if ($i != $j) {
-            if ($this->unifontSubset) {
-                $this->Cell($l, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
-            } else {
-                $this->Cell($l, $h, substr($s, $j), 0, 0, '', false, $link);
-            }
+            $this->Cell($l, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
         }
     }
 
