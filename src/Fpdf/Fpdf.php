@@ -716,7 +716,7 @@ class Fpdf
         $this->pageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->pageHeightInPoints - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
     }
 
-    public function Text($x, $y, $txt)
+    public function Text(float $x, float $y, string $txt): void
     {
         // Output a string
         $txt = (string) $txt;
@@ -737,7 +737,7 @@ class Fpdf
         $this->_out($s);
     }
 
-    public function AcceptPageBreak()
+    public function AcceptPageBreak(): bool
     {
         // Accept automatic page break or not
         return $this->automaticPageBreak;
