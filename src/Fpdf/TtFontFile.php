@@ -263,6 +263,10 @@ class TtFontFile
         $this->_pos += 2;
         $s = fread($this->fh, 2);
 
+        if ($s === false) {
+            throw new FileStreamException('fread() returned false');
+        }
+
         return (ord($s[0]) << 8) + ord($s[1]);
     }
 
@@ -270,6 +274,10 @@ class TtFontFile
     {
         $this->_pos += 4;
         $s = fread($this->fh, 4);
+
+        if ($s === false) {
+            throw new FileStreamException('fread() returned false');
+        }
 
         // if large uInt32 as an integer, PHP converts it to -ve
         return (ord($s[0]) * 16777216) + (ord($s[1]) << 16) + (ord($s[2]) << 8) + ord($s[3]); // 	16777216  = 1<<24
@@ -280,6 +288,10 @@ class TtFontFile
         fseek($this->fh, $pos);
         $s = fread($this->fh, 2);
 
+        if ($s === false) {
+            throw new FileStreamException('fread() returned false');
+        }
+
         return (ord($s[0]) << 8) + ord($s[1]);
     }
 
@@ -287,6 +299,10 @@ class TtFontFile
     {
         fseek($this->fh, $pos);
         $s = fread($this->fh, 4);
+
+        if ($s === false) {
+            throw new FileStreamException('fread() returned false');
+        }
 
         // iF large uInt32 as an integer, PHP converts it to -ve
         return (ord($s[0]) * 16777216) + (ord($s[1]) << 16) + (ord($s[2]) << 8) + ord($s[3]); // 	16777216  = 1<<24
