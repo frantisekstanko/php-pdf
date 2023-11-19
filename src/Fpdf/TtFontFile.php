@@ -18,6 +18,8 @@
 
 namespace Stanko\Fpdf;
 
+use Stanko\Fpdf\Exception\FileStreamException;
+
 // Define the value used in the "head" table of a created TTF file
 // 0x74727565 "true" for Mac
 // 0x00010000 for Windows
@@ -99,7 +101,11 @@ class TtFontFile
     public function getMetrics(string $file): void
     {
         $this->filename = $file;
-        $this->fh = fopen($file, 'rb') or exit('Can\'t open file ' . $file);
+        $fopen = fopen($file, 'rb');
+        if ($fopen === false) {
+            throw new FileStreamException('fopen() returned false');
+        }
+        $this->fh = $fopen;
         $this->_pos = 0;
         $this->charWidths = '';
         $this->glyphPos = [];
