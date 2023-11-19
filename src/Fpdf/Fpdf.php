@@ -895,13 +895,13 @@ class Fpdf
                 $b2 = 'LR';
             } else {
                 $b2 = '';
-                if (strpos($border, 'L') !== false) {
+                if (strpos((string) $border, 'L') !== false) {
                     $b2 .= 'L';
                 }
-                if (strpos($border, 'R') !== false) {
+                if (strpos((string) $border, 'R') !== false) {
                     $b2 .= 'R';
                 }
-                $b = (strpos($border, 'T') !== false) ? $b2 . 'T' : $b2;
+                $b = (strpos((string) $border, 'T') !== false) ? $b2 . 'T' : $b2;
             }
         }
         $sep = -1;
