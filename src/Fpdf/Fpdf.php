@@ -126,12 +126,14 @@ class Fpdf
     protected ?DateTimeImmutable $createdAt = null;
     protected string $pdfVersion;
 
+    /**
+     * @param array<float> $size
+     */
     public function __construct(
-        $orientation = 'P',
-        $unit = 'mm',
-        $size = 'A4',
-    )
-    {
+        string $orientation = 'P',
+        string $unit = 'mm',
+        array|string $size = 'A4',
+    ) {
         // Some checks
         $this->_dochecks();
         // Initialization of properties
