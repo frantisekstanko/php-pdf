@@ -2122,6 +2122,9 @@ final class Fpdf
             if ($cid == 128 && (!file_exists($font['unifilename'] . '.cw127.php'))) {
                 if (is_writable(dirname($this->fontPath . 'unifont/x'))) {
                     $fh = fopen($font['unifilename'] . '.cw127.php', 'wb');
+                    if ($fh === false) {
+                        throw new FileStreamException('fopen() returned false');
+                    }
                     $cw127 = '<?php' . "\n";
                     $cw127 .= '$rangeid=' . $rangeid . ";\n";
                     $cw127 .= '$prevcid=' . $prevcid . ";\n";
