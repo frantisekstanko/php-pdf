@@ -670,6 +670,7 @@ class Fpdf
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPage > 0) {
+            // @phpstan-ignore-next-line
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
