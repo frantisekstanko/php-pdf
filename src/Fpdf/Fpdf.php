@@ -87,7 +87,7 @@ class Fpdf
     protected string $fillColor;
     protected string $textColor;
     protected bool $fillColorEqualsTextColor;
-    protected bool $WithAlpha;          // indicates whether alpha channel is used
+    protected bool $transparencyEnabled;
     protected float $ws;                 // word spacing
 
     /** @var array<string, array<mixed>> */
@@ -148,7 +148,7 @@ class Fpdf
         $this->fillColor = '0 g';
         $this->textColor = '0 g';
         $this->fillColorEqualsTextColor = false;
-        $this->WithAlpha = false;
+        $this->transparencyEnabled = false;
         $this->ws = 0;
         // Scale factor
         if ($unit == 'pt') {
@@ -1559,7 +1559,7 @@ class Fpdf
             unset($data);
             $data = gzcompress($color);
             $info['smask'] = gzcompress($alpha);
-            $this->WithAlpha = true;
+            $this->transparencyEnabled = true;
             if ($this->PDFVersion < '1.4') {
                 $this->PDFVersion = '1.4';
             }
@@ -1724,7 +1724,7 @@ class Fpdf
             $s .= ']';
             $this->_put($s);
         }
-        if ($this->WithAlpha) {
+        if ($this->transparencyEnabled) {
             $this->_put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
         }
         $this->_put('/Contents ' . ($this->currentObjectNumber + 1) . ' 0 R>>');
