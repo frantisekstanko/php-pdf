@@ -21,6 +21,7 @@ namespace Stanko\Fpdf;
 use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\CopyrightedFontException;
 use Stanko\Fpdf\Exception\FileStreamException;
+use Stanko\Fpdf\Exception\FontHeadNotFoundException;
 
 // Define the value used in the "head" table of a created TTF file
 // 0x74727565 "true" for Mac
@@ -1274,6 +1275,9 @@ class TtFontFile
         $tables = $this->otables;
 
         ksort($tables);
+
+        $head_start = false;
+
         $offset = 12 + $numTables * 16;
         foreach ($tables as $tag => $data) {
             if ($tag == 'head') {
@@ -1296,6 +1300,11 @@ class TtFontFile
         $checksum = $this->calcChecksum($stm);
         $checksum = $this->sub32([0xB1B0, 0xAFBA], $checksum);
         $chk = pack('nn', $checksum[0], $checksum[1]);
+
+        if ($head_start === false) {
+            throw new FontHeadNotFoundException();
+        }
+
         $stm = $this->splice($stm, $head_start + 8, $chk);
 
         return $stm;
