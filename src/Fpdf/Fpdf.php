@@ -2118,6 +2118,12 @@ final class Fpdf
         }
         $cwlen = $maxUni + 1;
 
+        $prevcid = null;
+        $prevwidth = null;
+        $range = [];
+        $rangeid = null;
+        $interval = null;
+
         // for each character
         for ($cid = $startcid; $cid < $cwlen; ++$cid) {
             if ($cid == 128 && (!file_exists($font['unifilename'] . '.cw127.php'))) {
