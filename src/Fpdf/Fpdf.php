@@ -552,6 +552,7 @@ class Fpdf
         if (file_exists($unifilename . '.mtx.php')) {
             include $unifilename . '.mtx.php';
         }
+        // @phpstan-ignore-next-line
         if (!isset($type) || !isset($name) || $originalsize != $ttfstat['size']) {
             $ttffile = $ttffilename;
 
@@ -572,6 +573,7 @@ class Fpdf
             ];
             $up = round($ttf->underlinePosition);
             $ut = round($ttf->underlineThickness);
+            // @phpstan-ignore-next-line
             $originalsize = $ttfstat['size'] + 0;
             $type = 'TTF';
             // Generate metrics .php file
