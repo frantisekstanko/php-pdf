@@ -95,7 +95,7 @@ class TtFontFile
 
     public function __construct()
     {
-        $this->maxStrLenRead = 200000;	// Maximum size of glyf table to read in as string (otherwise reads each glyph from file)
+        $this->maxStrLenRead = 200000;    // Maximum size of glyf table to read in as string (otherwise reads each glyph from file)
     }
 
     public function getMetrics(string $file): void
@@ -688,7 +688,7 @@ class TtFontFile
         // /////////////////////////////////
         // hmtx - Horizontal metrics table
         // /////////////////////////////////
-        $scale = 1;	// not used
+        $scale = 1;    // not used
         $this->getHMTX($numberOfHMetrics, $numGlyphs, $glyphToChar, $scale);
 
         // /////////////////////////////////
@@ -700,8 +700,8 @@ class TtFontFile
         $subsetCharToGlyph = [];
         foreach ($subset as $code) {
             if (isset($this->charToGlyph[$code])) {
-                $subsetglyphs[$this->charToGlyph[$code]] = $code;	// Old Glyph ID => Unicode
-                $subsetCharToGlyph[$code] = $this->charToGlyph[$code];	// Unicode to old GlyphID
+                $subsetglyphs[$this->charToGlyph[$code]] = $code;    // Old Glyph ID => Unicode
+                $subsetCharToGlyph[$code] = $this->charToGlyph[$code];    // Unicode to old GlyphID
             }
             $this->maxUni = max($this->maxUni, $code);
         }
@@ -711,10 +711,10 @@ class TtFontFile
         $glyphSet = [];
         ksort($subsetglyphs);
         $n = 0;
-        $fsLastCharIndex = 0;	// maximum Unicode index (character code) in this font, according to the cmap subtable for platform ID 3 and platform- specific encoding ID 0 or 1.
+        $fsLastCharIndex = 0;    // maximum Unicode index (character code) in this font, according to the cmap subtable for platform ID 3 and platform- specific encoding ID 0 or 1.
         foreach ($subsetglyphs as $originalGlyphIdx => $uni) {
             $fsLastCharIndex = max($fsLastCharIndex, $uni);
-            $glyphSet[$originalGlyphIdx] = $n;	// old glyphID to new glyphID
+            $glyphSet[$originalGlyphIdx] = $n;    // old glyphID to new glyphID
             ++$n;
         }
 
@@ -771,7 +771,7 @@ class TtFontFile
         }
 
         // cmap - Character to glyph mapping - Format 4 (MS / )
-        $segCount = count($range) + 1;	// + 1 Last segment has missing character 0xFFFF
+        $segCount = count($range) + 1;    // + 1 Last segment has missing character 0xFFFF
         $searchRange = 1;
         $entrySelector = 0;
         while ($searchRange * 2 <= $segCount) {
@@ -781,46 +781,48 @@ class TtFontFile
         $searchRange = $searchRange * 2;
         $rangeShift = $segCount * 2 - $searchRange;
         $length = 16 + (8 * $segCount) + ($numGlyphs + 1);
-        $cmap = [0, 1,		// Index : version, number of encoding subtables
-            3, 1,				// Encoding Subtable : platform (MS=3), encoding (Unicode)
-            0, 12,			// Encoding Subtable : offset (hi,lo)
-            4, $length, 0, 		// Format 4 Mapping subtable: format, length, language
+        $cmap = [
+            0, 1,        // Index : version, number of encoding subtables
+            3, 1,                // Encoding Subtable : platform (MS=3), encoding (Unicode)
+            0, 12,            // Encoding Subtable : offset (hi,lo)
+            4, $length, 0,         // Format 4 Mapping subtable: format, length, language
             $segCount * 2,
             $searchRange,
             $entrySelector,
-            $rangeShift];
+            $rangeShift,
+        ];
 
         // endCode(s)
         foreach ($range as $start => $subrange) {
             $endCode = $start + (count($subrange) - 1);
-            $cmap[] = $endCode;	// endCode(s)
+            $cmap[] = $endCode;    // endCode(s)
         }
-        $cmap[] = 0xFFFF;	// endCode of last Segment
-        $cmap[] = 0;	// reservedPad
+        $cmap[] = 0xFFFF;    // endCode of last Segment
+        $cmap[] = 0;    // reservedPad
 
         // startCode(s)
         foreach ($range as $start => $subrange) {
-            $cmap[] = $start;	// startCode(s)
+            $cmap[] = $start;    // startCode(s)
         }
-        $cmap[] = 0xFFFF;	// startCode of last Segment
+        $cmap[] = 0xFFFF;    // startCode of last Segment
         // idDelta(s)
         foreach ($range as $start => $subrange) {
             $idDelta = -($start - $subrange[0]);
             $n += count($subrange);
-            $cmap[] = $idDelta;	// idDelta(s)
+            $cmap[] = $idDelta;    // idDelta(s)
         }
-        $cmap[] = 1;	// idDelta of last Segment
+        $cmap[] = 1;    // idDelta of last Segment
         // idRangeOffset(s)
         foreach ($range as $subrange) {
-            $cmap[] = 0;	// idRangeOffset[segCount]  	Offset in bytes to glyph indexArray, or 0
+            $cmap[] = 0;    // idRangeOffset[segCount]  	Offset in bytes to glyph indexArray, or 0
         }
-        $cmap[] = 0;	// idRangeOffset of last Segment
+        $cmap[] = 0;    // idRangeOffset of last Segment
         foreach ($range as $subrange) {
             foreach ($subrange as $glidx) {
                 $cmap[] = $glidx;
             }
         }
-        $cmap[] = 0;	// Mapping for last character
+        $cmap[] = 0;    // Mapping for last character
         $cmapstr = '';
         foreach ($cmap as $cm) {
             $cmapstr .= pack('n', $cm);
@@ -846,12 +848,12 @@ class TtFontFile
         $minLeftSideBearing = 0;
         $minRightSideBearing = 0;
         $xMaxExtent = 0;
-        $maxPoints = 0;			// points in non-compound glyph
-        $maxContours = 0;			// contours in non-compound glyph
-        $maxComponentPoints = 0;	// points in compound glyph
-        $maxComponentContours = 0;	// contours in compound glyph
-        $maxComponentElements = 0;	// number of glyphs referenced at top level
-        $maxComponentDepth = 0;		// levels of recursion, set to 0 if font has only simple glyphs
+        $maxPoints = 0;            // points in non-compound glyph
+        $maxContours = 0;            // contours in non-compound glyph
+        $maxComponentPoints = 0;    // points in compound glyph
+        $maxComponentContours = 0;    // contours in compound glyph
+        $maxComponentElements = 0;    // number of glyphs referenced at top level
+        $maxComponentDepth = 0;        // levels of recursion, set to 0 if font has only simple glyphs
         $this->glyphdata = [];
 
         foreach ($subsetglyphs as $originalGlyphIdx => $uni) {
@@ -876,12 +878,12 @@ class TtFontFile
                 $up = unpack('n', substr($data, 0, 2));
             }
 
-            if ($glyphLen > 2 && ($up[1] & (1 << 15))) {	// If number of contours <= -1 i.e. composite glyph
+            if ($glyphLen > 2 && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
                 $pos_in_glyph = 10;
                 $flags = GF_MORE;
                 $nComponentElements = 0;
                 while ($flags & GF_MORE) {
-                    ++$nComponentElements;	// number of glyphs referenced at top level
+                    ++$nComponentElements;    // number of glyphs referenced at top level
                     $up = unpack('n', substr($data, $pos_in_glyph, 2));
                     $flags = $up[1];
                     $up = unpack('n', substr($data, $pos_in_glyph + 2, 2));
@@ -973,7 +975,7 @@ class TtFontFile
             foreach ($this->glyphdata[$originalGlyphIdx]['compGlyphs'] as $glyphIdx) {
                 $this->getGlyphData($glyphIdx, $maxdepth, $depth, $points, $contours);
             }
-        } elseif (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {	// simple
+        } elseif (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {    // simple
             $contours += $this->glyphdata[$originalGlyphIdx]['nContours'];
             $points += $this->glyphdata[$originalGlyphIdx]['nPoints'];
         }
@@ -998,7 +1000,7 @@ class TtFontFile
                 $flags = $this->read_ushort();
                 $glyphIdx = $this->read_ushort();
                 if (!isset($glyphSet[$glyphIdx])) {
-                    $glyphSet[$glyphIdx] = count($subsetglyphs);	// old glyphID to new glyphID
+                    $glyphSet[$glyphIdx] = count($subsetglyphs);    // old glyphID to new glyphID
                     $subsetglyphs[$glyphIdx] = true;
                 }
                 $savepos = ftell($this->fh);
@@ -1044,7 +1046,7 @@ class TtFontFile
             if (isset($glyphToChar[$glyph]) || $glyph == 0) {
                 if ($aw >= (1 << 15)) {
                     $aw = 0;
-                }	// 1.03 Some (arabic) fonts have -ve values for width
+                }    // 1.03 Some (arabic) fonts have -ve values for width
                 // although should be unsigned value - comes out as e.g. 65108 (intended -50)
                 if ($glyph == 0) {
                     $this->defaultWidth = $scale * $aw;
@@ -1153,7 +1155,7 @@ class TtFontFile
         $idDelta = [];
         for ($i = 0; $i < $segCount; ++$i) {
             $idDelta[] = $this->read_short();
-        }		// ???? was unsigned short
+        }        // ???? was unsigned short
         $idRangeOffset_start = $this->_pos;
         $idRangeOffset = [];
         for ($i = 0; $i < $segCount; ++$i) {
@@ -1202,9 +1204,9 @@ class TtFontFile
 
         // Header
         if (_TTF_MAC_HEADER) {
-            $stm .= pack('Nnnnn', 0x74727565, $numTables, $searchRange, $entrySelector, $rangeShift);	// Mac
+            $stm .= pack('Nnnnn', 0x74727565, $numTables, $searchRange, $entrySelector, $rangeShift);    // Mac
         } else {
-            $stm .= pack('Nnnnn', 0x00010000, $numTables, $searchRange, $entrySelector, $rangeShift);	// Windows
+            $stm .= pack('Nnnnn', 0x00010000, $numTables, $searchRange, $entrySelector, $rangeShift);    // Windows
         }
 
         // Table directory
