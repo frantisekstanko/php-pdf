@@ -40,7 +40,7 @@ class Fpdf
     /** @var array<mixed> */
     protected array $currentPageSize;
 
-    protected int $CurRotation;        // current page rotation
+    protected int $currentPageOrientation;
 
     /** @var array<int, array{
      *   size: array<float>,
@@ -188,7 +188,7 @@ class Fpdf
         $this->wPt = $this->w * $this->scaleFactor;
         $this->hPt = $this->h * $this->scaleFactor;
         // Page rotation
-        $this->CurRotation = 0;
+        $this->currentPageOrientation = 0;
         // Page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
         $this->SetMargins($margin, $margin);
@@ -730,7 +730,7 @@ class Fpdf
                 $this->ws = 0;
                 $this->_out('0 Tw');
             }
-            $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->CurRotation);
+            $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
             $this->x = $x;
             if ($ws > 0) {
                 $this->ws = $ws;
@@ -1096,7 +1096,7 @@ class Fpdf
             if ($this->y + $h > $this->PageBreakTrigger && !$this->InHeader && !$this->InFooter && $this->AcceptPageBreak()) {
                 // Automatic page break
                 $x2 = $this->x;
-                $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->CurRotation);
+                $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
                 $this->x = $x2;
             }
             $y = $this->y;
@@ -1329,7 +1329,7 @@ class Fpdf
             }
             $this->PageInfo[$this->currentPage]['rotation'] = $rotation;
         }
-        $this->CurRotation = $rotation;
+        $this->currentPageOrientation = $rotation;
     }
 
     protected function _endpage()
