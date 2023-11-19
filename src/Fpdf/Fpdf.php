@@ -1397,12 +1397,15 @@ class Fpdf
         $this->currentPageOrientation = $rotation;
     }
 
-    protected function _endpage()
+    protected function _endpage(): void
     {
         $this->currentDocumentState = 1;
     }
 
-    protected function _loadfont($font)
+    /**
+     * @return array<mixed>
+     */
+    protected function _loadfont(string $font): array
     {
         // Load a font definition file from the font directory
         if (strpos($font, '/') !== false || strpos($font, '\\') !== false) {
