@@ -985,7 +985,7 @@ class Fpdf
         $this->currentXPosition = $this->leftMargin;
     }
 
-    public function Write($h, $txt, $link = '')
+    public function Write(float $h, string $txt, string $link = ''): void
     {
         // Output text in flowing mode
         if (!isset($this->currentFont)) {
