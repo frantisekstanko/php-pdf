@@ -525,11 +525,7 @@ class Fpdf
         if (isset($this->usedFonts[$fontkey])) {
             return;
         }
-        if (defined('_SYSTEM_TTFONTS') && file_exists(_SYSTEM_TTFONTS . $file)) {
-            $ttffilename = _SYSTEM_TTFONTS . $file;
-        } else {
-            $ttffilename = $this->fontPath . '/' . $file;
-        }
+        $ttffilename = $this->fontPath . '/' . $file;
         $unifilename = $this->fontPath . 'unifont/' . strtolower(substr($file, 0, strpos($file, '.')));
         $name = '';
         $originalsize = 0;
