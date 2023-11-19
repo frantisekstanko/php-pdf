@@ -1402,30 +1402,6 @@ final class Fpdf
         $this->currentDocumentState = 1;
     }
 
-    /**
-     * @return array<mixed>
-     */
-    private function _loadfont(string $font): array
-    {
-        // Load a font definition file from the font directory
-        if (strpos($font, '/') !== false || strpos($font, '\\') !== false) {
-            $this->Error('Incorrect font definition file name: ' . $font);
-        }
-
-        include $this->fontPath . $font;
-        if (!isset($name)) {
-            $this->Error('Could not include font definition file');
-        }
-        if (isset($enc)) {
-            $enc = strtolower($enc);
-        }
-        if (!isset($subsetted)) {
-            $subsetted = false;
-        }
-
-        return get_defined_vars();
-    }
-
     private function _isascii($s)
     {
         // Test if string is ASCII
