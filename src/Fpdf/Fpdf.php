@@ -1666,7 +1666,7 @@ final class Fpdf
             $res .= $s;
         }
         if ($n > 0) {
-            $this->Error('Unexpected end of stream');
+            throw new FileStreamException('Unexpected end of stream');
         }
 
         return $res;
