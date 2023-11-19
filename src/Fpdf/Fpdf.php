@@ -23,7 +23,7 @@ class Fpdf
 
     /** @var array<int, int> */
     protected array $objectOffsets;
-    protected $buffer;             // buffer holding in-memory PDF
+    protected string $buffer;             // buffer holding in-memory PDF
     protected $pages;              // array containing pages
     protected $state;              // current document state
     protected $compress;           // compression flag
