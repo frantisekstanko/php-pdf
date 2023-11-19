@@ -1671,7 +1671,8 @@ final class Fpdf
         return $a['i'];
     }
 
-    private function _parsegif($file)
+    /** @return array<mixed> */
+    private function _parsegif(string $file): array
     {
         // Extract info from a GIF file (via PNG conversion)
         if (!function_exists('imagepng')) {
@@ -1701,7 +1702,7 @@ final class Fpdf
         return $info;
     }
 
-    private function _out($s)
+    private function _out($s): void
     {
         // Add a line to the document
         if ($this->currentDocumentState == 2) {
@@ -1715,17 +1716,17 @@ final class Fpdf
         }
     }
 
-    private function _put($s)
+    private function _put($s): void
     {
         $this->pdfFileBuffer .= $s . "\n";
     }
 
-    private function _getoffset()
+    private function _getoffset(): int
     {
         return strlen($this->pdfFileBuffer);
     }
 
-    private function _newobj($n = null)
+    private function _newobj($n = null): void
     {
         // Begin a new object
         if ($n === null) {
@@ -1735,14 +1736,14 @@ final class Fpdf
         $this->_put($n . ' 0 obj');
     }
 
-    private function _putstream($data)
+    private function _putstream($data): void
     {
         $this->_put('stream');
         $this->_put($data);
         $this->_put('endstream');
     }
 
-    private function _putstreamobject($data)
+    private function _putstreamobject($data): void
     {
         if ($this->compressionEnabled) {
             $entries = '/Filter /FlateDecode ';
@@ -1757,7 +1758,7 @@ final class Fpdf
         $this->_put('endobj');
     }
 
-    private function _putlinks($n)
+    private function _putlinks($n): void
     {
         foreach ($this->pageLinks[$n] as $pl) {
             $this->_newobj();
@@ -1779,7 +1780,7 @@ final class Fpdf
         }
     }
 
-    private function _putpage($n)
+    private function _putpage($n): void
     {
         $this->_newobj();
         $this->_put('<</Type /Page');
@@ -1817,7 +1818,7 @@ final class Fpdf
         $this->_putlinks($n);
     }
 
-    private function _putpages()
+    private function _putpages(): void
     {
         $nb = $this->currentPage;
         $n = $this->currentObjectNumber;
@@ -1854,7 +1855,7 @@ final class Fpdf
         $this->_put('endobj');
     }
 
-    private function _putfonts()
+    private function _putfonts(): void
     {
         foreach ($this->fontFiles as $file => $info) {
             if (!isset($info['type']) || $info['type'] != 'TTF') {
@@ -2102,7 +2103,7 @@ final class Fpdf
         }
     }
 
-    private function _putTTfontwidths($font, $maxUni)
+    private function _putTTfontwidths($font, $maxUni): void
     {
         if (file_exists($font['unifilename'] . '.cw127.php')) {
             include $font['unifilename'] . '.cw127.php';
@@ -2224,7 +2225,7 @@ final class Fpdf
         $this->_out('/W [' . $w . ' ]');
     }
 
-    private function _tounicodecmap($uv)
+    private function _tounicodecmap(array $uv): string
     {
         $ranges = '';
         $nbr = 0;
@@ -2270,7 +2271,7 @@ final class Fpdf
         return $s;
     }
 
-    private function _putimages()
+    private function _putimages(): void
     {
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
@@ -2278,7 +2279,7 @@ final class Fpdf
         }
     }
 
-    private function _putimage(&$info)
+    private function _putimage(&$info): void
     {
         $this->_newobj();
         $info['n'] = $this->currentObjectNumber;
@@ -2326,14 +2327,14 @@ final class Fpdf
         }
     }
 
-    private function _putxobjectdict()
+    private function _putxobjectdict(): void
     {
         foreach ($this->usedImages as $image) {
             $this->_put('/I' . $image['i'] . ' ' . $image['n'] . ' 0 R');
         }
     }
 
-    private function _putresourcedict()
+    private function _putresourcedict(): void
     {
         $this->_put('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->_put('/Font <<');
@@ -2346,7 +2347,7 @@ final class Fpdf
         $this->_put('>>');
     }
 
-    private function _putresources()
+    private function _putresources(): void
     {
         $this->_putfonts();
         $this->_putimages();
@@ -2358,7 +2359,7 @@ final class Fpdf
         $this->_put('endobj');
     }
 
-    private function _putinfo()
+    private function _putinfo(): void
     {
         if ($this->createdAt === null) {
             throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
@@ -2370,7 +2371,7 @@ final class Fpdf
         }
     }
 
-    private function _putcatalog()
+    private function _putcatalog(): void
     {
         $n = $this->pageInfo[1]['n'];
         $this->_put('/Type /Catalog');
@@ -2393,19 +2394,19 @@ final class Fpdf
         }
     }
 
-    private function _putheader()
+    private function _putheader(): void
     {
         $this->_put('%PDF-' . $this->pdfVersion);
     }
 
-    private function _puttrailer()
+    private function _puttrailer(): void
     {
         $this->_put('/Size ' . ($this->currentObjectNumber + 1));
         $this->_put('/Root ' . $this->currentObjectNumber . ' 0 R');
         $this->_put('/Info ' . ($this->currentObjectNumber - 1) . ' 0 R');
     }
 
-    private function _enddoc()
+    private function _enddoc(): void
     {
         $this->_putheader();
         $this->_putpages();
@@ -2443,7 +2444,7 @@ final class Fpdf
 
     // ********* NEW FUNCTIONS *********
     // Converts UTF-8 strings to UTF16-BE.
-    private function UTF8ToUTF16BE($str, $setbom = true)
+    private function UTF8ToUTF16BE($str, $setbom = true): string
     {
         $outstr = '';
         if ($setbom) {
@@ -2455,7 +2456,12 @@ final class Fpdf
     }
 
     // Converts UTF-8 strings to codepoints array
-    private function UTF8StringToArray($str)
+    /**
+     * @param mixed $str
+     *
+     * @return array<int>
+     */
+    private function UTF8StringToArray($str): array
     {
         $out = [];
         $len = strlen($str);
