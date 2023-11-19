@@ -929,8 +929,18 @@ class TtFontFile
                 while ($flags & GF_MORE) {
                     ++$nComponentElements;    // number of glyphs referenced at top level
                     $up = unpack('n', substr($data, $pos_in_glyph, 2));
+
+                    if ($up === false) {
+                        throw new CompressionException('unpack() returned false');
+                    }
+
                     $flags = $up[1];
                     $up = unpack('n', substr($data, $pos_in_glyph + 2, 2));
+
+                    if ($up === false) {
+                        throw new CompressionException('unpack() returned false');
+                    }
+
                     $glyphIdx = $up[1];
                     $this->glyphdata[$originalGlyphIdx]['compGlyphs'][] = $glyphIdx;
                     $data = $this->_set_ushort($data, $pos_in_glyph + 2, $glyphSet[$glyphIdx]);
