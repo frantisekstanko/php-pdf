@@ -1085,8 +1085,12 @@ class TtFontFile
         }
     }
 
-    public function getHMTX($numberOfHMetrics, $numGlyphs, &$glyphToChar, $scale): void
-    {
+    public function getHMTX(
+        $numberOfHMetrics,
+        $numGlyphs,
+        &$glyphToChar,
+        $scale,
+    ): void {
         $start = $this->seek_table('hmtx');
         $aw = 0;
         $this->charWidths = str_pad('', 256 * 256 * 2, "\x00");
