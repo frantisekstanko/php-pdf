@@ -1691,6 +1691,9 @@ final class Fpdf
         ob_start();
         imagepng($im);
         $data = ob_get_clean();
+        if ($data === false) {
+            throw new ContentBufferException('ob_get_clean() returned false');
+        }
         imagedestroy($im);
         $f = fopen('php://temp', 'rb+');
         if ($f === false) {
