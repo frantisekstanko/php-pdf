@@ -647,7 +647,11 @@ class TtFontFile
     public function makeSubset(string $file, array &$subset): string
     {
         $this->filename = $file;
-        $this->fh = fopen($file, 'rb') or exit('Can\'t open file ' . $file);
+        $fopen = fopen($file, 'rb');
+        if ($fopen === false) {
+            throw new FileStreamException('fopen() returned false');
+        }
+        $this->fh = $fopen;
         $this->_pos = 0;
         $this->charWidths = '';
         $this->glyphPos = [];
