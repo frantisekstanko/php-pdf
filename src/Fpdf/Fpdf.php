@@ -48,7 +48,7 @@ class Fpdf
      *   n: int,
      * }>
      */
-    protected array $PageInfo;           // page-related data
+    protected array $pageInfo;
     protected float $wPt;
     protected float $hPt;          // dimensions of current page in points
     protected float $w;
@@ -131,7 +131,7 @@ class Fpdf
         $this->currentObjectNumber = 2;
         $this->pdfFileBuffer = '';
         $this->pages = [];
-        $this->PageInfo = [];
+        $this->pageInfo = [];
         $this->fonts = [];
         $this->FontFiles = [];
         $this->encodings = [];
@@ -1321,13 +1321,13 @@ class Fpdf
             $this->currentPageSize = $size;
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
-            $this->PageInfo[$this->currentPage]['size'] = [$this->wPt, $this->hPt];
+            $this->pageInfo[$this->currentPage]['size'] = [$this->wPt, $this->hPt];
         }
         if ($rotation != 0) {
             if ($rotation % 90 != 0) {
                 $this->Error('Incorrect rotation value: ' . $rotation);
             }
-            $this->PageInfo[$this->currentPage]['rotation'] = $rotation;
+            $this->pageInfo[$this->currentPage]['rotation'] = $rotation;
         }
         $this->currentPageOrientation = $rotation;
     }
@@ -1709,12 +1709,12 @@ class Fpdf
                 $s .= '/A <</S /URI /URI ' . $this->_textstring($pl[4]) . '>>>>';
             } else {
                 $l = $this->links[$pl[4]];
-                if (isset($this->PageInfo[$l[0]]['size'])) {
-                    $h = $this->PageInfo[$l[0]]['size'][1];
+                if (isset($this->pageInfo[$l[0]]['size'])) {
+                    $h = $this->pageInfo[$l[0]]['size'][1];
                 } else {
                     $h = ($this->defaultOrientation == 'P') ? $this->defaultPageSize[1] * $this->scaleFactor : $this->defaultPageSize[0] * $this->scaleFactor;
                 }
-                $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->PageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
+                $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->pageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
             }
             $this->_put($s);
             $this->_put('endobj');
@@ -1726,11 +1726,11 @@ class Fpdf
         $this->_newobj();
         $this->_put('<</Type /Page');
         $this->_put('/Parent 1 0 R');
-        if (isset($this->PageInfo[$n]['size'])) {
-            $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $this->PageInfo[$n]['size'][0], $this->PageInfo[$n]['size'][1]));
+        if (isset($this->pageInfo[$n]['size'])) {
+            $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfo[$n]['size'][0], $this->pageInfo[$n]['size'][1]));
         }
-        if (isset($this->PageInfo[$n]['rotation'])) {
-            $this->_put('/Rotate ' . $this->PageInfo[$n]['rotation']);
+        if (isset($this->pageInfo[$n]['rotation'])) {
+            $this->_put('/Rotate ' . $this->pageInfo[$n]['rotation']);
         }
         $this->_put('/Resources 2 0 R');
         if (!empty($this->PageLinks[$n])) {
@@ -1764,7 +1764,7 @@ class Fpdf
         $nb = $this->currentPage;
         $n = $this->currentObjectNumber;
         for ($i = 1; $i <= $nb; ++$i) {
-            $this->PageInfo[$i]['n'] = ++$n;
+            $this->pageInfo[$i]['n'] = ++$n;
             ++$n;
             foreach ($this->PageLinks[$i] as &$pl) {
                 $pl[5] = ++$n;
@@ -1779,7 +1779,7 @@ class Fpdf
         $this->_put('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $nb; ++$i) {
-            $kids .= $this->PageInfo[$i]['n'] . ' 0 R ';
+            $kids .= $this->pageInfo[$i]['n'] . ' 0 R ';
         }
         $kids .= ']';
         $this->_put($kids);
@@ -2313,7 +2313,7 @@ class Fpdf
 
     protected function _putcatalog()
     {
-        $n = $this->PageInfo[1]['n'];
+        $n = $this->pageInfo[1]['n'];
         $this->_put('/Type /Catalog');
         $this->_put('/Pages 1 0 R');
         if ($this->ZoomMode == 'fullpage') {
