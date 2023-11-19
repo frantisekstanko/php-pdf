@@ -86,7 +86,7 @@ class Fpdf
     protected string $drawColor;
     protected string $fillColor;
     protected string $textColor;
-    protected bool $ColorFlag;          // indicates whether fill and text colors are different
+    protected bool $fillColorEqualsTextColor;
     protected bool $WithAlpha;          // indicates whether alpha channel is used
     protected float $ws;                 // word spacing
 
@@ -147,7 +147,7 @@ class Fpdf
         $this->drawColor = '0 G';
         $this->fillColor = '0 g';
         $this->textColor = '0 g';
-        $this->ColorFlag = false;
+        $this->fillColorEqualsTextColor = false;
         $this->WithAlpha = false;
         $this->ws = 0;
         // Scale factor
@@ -344,7 +344,7 @@ class Fpdf
         $dc = $this->drawColor;
         $fc = $this->fillColor;
         $tc = $this->textColor;
-        $cf = $this->ColorFlag;
+        $cf = $this->fillColorEqualsTextColor;
         if ($this->currentPage > 0) {
             // Page footer
             $this->InFooter = true;
@@ -374,7 +374,7 @@ class Fpdf
             $this->_out($fc);
         }
         $this->textColor = $tc;
-        $this->ColorFlag = $cf;
+        $this->fillColorEqualsTextColor = $cf;
         // Page header
         $this->InHeader = true;
         $this->Header();
@@ -398,7 +398,7 @@ class Fpdf
             $this->_out($fc);
         }
         $this->textColor = $tc;
-        $this->ColorFlag = $cf;
+        $this->fillColorEqualsTextColor = $cf;
     }
 
     public function Header()
@@ -438,7 +438,7 @@ class Fpdf
         } else {
             $this->fillColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
         }
-        $this->ColorFlag = ($this->fillColor != $this->textColor);
+        $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
         if ($this->currentPage > 0) {
             $this->_out($this->fillColor);
         }
@@ -452,7 +452,7 @@ class Fpdf
         } else {
             $this->textColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
         }
-        $this->ColorFlag = ($this->fillColor != $this->textColor);
+        $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
     }
 
     public function GetStringWidth($s)
@@ -688,7 +688,7 @@ class Fpdf
         if ($this->isUnderline && $txt != '') {
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
-        if ($this->ColorFlag) {
+        if ($this->fillColorEqualsTextColor) {
             $s = 'q ' . $this->textColor . ' ' . $s . ' Q';
         }
         $this->_out($s);
@@ -759,7 +759,7 @@ class Fpdf
             } else {
                 $dx = $this->cellMargin;
             }
-            if ($this->ColorFlag) {
+            if ($this->fillColorEqualsTextColor) {
                 $s .= 'q ' . $this->textColor . ' ';
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
@@ -792,7 +792,7 @@ class Fpdf
             if ($this->isUnderline) {
                 $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize, $txt);
             }
-            if ($this->ColorFlag) {
+            if ($this->fillColorEqualsTextColor) {
                 $s .= ' Q';
             }
             if ($link) {
