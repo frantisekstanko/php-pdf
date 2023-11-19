@@ -1703,7 +1703,7 @@ final class Fpdf
         return $info;
     }
 
-    private function _out($s): void
+    private function _out(string $s): void
     {
         // Add a line to the document
         if ($this->currentDocumentState == 2) {
@@ -1717,7 +1717,7 @@ final class Fpdf
         }
     }
 
-    private function _put($s): void
+    private function _put(string $s): void
     {
         $this->pdfFileBuffer .= $s . "\n";
     }
@@ -1759,7 +1759,7 @@ final class Fpdf
         $this->_put('endobj');
     }
 
-    private function _putlinks($n): void
+    private function _putlinks(int $n): void
     {
         foreach ($this->pageLinks[$n] as $pl) {
             $this->_newobj();
@@ -1781,7 +1781,7 @@ final class Fpdf
         }
     }
 
-    private function _putpage($n): void
+    private function _putpage(int $n): void
     {
         $this->_newobj();
         $this->_put('<</Type /Page');
