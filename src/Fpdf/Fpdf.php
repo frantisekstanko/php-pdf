@@ -1592,7 +1592,7 @@ final class Fpdf
             }
         } while ($n);
 
-        if ($colspace == 'Indexed' && empty($pal)) {
+        if ($colspace == 'Indexed' && $pal === '') {
             $this->Error('Missing palette in ' . $file);
         }
         $info = ['w' => $w, 'h' => $h, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'FlateDecode', 'dp' => $dp, 'pal' => $pal, 'trns' => $trns];
