@@ -1648,7 +1648,7 @@ final class Fpdf
         while ($n > 0 && !feof($f)) {
             $s = fread($f, $n);
             if ($s === false) {
-                $this->Error('Error while reading stream');
+                throw new FileStreamException('fread() returned false');
             }
             $n -= strlen($s);
             $res .= $s;
