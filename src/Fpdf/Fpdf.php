@@ -68,7 +68,7 @@ class Fpdf
     protected array $fonts;              // array of used fonts
 
     /** @var array<string, array<mixed>> */
-    protected array $FontFiles;          // array of font files
+    protected array $fontFiles;
 
     /** @var array<mixed> */
     protected array $encodings;          // array of encodings
@@ -132,7 +132,7 @@ class Fpdf
         $this->pages = [];
         $this->pageInfo = [];
         $this->fonts = [];
-        $this->FontFiles = [];
+        $this->fontFiles = [];
         $this->encodings = [];
         $this->cmaps = [];
         $this->images = [];
@@ -586,8 +586,8 @@ class Fpdf
         }
         $this->fonts[$fontkey] = ['i' => $i, 'type' => $type, 'name' => $name, 'desc' => $desc, 'up' => $up, 'ut' => $ut, 'cw' => $cw, 'ttffile' => $ttffile, 'fontkey' => $fontkey, 'subset' => $sbarr, 'unifilename' => $unifilename];
 
-        $this->FontFiles[$fontkey] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
-        $this->FontFiles[$file] = ['type' => 'TTF'];
+        $this->fontFiles[$fontkey] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
+        $this->fontFiles[$file] = ['type' => 'TTF'];
         unset($cw);
     }
 
@@ -1781,11 +1781,11 @@ class Fpdf
 
     protected function _putfonts()
     {
-        foreach ($this->FontFiles as $file => $info) {
+        foreach ($this->fontFiles as $file => $info) {
             if (!isset($info['type']) || $info['type'] != 'TTF') {
                 // Font file embedding
                 $this->_newobj();
-                $this->FontFiles[$file]['n'] = $this->currentObjectNumber;
+                $this->fontFiles[$file]['n'] = $this->currentObjectNumber;
                 $font = file_get_contents($this->fontPath . $file, true);
                 if (!$font) {
                     $this->Error('Font file not found: ' . $file);
@@ -1892,7 +1892,7 @@ class Fpdf
                 }
 
                 if (!empty($font['file'])) {
-                    $s .= ' /FontFile' . ($type == 'Type1' ? '' : '2') . ' ' . $this->FontFiles[$font['file']]['n'] . ' 0 R';
+                    $s .= ' /FontFile' . ($type == 'Type1' ? '' : '2') . ' ' . $this->fontFiles[$font['file']]['n'] . ' 0 R';
                 }
                 $this->_put($s . '>>');
                 $this->_put('endobj');
