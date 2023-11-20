@@ -138,7 +138,7 @@ final class Fpdf
      * @param array<float> $size
      */
     public function __construct(
-        Orientation $orientation = Orientation::PORTRAIT,
+        PageOrientation $orientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
         array|string $size = 'A4',
     ) {
@@ -147,13 +147,13 @@ final class Fpdf
         $this->defaultPageSize = $size;
         $this->currentPageSize = $size;
 
-        if ($orientation == Orientation::PORTRAIT) {
+        if ($orientation == PageOrientation::PORTRAIT) {
             $this->defaultOrientation = 'P';
             $this->pageWidth = $size[0];
             $this->pageHeight = $size[1];
         }
 
-        if ($orientation == Orientation::LANDSCAPE) {
+        if ($orientation == PageOrientation::LANDSCAPE) {
             $this->defaultOrientation = 'L';
             $this->pageWidth = $size[1];
             $this->pageHeight = $size[0];

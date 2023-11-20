@@ -6,7 +6,7 @@ namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Fpdf\Fpdf;
-use Stanko\Fpdf\Orientation;
+use Stanko\Fpdf\PageOrientation;
 use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
@@ -27,7 +27,7 @@ final class ZoomTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = new Fpdf(
-            Orientation::PORTRAIT,
+            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
             'a4',
         );
