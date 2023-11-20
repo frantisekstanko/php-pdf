@@ -22,6 +22,7 @@ use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\CopyrightedFontException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontHeadNotFoundException;
+use Stanko\Fpdf\Exception\InvalidGlyphDataException;
 
 // Define the value used in the "head" table of a created TTF file
 // 0x74727565 "true" for Mac
@@ -1017,6 +1018,9 @@ class TtFontFile
     ): void {
         ++$depth;
         $maxdepth = max($maxdepth, $depth);
+        if (is_array($this->glyphdata[$originalGlyphIdx]) === false) {
+            throw new InvalidGlyphDataException();
+        }
         if (count($this->glyphdata[$originalGlyphIdx]['compGlyphs'])) {
             foreach ($this->glyphdata[$originalGlyphIdx]['compGlyphs'] as $glyphIdx) {
                 $this->getGlyphData($glyphIdx, $maxdepth, $depth, $points, $contours);
@@ -1112,6 +1116,9 @@ class TtFontFile
                 $lsb = $this->read_ushort();
             }
             if (isset($glyphToChar[$glyph]) || $glyph == 0) {
+                if (is_array($glyphToChar[$glyph]) === false) {
+                    throw new InvalidGlyphDataException();
+                }
                 if ($aw >= (1 << 15)) {
                     $aw = 0;
                 }    // 1.03 Some (arabic) fonts have -ve values for width
