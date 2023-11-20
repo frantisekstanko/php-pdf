@@ -162,7 +162,6 @@ final class Fpdf
         $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
-        // Page rotation
         $this->currentPageOrientation = 0;
         // Page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
