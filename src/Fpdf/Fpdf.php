@@ -1695,7 +1695,9 @@ final class Fpdf
             $data = $this->compressData($data);
             $entries = '/Filter /FlateDecode ';
         }
+
         $entries .= '/Length ' . strlen($data);
+
         $this->_newobj();
         $this->_put('<<' . $entries . '>>');
         $this->_putstream($data);
