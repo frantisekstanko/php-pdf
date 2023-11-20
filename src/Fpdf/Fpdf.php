@@ -676,7 +676,12 @@ final class Fpdf
         // Output a cell
         $txt = (string) $txt;
         $k = $this->scaleFactor;
-        if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->isDrawingHeader && !$this->isDrawingFooter && $this->AcceptPageBreak()) {
+        if (
+            $this->currentYPosition + $h > $this->pageBreakThreshold
+            && !$this->isDrawingHeader
+            && !$this->isDrawingFooter
+            && $this->AcceptPageBreak()
+        ) {
             // Automatic page break
             $x = $this->currentXPosition;
             $ws = $this->wordSpacing;
