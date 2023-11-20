@@ -88,29 +88,7 @@ final class Fpdf
     private string $currentFontStyle;
     private bool $isUnderline;
 
-    /** @var array{
-     *   i: int,
-     *   type: string,
-     *   name: string,
-     *   desc: array{
-     *      Ascent: int,
-     *      Descent: int,
-     *      CapHeight: int,
-     *      Flags: int,
-     *      FontBBox: string,
-     *      ItalicAngle: int,
-     *      StemV: int,
-     *      MissingWidth: int,
-     *   },
-     *   up: int,
-     *   ut: int,
-     *   ttffile: string,
-     *   fontkey: string,
-     *   subset: array<int, int>,
-     *   cw: array<string>,
-     *   MissingWidth?: int,
-     * }
-     */
+    /** @var array<mixed> */
     private array $currentFont;
     private float $currentFontSizeInPoints;
     private float $currentFontSize;
