@@ -266,10 +266,9 @@ final class Fpdf
         $this->documentMetadata['Subject'] = $subject;
     }
 
-    public function SetKeywords(string $keywords, bool $isUTF8 = false): void
+    public function setKeywords(string $keywords): void
     {
-        // Keywords of document
-        $this->documentMetadata['Keywords'] = $isUTF8 ? $keywords : $this->_UTF8encode($keywords);
+        $this->documentMetadata['Keywords'] = $keywords;
     }
 
     public function SetCreator(string $creator, bool $isUTF8 = false): void

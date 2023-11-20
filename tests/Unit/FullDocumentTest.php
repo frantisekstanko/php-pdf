@@ -71,7 +71,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->SetFontSize(17);
 
         $pdf->Cell(4, 4, 'TEXT');
-        $pdf->SetKeywords('test, unit, pdf', true);
+        $pdf->setKeywords('test, unit, pdf');
 
         $pdf->AddPage();
 
