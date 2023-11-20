@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use Stanko\Fpdf\Fpdf;
+use Stanko\Fpdf\Units;
 
 final class PageSizeTest extends TestCase
 {
@@ -19,7 +20,7 @@ final class PageSizeTest extends TestCase
         string $pageSize,
         string $expectedHash,
     ): void {
-        $pdf = new Fpdf('P', 'mm', $pageSize);
+        $pdf = new Fpdf('P', Units::MILLIMETERS, $pageSize);
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
         $renderedPdf = $pdf->Output('S');

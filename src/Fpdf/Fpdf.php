@@ -134,21 +134,10 @@ final class Fpdf
      */
     public function __construct(
         string $orientation = 'P',
-        string $unit = 'mm',
+        Units $units = Units::MILLIMETERS,
         array|string $size = 'A4',
     ) {
-        // Scale factor
-        if ($unit == 'pt') {
-            $this->scaleFactor = 1;
-        } elseif ($unit == 'mm') {
-            $this->scaleFactor = 72 / 25.4;
-        } elseif ($unit == 'cm') {
-            $this->scaleFactor = 72 / 2.54;
-        } elseif ($unit == 'in') {
-            $this->scaleFactor = 72;
-        } else {
-            $this->Error('Incorrect unit: ' . $unit);
-        }
+        $this->scaleFactor = $units->getScaleFactor();
         $size = $this->_getpagesize($size);
         $this->defaultPageSize = $size;
         $this->currentPageSize = $size;
