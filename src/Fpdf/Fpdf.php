@@ -762,7 +762,12 @@ final class Fpdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->currentFont['subset'][$uni] = $uni;
                 }
-                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k, $txt2);
+                $s .= sprintf(
+                    'BT %.2F %.2F Td %s Tj ET',
+                    ($this->currentXPosition + $dx) * $k,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k,
+                    $txt2
+                );
             }
             if ($this->isUnderline) {
                 $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize, $txt);
