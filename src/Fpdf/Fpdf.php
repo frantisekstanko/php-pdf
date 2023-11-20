@@ -107,7 +107,6 @@ final class Fpdf
      *   ttffile: string,
      *   fontkey: string,
      *   subset: array<int, int>,
-     *   unifilename: string,
      *   cw: array<string>,
      *   MissingWidth?: int,
      * }
@@ -562,7 +561,6 @@ final class Fpdf
             return;
         }
         $ttffilename = $this->fontPath . '/' . $file;
-        $unifilename = $this->fontPath . 'unifont/' . strtolower(substr($file, 0, (int) strpos($file, '.')));
         $name = '';
         $originalsize = 0;
         $ttfstat = stat($ttffilename);
@@ -571,61 +569,28 @@ final class Fpdf
             throw new FontNotFoundException($ttffilename);
         }
 
-        if (file_exists($unifilename . '.mtx.php')) {
-            include $unifilename . '.mtx.php';
-        }
-        if (!isset($type) || !isset($name) || $originalsize != $ttfstat['size']) {
-            $ttffile = $ttffilename;
+        $ttffile = $ttffilename;
 
-            $ttf = new TtFontFile();
-            $ttf->getMetrics($ttffile);
-            $cw = $ttf->charWidths;
-            $name = preg_replace('/[ ()]/', '', $ttf->fullName);
+        $ttf = new TtFontFile();
+        $ttf->getMetrics($ttffile);
+        $cw = $ttf->charWidths;
+        $name = preg_replace('/[ ()]/', '', $ttf->fullName);
 
-            $desc = [
-                'Ascent' => round($ttf->ascent),
-                'Descent' => round($ttf->descent),
-                'CapHeight' => round($ttf->capHeight),
-                'Flags' => $ttf->flags,
-                'FontBBox' => '[' . round($ttf->bbox[0]) . ' ' . round($ttf->bbox[1]) . ' ' . round($ttf->bbox[2]) . ' ' . round($ttf->bbox[3]) . ']',
-                'ItalicAngle' => $ttf->italicAngle,
-                'StemV' => round($ttf->stemV),
-                'MissingWidth' => round($ttf->defaultWidth),
-            ];
-            $up = round($ttf->underlinePosition);
-            $ut = round($ttf->underlineThickness);
-            $originalsize = $ttfstat['size'] + 0;
-            $type = 'TTF';
-            // Generate metrics .php file
-            $s = '<?php' . "\n";
-            $s .= '$name=\'' . $name . "';\n";
-            $s .= '$type=\'' . $type . "';\n";
-            $s .= '$desc=' . var_export($desc, true) . ";\n";
-            $s .= '$up=' . $up . ";\n";
-            $s .= '$ut=' . $ut . ";\n";
-            $s .= '$ttffile=\'' . $ttffile . "';\n";
-            $s .= '$originalsize=' . $originalsize . ";\n";
-            $s .= '$fontkey=\'' . $fontkey . "';\n";
-            $s .= '?>';
-            if (is_writable(dirname($this->fontPath . 'unifont/x'))) {
-                $fh = fopen($unifilename . '.mtx.php', 'w');
-                if ($fh === false) {
-                    throw new FileStreamException('fopen() returned false');
-                }
-                fwrite($fh, $s, strlen($s));
-                fclose($fh);
-                $fh = fopen($unifilename . '.cw.dat', 'wb');
-                if ($fh === false) {
-                    throw new FileStreamException('fopen() returned false');
-                }
-                fwrite($fh, $cw, strlen($cw));
-                fclose($fh);
-                @unlink($unifilename . '.cw127.php');
-            }
-            unset($ttf);
-        } else {
-            $cw = @file_get_contents($unifilename . '.cw.dat');
-        }
+        $desc = [
+            'Ascent' => round($ttf->ascent),
+            'Descent' => round($ttf->descent),
+            'CapHeight' => round($ttf->capHeight),
+            'Flags' => $ttf->flags,
+            'FontBBox' => '[' . round($ttf->bbox[0]) . ' ' . round($ttf->bbox[1]) . ' ' . round($ttf->bbox[2]) . ' ' . round($ttf->bbox[3]) . ']',
+            'ItalicAngle' => $ttf->italicAngle,
+            'StemV' => round($ttf->stemV),
+            'MissingWidth' => round($ttf->defaultWidth),
+        ];
+        $up = round($ttf->underlinePosition);
+        $ut = round($ttf->underlineThickness);
+        $originalsize = $ttfstat['size'] + 0;
+        $type = 'TTF';
+        unset($ttf);
         $i = count($this->usedFonts) + 1;
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $sbarr = range(0, 57);
@@ -643,7 +608,6 @@ final class Fpdf
             'ttffile' => $ttffile,
             'fontkey' => $fontkey,
             'subset' => $sbarr,
-            'unifilename' => $unifilename,
         ];
 
         $this->fontFiles[$fontkey] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
@@ -2120,17 +2084,13 @@ final class Fpdf
      */
     private function _putTTfontwidths(array $font, int $maxUni): void
     {
-        if (file_exists($font['unifilename'] . '.cw127.php')) {
-            include $font['unifilename'] . '.cw127.php';
-            $startcid = 128;
-        } else {
-            $rangeid = 0;
-            $range = [];
-            $prevcid = -2;
-            $prevwidth = -1;
-            $interval = false;
-            $startcid = 1;
-        }
+        $rangeid = 0;
+        $range = [];
+        $prevcid = -2;
+        $prevwidth = -1;
+        $interval = false;
+        $startcid = 1;
+
         $cwlen = $maxUni + 1;
 
         $prevcid = null;
@@ -2141,27 +2101,6 @@ final class Fpdf
 
         // for each character
         for ($cid = $startcid; $cid < $cwlen; ++$cid) {
-            if ($cid == 128 && (!file_exists($font['unifilename'] . '.cw127.php'))) {
-                if (is_writable(dirname($this->fontPath . 'unifont/x'))) {
-                    $fh = fopen($font['unifilename'] . '.cw127.php', 'wb');
-                    if ($fh === false) {
-                        throw new FileStreamException('fopen() returned false');
-                    }
-                    $cw127 = '<?php' . "\n";
-                    $cw127 .= '$rangeid=' . $rangeid . ";\n";
-                    $cw127 .= '$prevcid=' . $prevcid . ";\n";
-                    $cw127 .= '$prevwidth=' . $prevwidth . ";\n";
-                    if ($interval) {
-                        $cw127 .= '$interval=true' . ";\n";
-                    } else {
-                        $cw127 .= '$interval=false' . ";\n";
-                    }
-                    $cw127 .= '$range=' . var_export($range, true) . ";\n";
-                    $cw127 .= '?>';
-                    fwrite($fh, $cw127, strlen($cw127));
-                    fclose($fh);
-                }
-            }
             if ((!isset($font['cw'][$cid * 2]) || !isset($font['cw'][$cid * 2 + 1]))
                 || ($font['cw'][$cid * 2] == "\00" && $font['cw'][$cid * 2 + 1] == "\00")
             ) {
