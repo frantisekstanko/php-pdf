@@ -29,7 +29,8 @@ use Stanko\Fpdf\Exception\InvalidGlyphDataException;
 // 0x00010000 for Windows
 // Either seems to work for a font embedded in a PDF file
 // when read by Adobe Reader on a Windows PC(!)
-define('_TTF_MAC_HEADER', false);
+define('MAC_TTF_HEADER', 0x74727565);
+define('WINDOWS_TTF_HEADER', 0x00010000);
 
 // TrueType Font Glyph operators
 define('GF_WORDS', 1 << 0);
@@ -1295,11 +1296,7 @@ class TtFontFile
         $searchRange = $searchRange * 16;
         $rangeShift = $numTables * 16 - $searchRange;
 
-        if (_TTF_MAC_HEADER) {
-            $stm .= pack('Nnnnn', 0x74727565, $numTables, $searchRange, $entrySelector, $rangeShift);    // Mac
-        } else {
-            $stm .= pack('Nnnnn', 0x00010000, $numTables, $searchRange, $entrySelector, $rangeShift);    // Windows
-        }
+        $stm .= pack('Nnnnn', WINDOWS_TTF_HEADER, $numTables, $searchRange, $entrySelector, $rangeShift);
 
         // Table directory
         $tables = $this->otables;
