@@ -10,6 +10,7 @@ use Stanko\Fpdf\Exception\ContentBufferException;
 use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontNotFoundException;
+use Stanko\Fpdf\Exception\IncorrectFontDefinitionException;
 use Stanko\Fpdf\Exception\IncorrectPngFileException;
 use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
@@ -631,6 +632,9 @@ final class Fpdf
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPage > 0) {
+            if (is_integer($this->currentFont['i']) === false) {
+                throw new IncorrectFontDefinitionException();
+            }
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
@@ -644,6 +648,9 @@ final class Fpdf
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
         if ($this->currentPage > 0) {
+            if (is_integer($this->currentFont['i']) === false) {
+                throw new IncorrectFontDefinitionException();
+            }
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
