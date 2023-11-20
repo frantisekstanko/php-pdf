@@ -63,7 +63,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->SetDrawColor(0, 0, 255);
         $pdf->Rect(120, 120, 100, 100, 'DF');
 
-        $pdf->SetAuthor('Unit test', true);
+        $pdf->SetAuthor('Author is the unit test <3', true);
         $pdf->SetCreator('Nobody', true);
         $pdf->setZoom('fullpage');
         $pdf->setLayout('single');
@@ -120,7 +120,7 @@ final class FullDocumentTest extends PdfTestCase
         $renderedPdf = $pdf->Output('S');
 
         self::assertEquals(
-            '1d6aa70b5b991b5822bcd0a3449be27fad330045',
+            'b57be5326c568495cc8bf7b81f11fd60525fad12',
             sha1($renderedPdf)
         );
     }
