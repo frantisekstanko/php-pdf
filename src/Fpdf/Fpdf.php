@@ -730,7 +730,12 @@ final class Fpdf
     public function Link(float $x, float $y, float $w, float $h, mixed $link): void
     {
         // Put a link on the page
-        $this->pageLinks[$this->currentPage][] = [$x * $this->scaleFactor, $this->pageHeightInPoints - $y * $this->scaleFactor, $w * $this->scaleFactor, $h * $this->scaleFactor, $link];
+        $this->pageLinks[$this->currentPage][] = [
+            $x * $this->scaleFactor,
+            $this->pageHeightInPoints - $y * $this->scaleFactor,
+            $w * $this->scaleFactor,
+            $h * $this->scaleFactor, $link,
+        ];
     }
 
     public function Text(float $x, float $y, string $txt): void
