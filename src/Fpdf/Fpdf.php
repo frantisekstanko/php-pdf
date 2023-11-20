@@ -127,7 +127,7 @@ final class Fpdf
     /** @var array<mixed> */
     private array $documentMetadata;
     private ?DateTimeImmutable $createdAt = null;
-    private string $pdfVersion;
+    private string $pdfVersion = '1.3';
 
     /**
      * @param array<float> $size
@@ -172,8 +172,6 @@ final class Fpdf
         $this->SetDisplayMode('default');
         // Enable compression
         $this->SetCompression(true);
-        // Set default PDF version number
-        $this->pdfVersion = '1.3';
     }
 
     public function SetMargins(
