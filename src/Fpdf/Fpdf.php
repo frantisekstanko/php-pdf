@@ -271,10 +271,9 @@ final class Fpdf
         $this->documentMetadata['Keywords'] = $keywords;
     }
 
-    public function SetCreator(string $creator, bool $isUTF8 = false): void
+    public function setCreator(string $creator): void
     {
-        // Creator of document
-        $this->documentMetadata['Creator'] = $isUTF8 ? $creator : $this->_UTF8encode($creator);
+        $this->documentMetadata['Creator'] = $creator;
     }
 
     public function AliasNbPages(string $alias = '{nb}'): void

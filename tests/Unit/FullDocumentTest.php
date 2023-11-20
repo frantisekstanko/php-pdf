@@ -64,7 +64,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Rect(120, 120, 100, 100, 'DF');
 
         $pdf->setAuthor('Author is the unit test <3');
-        $pdf->SetCreator('Nobody', true);
+        $pdf->setCreator('Nobody');
         $pdf->setZoom('fullpage');
         $pdf->setLayout('single');
 
