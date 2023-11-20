@@ -197,7 +197,7 @@ final class Fpdf
     {
         $this->automaticPageBreaking = true;
         $this->pageBreakMargin = $breakMargin;
-        $this->pageBreakThreshold = $this->pageHeight - $breakMargin;
+        $this->recalculatePageBreakThreshold();
     }
 
     public function disableAutomaticPageBreaking(): void
@@ -1292,7 +1292,7 @@ final class Fpdf
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
             $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
-            $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
+            $this->recalculatePageBreakThreshold();
             $this->currentOrientation = $orientation;
             $this->currentPageSize = [
                 $size[0],
@@ -2358,5 +2358,10 @@ final class Fpdf
         }
 
         throw new UnsupportedImageTypeException();
+    }
+
+    private function recalculatePageBreakThreshold(): void
+    {
+        $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
     }
 }
