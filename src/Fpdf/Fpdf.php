@@ -11,6 +11,7 @@ use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontNotFoundException;
 use Stanko\Fpdf\Exception\IncorrectFontDefinitionException;
+use Stanko\Fpdf\Exception\IncorrectPageLinksException;
 use Stanko\Fpdf\Exception\IncorrectPngFileException;
 use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
@@ -1784,6 +1785,9 @@ final class Fpdf
         if (!empty($this->pageLinks[$n])) {
             $s = '/Annots [';
             foreach ($this->pageLinks[$n] as $pl) {
+                if (array_key_exists(5, $pl) === false) {
+                    throw new IncorrectPageLinksException();
+                }
                 $s .= $pl[5] . ' 0 R ';
             }
             $s .= ']';
