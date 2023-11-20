@@ -46,7 +46,7 @@ final class Fpdf
 
     /** @var array<int, string> */
     private array $rawPageData = [];
-    private DocumentState $currentDocumentState = DocumentState::NOT_INITIALIZED;
+    private DocumentState $currentDocumentState;
     private bool $compressionEnabled;
     private float $scaleFactor;
     private string $defaultOrientation;
@@ -142,6 +142,8 @@ final class Fpdf
         Units $units = Units::MILLIMETERS,
         array|string $size = 'A4',
     ) {
+        $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
+
         $this->scaleFactor = $units->getScaleFactor();
         $size = $this->_getpagesize($size);
         $this->defaultPageSize = $size;
