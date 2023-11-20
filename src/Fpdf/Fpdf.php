@@ -170,7 +170,7 @@ final class Fpdf
         // Automatic page break
         $this->enableAutomaticPageBreaking(2 * $margin);
         // Default display mode
-        $this->SetDisplayMode('default');
+        $this->setDisplayMode('default');
         // Enable compression
         $this->SetCompression(true);
     }
@@ -205,7 +205,7 @@ final class Fpdf
         $this->automaticPageBreaking = false;
     }
 
-    public function SetDisplayMode(float|string $zoom, string $layout = 'default'): void
+    public function setDisplayMode(float|string $zoom, string $layout = 'default'): void
     {
         // Set display mode in viewer
         if ($zoom == 'fullpage' || $zoom == 'fullwidth' || $zoom == 'real' || $zoom == 'default' || !is_string($zoom)) {

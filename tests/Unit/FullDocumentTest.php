@@ -65,7 +65,7 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->SetAuthor('Unit test', true);
         $pdf->SetCreator('Nobody', true);
-        $pdf->SetDisplayMode('fullpage', 'single');
+        $pdf->setDisplayMode('fullpage', 'single');
 
         $pdf->SetFontSize(17);
 
