@@ -378,41 +378,61 @@ final class Fpdf
         return $this->currentPageNumber;
     }
 
-    public function SetDrawColor(int $r, ?int $g = null, ?int $b = null): void
+    public function setDrawColor(Color $color): void
     {
-        // Set color for all stroking operations
-        if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->drawColor = sprintf('%.3F G', $r / 255);
-        } else {
-            $this->drawColor = sprintf('%.3F %.3F %.3F RG', $r / 255, $g / 255, $b / 255);
+        if ($color->isBlack()) {
+            $this->drawColor = sprintf('%.3F G', 0);
+
+            return;
         }
+
+        $this->drawColor = sprintf(
+            '%.3F %.3F %.3F RG',
+            $color->getRed() / 255,
+            $color->getGreen() / 255,
+            $color->getBlue() / 255,
+        );
+
         if ($this->currentPageNumber > 0) {
             $this->_out($this->drawColor);
         }
     }
 
-    public function SetFillColor(int $r, ?int $g = null, ?int $b = null): void
+    public function setFillColor(Color $color): void
     {
-        // Set color for all filling operations
-        if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->fillColor = sprintf('%.3F g', $r / 255);
-        } else {
-            $this->fillColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
+        if ($color->isBlack()) {
+            $this->fillColor = sprintf('%.3F g', 0);
+
+            return;
         }
+
+        $this->fillColor = sprintf(
+            '%.3F %.3F %.3F rg',
+            $color->getRed() / 255,
+            $color->getGreen() / 255,
+            $color->getBlue() / 255,
+        );
+
         $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
         if ($this->currentPageNumber > 0) {
             $this->_out($this->fillColor);
         }
     }
 
-    public function SetTextColor(int $r, ?int $g = null, ?int $b = null): void
+    public function setTextColor(Color $color): void
     {
-        // Set color for text
-        if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->textColor = sprintf('%.3F g', $r / 255);
-        } else {
-            $this->textColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
+        if ($color->isBlack()) {
+            $this->textColor = sprintf('%.3F g', 0);
+
+            return;
         }
+
+        $this->textColor = sprintf(
+            '%.3F %.3F %.3F rg',
+            $color->getRed() / 255,
+            $color->getGreen() / 255,
+            $color->getBlue() / 255,
+        );
         $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
     }
 
