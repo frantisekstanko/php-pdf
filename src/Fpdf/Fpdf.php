@@ -1689,11 +1689,11 @@ final class Fpdf
 
     private function _putstreamobject(string $data): void
     {
+        $entries = '';
+
         if ($this->compressionEnabled) {
             $data = $this->compressData($data);
             $entries = '/Filter /FlateDecode ';
-        } else {
-            $entries = '';
         }
         $entries .= '/Length ' . strlen($data);
         $this->_newobj();
