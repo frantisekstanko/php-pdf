@@ -4,6 +4,7 @@ namespace Stanko\Fpdf;
 
 use DateTimeImmutable;
 use Exception;
+use Stanko\Fpdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Fpdf\Exception\CannotOpenImageFileException;
 use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
@@ -17,6 +18,8 @@ use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Exception\InvalidLayoutModeException;
 use Stanko\Fpdf\Exception\InvalidZoomModeException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
+use Stanko\Fpdf\Exception\NoPageHasBeenAddedException;
+use Stanko\Fpdf\Exception\TheDocumentIsClosedException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownCompressionMethodException;
 use Stanko\Fpdf\Exception\UnknownFilterMethodException;
@@ -43,7 +46,7 @@ final class Fpdf
 
     /** @var array<int, string> */
     private array $rawPageData = [];
-    private int $currentDocumentState = 0;
+    private DocumentState $currentDocumentState = DocumentState::NOT_INITIALIZED;
     private bool $compressionEnabled;
     private float $scaleFactor;
     private string $defaultOrientation;
@@ -290,13 +293,14 @@ final class Fpdf
 
     public function Close(): void
     {
-        // Terminate document
-        if ($this->currentDocumentState == 3) {
+        if ($this->currentDocumentState == DocumentState::CLOSED) {
             return;
         }
+
         if ($this->currentPageNumber == 0) {
             $this->AddPage();
         }
+
         // Page footer
         $this->isDrawingFooter = true;
         $this->Footer();
@@ -312,9 +316,8 @@ final class Fpdf
      */
     public function AddPage(string $orientation = '', array|string $size = '', int $rotation = 0): void
     {
-        // Start a new page
-        if ($this->currentDocumentState == 3) {
-            $this->Error('The document is closed');
+        if ($this->currentDocumentState === DocumentState::CLOSED) {
+            throw new CannotAddPageToClosedDocumentException();
         }
         $family = $this->currentFontFamily;
         $style = $this->currentFontStyle . ($this->isUnderline ? 'U' : '');
@@ -1287,7 +1290,7 @@ final class Fpdf
         ++$this->currentPageNumber;
         $this->rawPageData[$this->currentPageNumber] = '';
         $this->pageLinks[$this->currentPageNumber] = [];
-        $this->currentDocumentState = 2;
+        $this->currentDocumentState = DocumentState::PAGE_STARTED;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
         $this->currentFontFamily = '';
@@ -1334,7 +1337,7 @@ final class Fpdf
 
     private function _endpage(): void
     {
-        $this->currentDocumentState = 1;
+        $this->currentDocumentState = DocumentState::PAGE_ENDED;
     }
 
     private function _isascii(string $s): bool
@@ -1658,15 +1661,24 @@ final class Fpdf
 
     private function _out(string $s): void
     {
-        // Add a line to the document
-        if ($this->currentDocumentState == 2) {
+        if ($this->currentDocumentState === DocumentState::PAGE_STARTED) {
             $this->rawPageData[$this->currentPageNumber] .= $s . "\n";
-        } elseif ($this->currentDocumentState == 1) {
+
+            return;
+        }
+
+        if ($this->currentDocumentState === DocumentState::PAGE_ENDED) {
             $this->_put($s);
-        } elseif ($this->currentDocumentState == 0) {
-            $this->Error('No page has been added yet');
-        } elseif ($this->currentDocumentState == 3) {
-            $this->Error('The document is closed');
+
+            return;
+        }
+
+        if ($this->currentDocumentState === DocumentState::NOT_INITIALIZED) {
+            throw new NoPageHasBeenAddedException();
+        }
+
+        if ($this->currentDocumentState === DocumentState::CLOSED) {
+            throw new TheDocumentIsClosedException();
         }
     }
 
@@ -2325,7 +2337,7 @@ final class Fpdf
         $this->_put('startxref');
         $this->_put((string) $offset);
         $this->_put('%%EOF');
-        $this->currentDocumentState = 3;
+        $this->currentDocumentState = DocumentState::CLOSED;
     }
 
     // ********* NEW FUNCTIONS *********
