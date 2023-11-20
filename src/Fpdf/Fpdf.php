@@ -170,9 +170,7 @@ final class Fpdf
         $this->setTopMargin($margin);
         // Interior cell margin (1 mm)
         $this->cellMargin = $margin / 10;
-        // Line width (0.2 mm)
         $this->lineWidth = .567 / $this->scaleFactor;
-        // Automatic page break
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
     }
