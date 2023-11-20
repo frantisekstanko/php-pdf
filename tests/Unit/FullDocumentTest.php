@@ -81,9 +81,9 @@ final class FullDocumentTest extends TestCase
 
         $pdf->AddPage();
 
-        $pdf->SetLeftMargin(50);
-        $pdf->SetRightMargin(90);
-        $pdf->SetTopMargin(44);
+        $pdf->setLeftMargin(50);
+        $pdf->setRightMargin(90);
+        $pdf->setTopMargin(44);
         $pdf->SetSubject('What is this? I hope this is not Chris.', true);
         $pdf->SetTextColor(0, 255, 100);
         $pdf->SetTitle('at last!', true);

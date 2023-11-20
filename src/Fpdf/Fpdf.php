@@ -161,7 +161,8 @@ final class Fpdf
         $this->currentPageOrientation = 0;
         // Page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
-        $this->SetMargins($margin, $margin);
+        $this->setLeftMargin($margin);
+        $this->setTopMargin($margin);
         // Interior cell margin (1 mm)
         $this->cellMargin = $margin / 10;
         // Line width (0.2 mm)
@@ -174,38 +175,21 @@ final class Fpdf
         $this->SetCompression(true);
     }
 
-    public function SetMargins(
-        float $left,
-        float $top,
-        ?float $right = null,
-    ): void {
-        // Set left, top and right margins
-        $this->leftMargin = $left;
-        $this->topMargin = $top;
-        if ($right === null) {
-            $right = $left;
-        }
-        $this->rightMargin = $right;
-    }
-
-    public function SetLeftMargin(float $margin): void
+    public function setLeftMargin(float $margin): void
     {
-        // Set left margin
         $this->leftMargin = $margin;
         if ($this->currentPage > 0 && $this->currentXPosition < $margin) {
             $this->currentXPosition = $margin;
         }
     }
 
-    public function SetTopMargin(float $margin): void
+    public function setTopMargin(float $margin): void
     {
-        // Set top margin
         $this->topMargin = $margin;
     }
 
-    public function SetRightMargin(float $margin): void
+    public function setRightMargin(float $margin): void
     {
-        // Set right margin
         $this->rightMargin = $margin;
     }
 
