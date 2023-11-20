@@ -20,7 +20,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->SetFont('Open Sans', '', 12);
         $pdf->SetFillColor(50, 10, 5);
         $pdf->AddPage();
-        self::assertEquals(1, $pdf->PageNo());
+        self::assertEquals(1, $pdf->getCurrentPageNumber());
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
         $pdf->Cell(100, 30, 'Cell test !@#* ÁČŠĎ');
         $pdf->Cell(90, 25, 'With border', 1);
@@ -52,7 +52,7 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->MultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
 
-        self::assertEquals(2, $pdf->PageNo());
+        self::assertEquals(2, $pdf->getCurrentPageNumber());
 
         $pdf->SetLineWidth(3);
         $pdf->SetDrawColor(255, 0, 0);
@@ -93,7 +93,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
 
-        self::assertEquals(4, $pdf->PageNo());
+        self::assertEquals(4, $pdf->getCurrentPageNumber());
 
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
@@ -103,7 +103,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
 
-        self::assertEquals(5, $pdf->PageNo());
+        self::assertEquals(5, $pdf->getCurrentPageNumber());
 
         $pdf->disableAutomaticPageBreaking();
 
@@ -115,7 +115,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
 
-        self::assertEquals(5, $pdf->PageNo());
+        self::assertEquals(5, $pdf->getCurrentPageNumber());
 
         $renderedPdf = $pdf->Output('S');
 

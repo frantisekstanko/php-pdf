@@ -389,9 +389,8 @@ final class Fpdf
         // To be implemented in your own inherited class
     }
 
-    public function PageNo(): int
+    public function getCurrentPageNumber(): int
     {
-        // Get current page number
         return $this->currentPageNumber;
     }
 
