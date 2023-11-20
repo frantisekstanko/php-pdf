@@ -75,7 +75,7 @@ final class Fpdf
     private float $topMargin;
     private float $rightMargin;
     private float $pageBreakMargin;
-    private float $cellMargin;
+    private float $interiorCellMargin;
     private float $currentXPosition;
     private float $currentYPosition;
     private float $lastPrintedCellHeight = 0;
@@ -168,8 +168,7 @@ final class Fpdf
         $margin = 28.35 / $this->scaleFactor;
         $this->setLeftMargin($margin);
         $this->setTopMargin($margin);
-        // Interior cell margin (1 mm)
-        $this->cellMargin = $margin / 10;
+        $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
@@ -745,11 +744,11 @@ final class Fpdf
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
-                $dx = $w - $this->cellMargin - $this->GetStringWidth($txt);
+                $dx = $w - $this->interiorCellMargin - $this->GetStringWidth($txt);
             } elseif ($align == 'C') {
                 $dx = ($w - $this->GetStringWidth($txt)) / 2;
             } else {
-                $dx = $this->cellMargin;
+                $dx = $this->interiorCellMargin;
             }
             if ($this->fillColorEqualsTextColor) {
                 $s .= 'q ' . $this->textColor . ' ';
@@ -821,7 +820,7 @@ final class Fpdf
         if ($w == 0) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
-        $wmax = ($w - 2 * $this->cellMargin);
+        $wmax = ($w - 2 * $this->interiorCellMargin);
         // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'utf-8');
@@ -933,7 +932,7 @@ final class Fpdf
             $this->Error('No font has been set');
         }
         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-        $wmax = ($w - 2 * $this->cellMargin);
+        $wmax = ($w - 2 * $this->interiorCellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
@@ -959,7 +958,7 @@ final class Fpdf
                 if ($nl == 1) {
                     $this->currentXPosition = $this->leftMargin;
                     $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                    $wmax = ($w - 2 * $this->cellMargin);
+                    $wmax = ($w - 2 * $this->interiorCellMargin);
                 }
                 ++$nl;
 
@@ -979,7 +978,7 @@ final class Fpdf
                         $this->currentXPosition = $this->leftMargin;
                         $this->currentYPosition += $h;
                         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                        $wmax = ($w - 2 * $this->cellMargin);
+                        $wmax = ($w - 2 * $this->interiorCellMargin);
                         ++$i;
                         ++$nl;
 
@@ -999,7 +998,7 @@ final class Fpdf
                 if ($nl == 1) {
                     $this->currentXPosition = $this->leftMargin;
                     $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                    $wmax = ($w - 2 * $this->cellMargin);
+                    $wmax = ($w - 2 * $this->interiorCellMargin);
                 }
                 ++$nl;
             } else {
