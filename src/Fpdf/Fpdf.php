@@ -207,7 +207,6 @@ final class Fpdf
 
     public function setDisplayMode(float|string $zoom, string $layout = 'default'): void
     {
-        // Set display mode in viewer
         if ($zoom == 'fullpage' || $zoom == 'fullwidth' || $zoom == 'real' || $zoom == 'default' || !is_string($zoom)) {
             $this->zoomMode = $zoom;
         } else {
