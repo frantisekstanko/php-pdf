@@ -23,7 +23,7 @@ final class CompressionTest extends PdfTestCase
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
-        $pdf->SetCompression(true);
+        $pdf->enableCompression();
 
         $renderedPdf = $pdf->Output('S');
 
@@ -41,7 +41,7 @@ final class CompressionTest extends PdfTestCase
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
-        $pdf->SetCompression(false);
+        $pdf->disableCompression();
 
         $renderedPdf = $pdf->Output('S');
 

@@ -169,8 +169,7 @@ final class Fpdf
         $this->lineWidth = .567 / $this->scaleFactor;
         // Automatic page break
         $this->enableAutomaticPageBreaking(2 * $margin);
-        // Enable compression
-        $this->SetCompression(true);
+        $this->enableCompressionIfAvailable();
     }
 
     public function setLeftMargin(float $margin): void
@@ -221,14 +220,18 @@ final class Fpdf
         }
     }
 
-    public function SetCompression(bool $compress): void
+    public function enableCompression(): void
     {
-        // Set page compression
-        if (function_exists('gzcompress')) {
-            $this->compressionEnabled = $compress;
-        } else {
-            $this->compressionEnabled = false;
+        $this->enableCompressionIfAvailable();
+
+        if ($this->compressionEnabled === false) {
+            throw new CompressionException('gzcompress() is not available');
         }
+    }
+
+    public function disableCompression(): void
+    {
+        $this->compressionEnabled = false;
     }
 
     public function SetTitle(string $title, bool $isUTF8 = false): void
@@ -1208,6 +1211,13 @@ final class Fpdf
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    private function enableCompressionIfAvailable(): void
+    {
+        if (function_exists('gzcompress')) {
+            $this->compressionEnabled = true;
+        }
     }
 
     private function _checkoutput(): void
