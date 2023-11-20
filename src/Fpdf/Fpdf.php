@@ -743,7 +743,11 @@ final class Fpdf
                     $this->currentFont['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
-                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k);
+                $s .= sprintf(
+                    'BT 0 Tw %.2F %.2F Td [',
+                    ($this->currentXPosition + $dx) * $k,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k
+                );
                 $t = explode(' ', $txt);
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
