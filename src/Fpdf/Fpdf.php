@@ -681,6 +681,7 @@ final class Fpdf
             && !$this->isDrawingHeader
             && !$this->isDrawingFooter
             && $this->AcceptPageBreak()
+            && $this->currentYPosition !== $this->topMargin
         ) {
             // Automatic page break
             $x = $this->currentXPosition;
