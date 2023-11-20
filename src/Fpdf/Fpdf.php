@@ -42,7 +42,7 @@ final class Fpdf
     private string $pdfFileBuffer = '';
 
     /** @var array<int, string> */
-    private array $pages = [];
+    private array $rawPageData = [];
     private int $currentDocumentState = 0;
     private bool $compressionEnabled;
     private float $scaleFactor;
@@ -1287,7 +1287,7 @@ final class Fpdf
         int $rotation,
     ): void {
         ++$this->currentPage;
-        $this->pages[$this->currentPage] = '';
+        $this->rawPageData[$this->currentPage] = '';
         $this->pageLinks[$this->currentPage] = [];
         $this->currentDocumentState = 2;
         $this->currentXPosition = $this->leftMargin;
@@ -1662,7 +1662,7 @@ final class Fpdf
     {
         // Add a line to the document
         if ($this->currentDocumentState == 2) {
-            $this->pages[$this->currentPage] .= $s . "\n";
+            $this->rawPageData[$this->currentPage] .= $s . "\n";
         } elseif ($this->currentDocumentState == 1) {
             $this->_put($s);
         } elseif ($this->currentDocumentState == 0) {
@@ -1780,11 +1780,11 @@ final class Fpdf
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $alias = $this->UTF8ToUTF16BE($this->aliasForTotalNumberOfPages, false);
             $r = $this->UTF8ToUTF16BE((string) $this->currentPage, false);
-            $this->pages[$n] = str_replace($alias, $r, $this->pages[$n]);
+            $this->rawPageData[$n] = str_replace($alias, $r, $this->rawPageData[$n]);
             // Now repeat for no pages in non-subset fonts
-            $this->pages[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPage, $this->pages[$n]);
+            $this->rawPageData[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPage, $this->rawPageData[$n]);
         }
-        $this->_putstreamobject($this->pages[$n]);
+        $this->_putstreamobject($this->rawPageData[$n]);
         // Link annotations
         $this->_putlinks($n);
     }
