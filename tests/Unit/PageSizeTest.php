@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+namespace Stanko\Fpdf\Tests\Unit;
+
+use DateTimeImmutable;
 use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\Orientation;
+use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
-final class PageSizeTest extends TestCase
+final class PageSizeTest extends PdfTestCase
 {
     /**
      * @testWith

@@ -2,27 +2,20 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
-use Stanko\Fpdf\Fpdf;
+namespace Stanko\Fpdf\Tests\Unit;
 
-final class FullDocumentTest extends TestCase
+use DateTimeImmutable;
+use Stanko\Fpdf\Tests\PdfTestCase;
+
+final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $pdf = new Fpdf();
-        $pdf->setFontPath(__DIR__ . '/../../fonts/OpenSans/');
-
-        $pdf->AddFont(
-            'Open Sans',
-            '',
-            'OpenSans-Regular.ttf',
-            true,
-        );
+        $pdf = $this->createTestPdf();
         $pdf->AddFont(
             'Open Sans Bold',
             '',
             'OpenSans-Bold.ttf',
-            true,
         );
         $pdf->SetFont('Open Sans', '', 12);
         $pdf->SetFillColor(50, 10, 5);
