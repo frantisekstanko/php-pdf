@@ -137,8 +137,6 @@ final class Fpdf
         string $unit = 'mm',
         array|string $size = 'A4',
     ) {
-        // Some checks
-        $this->_dochecks();
         // Scale factor
         if ($unit == 'pt') {
             $this->scaleFactor = 1;
@@ -1228,14 +1226,6 @@ final class Fpdf
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
-    }
-
-    private function _dochecks(): void
-    {
-        // Check availability of mbstring
-        if (!function_exists('mb_strlen')) {
-            $this->Error('mbstring extension is not available');
-        }
     }
 
     private function _checkoutput(): void
