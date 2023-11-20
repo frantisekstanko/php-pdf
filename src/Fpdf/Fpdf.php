@@ -168,7 +168,7 @@ final class Fpdf
         // Line width (0.2 mm)
         $this->lineWidth = .567 / $this->scaleFactor;
         // Automatic page break
-        $this->SetAutoPageBreak(true, 2 * $margin);
+        $this->enableAutomaticPageBreaking(2 * $margin);
         // Default display mode
         $this->SetDisplayMode('default');
         // Enable compression
@@ -193,11 +193,16 @@ final class Fpdf
         $this->rightMargin = $margin;
     }
 
-    public function SetAutoPageBreak(bool $auto, float $margin = 0): void
+    public function enableAutomaticPageBreaking(float $breakMargin = 0): void
     {
-        $this->automaticPageBreak = $auto;
-        $this->pageBreakMargin = $margin;
-        $this->pageBreakThreshold = $this->pageHeight - $margin;
+        $this->automaticPageBreak = true;
+        $this->pageBreakMargin = $breakMargin;
+        $this->pageBreakThreshold = $this->pageHeight - $breakMargin;
+    }
+
+    public function disableAutomaticPageBreaking(): void
+    {
+        $this->automaticPageBreak = false;
     }
 
     public function SetDisplayMode(float|string $zoom, string $layout = 'default'): void

@@ -111,7 +111,7 @@ final class FullDocumentTest extends TestCase
 
         self::assertEquals(5, $pdf->PageNo());
 
-        $pdf->SetAutoPageBreak(false);
+        $pdf->disableAutomaticPageBreaking();
 
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
