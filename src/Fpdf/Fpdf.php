@@ -1059,7 +1059,11 @@ final class Fpdf
 
         // Flowing mode
         if ($y === null) {
-            if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->isDrawingHeader && !$this->isDrawingFooter && $this->AcceptPageBreak()) {
+            if (
+                $this->currentYPosition + $h > $this->pageBreakThreshold
+                && !$this->isDrawingHeader
+                && !$this->isDrawingFooter && $this->AcceptPageBreak()
+            ) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
                 $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
