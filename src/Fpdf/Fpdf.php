@@ -751,7 +751,7 @@ final class Fpdf
                     $tx = '(' . $this->_escape($this->UTF8ToUTF16BE($tx, false)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
-                        $adj = -($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
+                        $adj = - ($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
                         $s .= sprintf('%d(%s) ', $adj, $space);
                     }
                 }
