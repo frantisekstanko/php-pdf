@@ -33,7 +33,7 @@ final class ZoomTest extends PdfTestCase
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
-        $pdf->setDisplayMode($zoom);
+        $pdf->setZoom($zoom);
 
         $renderedPdf = $pdf->Output('S');
 

@@ -121,8 +121,8 @@ final class Fpdf
     private bool $isDrawingHeader = false;
     private bool $isDrawingFooter = false;
     private string $aliasForTotalNumberOfPages;
-    private float|string $zoomMode;
-    private string $layoutMode;
+    private float|string $zoomMode = 'default';
+    private string $layoutMode = 'default';
 
     /** @var array<mixed> */
     private array $documentMetadata;
@@ -169,8 +169,6 @@ final class Fpdf
         $this->lineWidth = .567 / $this->scaleFactor;
         // Automatic page break
         $this->enableAutomaticPageBreaking(2 * $margin);
-        // Default display mode
-        $this->setDisplayMode('default');
         // Enable compression
         $this->SetCompression(true);
     }
@@ -205,13 +203,17 @@ final class Fpdf
         $this->automaticPageBreaking = false;
     }
 
-    public function setDisplayMode(float|string $zoom, string $layout = 'default'): void
+    public function setZoom(float|string $zoom): void
     {
         if ($zoom == 'fullpage' || $zoom == 'fullwidth' || $zoom == 'real' || $zoom == 'default' || !is_string($zoom)) {
             $this->zoomMode = $zoom;
         } else {
             $this->Error('Incorrect zoom display mode: ' . $zoom);
         }
+    }
+
+    public function setLayout(string $layout = 'default'): void
+    {
         if ($layout == 'single' || $layout == 'continuous' || $layout == 'two' || $layout == 'default') {
             $this->layoutMode = $layout;
         } else {

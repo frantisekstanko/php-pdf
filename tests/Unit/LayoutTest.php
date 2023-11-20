@@ -30,7 +30,7 @@ final class LayoutTest extends PdfTestCase
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
-        $pdf->setDisplayMode('default', $layout);
+        $pdf->setLayout($layout);
 
         $renderedPdf = $pdf->Output('S');
 
