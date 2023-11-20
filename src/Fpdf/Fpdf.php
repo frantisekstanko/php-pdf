@@ -332,8 +332,7 @@ final class Fpdf
             // Close page
             $this->_endpage();
         }
-        // Start new page
-        $this->_beginpage($orientation, $size, $rotation);
+        $this->startPage($orientation, $size, $rotation);
         // Set line cap style to square
         $this->_out('2 J');
         // Set line width
@@ -1281,7 +1280,7 @@ final class Fpdf
     /**
      * @param array<float> $size
      */
-    private function _beginpage(
+    private function startPage(
         string $orientation,
         array|string $size,
         int $rotation,
