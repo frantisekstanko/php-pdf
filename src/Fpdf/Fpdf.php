@@ -2156,7 +2156,7 @@ final class Fpdf
             } else {
                 $prevk = $k;
             }
-            $nextk = $k + $cws;
+            $nextk = (int) $k + $cws;
             if (isset($ws['interval'])) {
                 if ($cws > 3) {
                     $prevint = true;
@@ -2172,7 +2172,7 @@ final class Fpdf
         $w = '';
         foreach ($range as $k => $ws) {
             if (count(array_count_values($ws)) == 1) {
-                $w .= ' ' . $k . ' ' . ($k + count($ws) - 1) . ' ' . $ws[0];
+                $w .= ' ' . $k . ' ' . ((int) $k + count($ws) - 1) . ' ' . $ws[0];
             } else {
                 $w .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";
             }
