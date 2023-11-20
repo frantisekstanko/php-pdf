@@ -256,10 +256,9 @@ final class Fpdf
         $this->documentMetadata['Title'] = $title;
     }
 
-    public function SetAuthor(string $author, bool $isUTF8 = false): void
+    public function setAuthor(string $author): void
     {
-        // Author of document
-        $this->documentMetadata['Author'] = $isUTF8 ? $author : $this->_UTF8encode($author);
+        $this->documentMetadata['Author'] = $author;
     }
 
     public function SetSubject(string $subject, bool $isUTF8 = false): void

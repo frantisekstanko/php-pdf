@@ -63,7 +63,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->SetDrawColor(0, 0, 255);
         $pdf->Rect(120, 120, 100, 100, 'DF');
 
-        $pdf->SetAuthor('Author is the unit test <3', true);
+        $pdf->setAuthor('Author is the unit test <3');
         $pdf->SetCreator('Nobody', true);
         $pdf->setZoom('fullpage');
         $pdf->setLayout('single');
