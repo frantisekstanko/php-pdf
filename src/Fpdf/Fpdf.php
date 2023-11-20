@@ -566,6 +566,11 @@ final class Fpdf
         $name = '';
         $originalsize = 0;
         $ttfstat = stat($ttffilename);
+
+        if ($ttfstat === false) {
+            throw new FontNotFoundException($ttffilename);
+        }
+
         if (file_exists($unifilename . '.mtx.php')) {
             include $unifilename . '.mtx.php';
         }
