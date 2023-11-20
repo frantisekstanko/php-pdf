@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
+use RuntimeException;
 use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\PageOrientation;
+use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
@@ -25,14 +27,39 @@ final class PageSizeTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = new Fpdf(
+            $this->pageSizeFromString($pageSize),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-            $pageSize
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
         $renderedPdf = $pdf->Output('S');
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
+    }
+
+    private function pageSizeFromString(string $pageSize): PageSize
+    {
+        if ($pageSize === 'a3') {
+            return PageSize::a3();
+        }
+
+        if ($pageSize === 'a4') {
+            return PageSize::a4();
+        }
+
+        if ($pageSize === 'a5') {
+            return PageSize::a5();
+        }
+
+        if ($pageSize === 'letter') {
+            return PageSize::letter();
+        }
+
+        if ($pageSize === 'legal') {
+            return PageSize::legal();
+        }
+
+        throw new RuntimeException();
     }
 }

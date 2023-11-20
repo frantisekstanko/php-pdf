@@ -23,20 +23,11 @@ use Stanko\Fpdf\Exception\TheDocumentIsClosedException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownCompressionMethodException;
 use Stanko\Fpdf\Exception\UnknownFilterMethodException;
-use Stanko\Fpdf\Exception\UnknownPageSizeException;
 use Stanko\Fpdf\Exception\UnpackException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
 final class Fpdf
 {
-    public const PAGE_SIZES = [
-        'a3' => [841.89, 1190.55],
-        'a4' => [595.28, 841.89],
-        'a5' => [420.94, 595.28],
-        'letter' => [612, 792],
-        'legal' => [612, 1008],
-    ];
-
     private int $currentPageNumber = 0;
     private int $currentObjectNumber = 2;
 
@@ -52,11 +43,8 @@ final class Fpdf
     private PageOrientation $defaultOrientation;
     private PageOrientation $currentOrientation;
 
-    /** @var array<mixed> */
-    private array $defaultPageSize;
-
-    /** @var array{0: float, 1: float} */
-    private array $currentPageSize;
+    private PageSize $defaultPageSize;
+    private PageSize $currentPageSize;
 
     private int $currentPageOrientation;
 
@@ -134,31 +122,27 @@ final class Fpdf
     private ?DateTimeImmutable $createdAt = null;
     private string $pdfVersion = '1.3';
 
-    /**
-     * @param array<float> $size
-     */
     public function __construct(
+        PageSize $pageSize,
         PageOrientation $pageOrientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
-        array|string $size = 'A4',
     ) {
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
 
         $this->scaleFactor = $units->getScaleFactor();
-        $size = $this->_getpagesize($size);
-        $this->defaultPageSize = $size;
-        $this->currentPageSize = $size;
+        $this->defaultPageSize = $pageSize;
+        $this->currentPageSize = $pageSize;
 
         $this->defaultOrientation = $pageOrientation;
 
         if ($pageOrientation == PageOrientation::PORTRAIT) {
-            $this->pageWidth = $size[0];
-            $this->pageHeight = $size[1];
+            $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
+            $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
         }
 
         if ($pageOrientation == PageOrientation::LANDSCAPE) {
-            $this->pageWidth = $size[1];
-            $this->pageHeight = $size[0];
+            $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
+            $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
         }
 
         $this->currentOrientation = $this->defaultOrientation;
@@ -309,11 +293,11 @@ final class Fpdf
         $this->_enddoc();
     }
 
-    /**
-     * @param array<float> $size
-     */
-    public function AddPage(?PageOrientation $pageOrientation = null, array|string $size = '', int $rotation = 0): void
-    {
+    public function AddPage(
+        ?PageOrientation $pageOrientation = null,
+        ?PageSize $pageSize = null,
+        int $rotation = 0,
+    ): void {
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
         }
@@ -333,7 +317,7 @@ final class Fpdf
             // Close page
             $this->_endpage();
         }
-        $this->startPage($pageOrientation, $size, $rotation);
+        $this->startPage($pageOrientation, $pageSize, $rotation);
         // Set line cap style to square
         $this->_out('2 J');
         // Set line width
@@ -1253,36 +1237,9 @@ final class Fpdf
         }
     }
 
-    /**
-     * @param array<float> $size
-     *
-     * @return array{0: float, 1: float}
-     */
-    private function _getpagesize(array|string $size): array
-    {
-        if (is_string($size)) {
-            $size = strtolower($size);
-            if (!isset(self::PAGE_SIZES[$size])) {
-                throw new UnknownPageSizeException($size);
-            }
-            $a = self::PAGE_SIZES[$size];
-
-            return [$a[0] / $this->scaleFactor, $a[1] / $this->scaleFactor];
-        }
-
-        if ($size[0] > $size[1]) {
-            return [$size[1], $size[0]];
-        }
-
-        return $size;
-    }
-
-    /**
-     * @param array<float> $size
-     */
     private function startPage(
         ?PageOrientation $pageOrientation,
-        array|string $size,
+        ?PageSize $pageSize,
         int $rotation,
     ): void {
         ++$this->currentPageNumber;
@@ -1297,29 +1254,32 @@ final class Fpdf
             $pageOrientation = $this->defaultOrientation;
         }
 
-        if ($size == '') {
-            $size = $this->defaultPageSize;
-        } else {
-            $size = $this->_getpagesize($size);
+        if ($pageSize === null) {
+            $pageSize = $this->defaultPageSize;
         }
-        if ($pageOrientation !== $this->currentOrientation || $size[0] != $this->currentPageSize[0] || $size[1] != $this->currentPageSize[1]) {
+        if (
+            $pageOrientation !== $this->currentOrientation
+            || $pageSize->getWidth($this->scaleFactor) != $this->currentPageSize->getWidth($this->scaleFactor)
+            || $pageSize->getHeight($this->scaleFactor) != $this->currentPageSize->getHeight($this->scaleFactor)
+        ) {
             if ($pageOrientation === PageOrientation::PORTRAIT) {
-                $this->pageWidth = $size[0];
-                $this->pageHeight = $size[1];
+                $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
+                $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
             } else {
-                $this->pageWidth = $size[1];
-                $this->pageHeight = $size[0];
+                $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
+                $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
             $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
             $this->recalculatePageBreakThreshold();
             $this->currentOrientation = $pageOrientation;
-            $this->currentPageSize = [
-                $size[0],
-                $size[1],
-            ];
+            $this->currentPageSize = $pageSize;
         }
-        if ($pageOrientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
+        if (
+            $pageOrientation != $this->defaultOrientation
+            || $pageSize->getWidth($this->scaleFactor) != $this->defaultPageSize->getWidth($this->scaleFactor)
+            || $pageSize->getHeight($this->scaleFactor) != $this->defaultPageSize->getHeight($this->scaleFactor)
+        ) {
             $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
         }
         if ($rotation != 0) {
@@ -1745,7 +1705,9 @@ final class Fpdf
                 if (isset($this->pageInfo[$l[0]]['size'])) {
                     $h = $this->pageInfo[$l[0]]['size'][1];
                 } else {
-                    $h = ($this->defaultOrientation === PageOrientation::PORTRAIT) ? $this->defaultPageSize[1] * $this->scaleFactor : $this->defaultPageSize[0] * $this->scaleFactor;
+                    $h = ($this->defaultOrientation === PageOrientation::PORTRAIT) ?
+                        $this->defaultPageSize->getHeight($this->scaleFactor) * $this->scaleFactor :
+                        $this->defaultPageSize->getWidth($this->scaleFactor) * $this->scaleFactor;
                 }
                 $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->pageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
             }
@@ -1821,11 +1783,11 @@ final class Fpdf
         $this->_put($kids);
         $this->_put('/Count ' . $nb);
         if ($this->defaultOrientation === PageOrientation::PORTRAIT) {
-            $w = $this->defaultPageSize[0];
-            $h = $this->defaultPageSize[1];
+            $w = $this->defaultPageSize->getWidth($this->scaleFactor);
+            $h = $this->defaultPageSize->getHeight($this->scaleFactor);
         } else {
-            $w = $this->defaultPageSize[1];
-            $h = $this->defaultPageSize[0];
+            $w = $this->defaultPageSize->getHeight($this->scaleFactor);
+            $h = $this->defaultPageSize->getWidth($this->scaleFactor);
         }
         $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $w * $this->scaleFactor, $h * $this->scaleFactor));
         $this->_put('>>');

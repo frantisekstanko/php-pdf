@@ -44,13 +44,13 @@ final readonly class PageSize
         return new self($width, $height);
     }
 
-    public function getWidth(): float
+    public function getWidth(float $scaleFactor): float
     {
-        return $this->width;
+        return $this->width / $scaleFactor;
     }
 
-    public function getHeight(): float
+    public function getHeight(float $scaleFactor): float
     {
-        return $this->height;
+        return $this->height / $scaleFactor;
     }
 }

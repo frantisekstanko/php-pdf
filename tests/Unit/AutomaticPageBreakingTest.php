@@ -7,6 +7,7 @@ namespace Stanko\Fpdf\Tests\Unit;
 use DateTimeImmutable;
 use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\PageOrientation;
+use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
@@ -77,9 +78,9 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     private function createPdf(): Fpdf
     {
         $pdf = new Fpdf(
+            PageSize::a4(),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-            'A4'
         );
 
         $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
