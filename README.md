@@ -10,3 +10,7 @@ This will be a complete rewrite.
 ```bash
 composer require stanko/fpdf
 ```
+
+### Code quality
+
+Whole codebase currently passes PHPStan at max level, including the tests.
