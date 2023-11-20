@@ -476,11 +476,11 @@ final class Fpdf
         $w = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
-            if (isset($cw[2 * $char])) {
+            if (is_string($cw) && isset($cw[2 * $char])) {
                 $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
-            } elseif ($char > 0 && $char < 128 && isset($cw[chr($char)])) {
+            } elseif (is_array($cw) && $char > 0 && $char < 128 && isset($cw[chr($char)])) {
                 $w += $cw[chr($char)];
-            } elseif (isset($this->currentFont['desc']['MissingWidth'])) {
+            } elseif (is_array($this->currentFont['desc']) && isset($this->currentFont['desc']['MissingWidth'])) {
                 $w += $this->currentFont['desc']['MissingWidth'];
             } elseif (isset($this->currentFont['MissingWidth'])) {
                 $w += $this->currentFont['MissingWidth'];
