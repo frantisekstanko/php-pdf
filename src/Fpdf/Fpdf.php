@@ -251,10 +251,9 @@ final class Fpdf
         $this->compressionEnabled = false;
     }
 
-    public function SetTitle(string $title, bool $isUTF8 = false): void
+    public function setTitle(string $title): void
     {
-        // Title of document
-        $this->documentMetadata['Title'] = $isUTF8 ? $title : $this->_UTF8encode($title);
+        $this->documentMetadata['Title'] = $title;
     }
 
     public function SetAuthor(string $author, bool $isUTF8 = false): void

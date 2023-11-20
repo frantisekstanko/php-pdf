@@ -80,7 +80,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setTopMargin(44);
         $pdf->SetSubject('What is this? I hope this is not Chris.', true);
         $pdf->SetTextColor(0, 255, 100);
-        $pdf->SetTitle('at last!', true);
+        $pdf->setTitle('at last!');
         $pdf->Text(111, 122, 'Hello world!');
         $pdf->Write(55, 'Hello world!');
         $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
