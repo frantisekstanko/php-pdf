@@ -116,7 +116,7 @@ final class Fpdf
 
     /** @var array<int, array{0: int, 1: float}> */
     private array $internalLinks = [];
-    private bool $automaticPageBreak;
+    private bool $automaticPageBreaking;
     private float $pageBreakThreshold;
     private bool $isDrawingHeader = false;
     private bool $isDrawingFooter = false;
@@ -195,14 +195,14 @@ final class Fpdf
 
     public function enableAutomaticPageBreaking(float $breakMargin = 0): void
     {
-        $this->automaticPageBreak = true;
+        $this->automaticPageBreaking = true;
         $this->pageBreakMargin = $breakMargin;
         $this->pageBreakThreshold = $this->pageHeight - $breakMargin;
     }
 
     public function disableAutomaticPageBreaking(): void
     {
-        $this->automaticPageBreak = false;
+        $this->automaticPageBreaking = false;
     }
 
     public function SetDisplayMode(float|string $zoom, string $layout = 'default'): void
@@ -660,7 +660,7 @@ final class Fpdf
     public function AcceptPageBreak(): bool
     {
         // Accept automatic page break or not
-        return $this->automaticPageBreak;
+        return $this->automaticPageBreaking;
     }
 
     public function Cell(
