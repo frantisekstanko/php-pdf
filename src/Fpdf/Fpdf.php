@@ -675,12 +675,6 @@ final class Fpdf
         $this->_out($s);
     }
 
-    public function AcceptPageBreak(): bool
-    {
-        // Accept automatic page break or not
-        return $this->automaticPageBreaking;
-    }
-
     public function Cell(
         float $w,
         float $h = 0,
@@ -698,7 +692,7 @@ final class Fpdf
             $this->currentYPosition + $h > $this->pageBreakThreshold
             && !$this->isDrawingHeader
             && !$this->isDrawingFooter
-            && $this->AcceptPageBreak()
+            && $this->automaticPageBreaking
             && $this->currentYPosition !== $this->topMargin
         ) {
             // Automatic page break
@@ -1091,7 +1085,8 @@ final class Fpdf
             if (
                 $this->currentYPosition + $h > $this->pageBreakThreshold
                 && !$this->isDrawingHeader
-                && !$this->isDrawingFooter && $this->AcceptPageBreak()
+                && !$this->isDrawingFooter
+                && $this->automaticPageBreaking
             ) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
