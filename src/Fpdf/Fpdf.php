@@ -195,7 +195,6 @@ final class Fpdf
 
     public function SetAutoPageBreak(bool $auto, float $margin = 0): void
     {
-        // Set auto page break mode and triggering margin
         $this->automaticPageBreak = $auto;
         $this->pageBreakMargin = $margin;
         $this->pageBreakThreshold = $this->pageHeight - $margin;
