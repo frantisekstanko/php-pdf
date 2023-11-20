@@ -14,6 +14,8 @@ use Stanko\Fpdf\Exception\IncorrectFontDefinitionException;
 use Stanko\Fpdf\Exception\IncorrectPageLinksException;
 use Stanko\Fpdf\Exception\IncorrectPngFileException;
 use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
+use Stanko\Fpdf\Exception\InvalidLayoutModeException;
+use Stanko\Fpdf\Exception\InvalidZoomModeException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownCompressionMethodException;
@@ -204,20 +206,35 @@ final class Fpdf
 
     public function setZoom(float|string $zoom): void
     {
-        if ($zoom == 'fullpage' || $zoom == 'fullwidth' || $zoom == 'real' || $zoom == 'default' || !is_string($zoom)) {
+        if (
+            $zoom == 'fullpage'
+            || $zoom == 'fullwidth'
+            || $zoom == 'real'
+            || $zoom == 'default'
+            || !is_string($zoom)
+        ) {
             $this->zoomMode = $zoom;
-        } else {
-            $this->Error('Incorrect zoom display mode: ' . $zoom);
+
+            return;
         }
+
+        throw new InvalidZoomModeException();
     }
 
     public function setLayout(string $layout = 'default'): void
     {
-        if ($layout == 'single' || $layout == 'continuous' || $layout == 'two' || $layout == 'default') {
+        if (
+            $layout == 'single'
+            || $layout == 'continuous'
+            || $layout == 'two'
+            || $layout == 'default'
+        ) {
             $this->layoutMode = $layout;
-        } else {
-            $this->Error('Incorrect layout display mode: ' . $layout);
+
+            return;
         }
+
+        throw new InvalidLayoutModeException();
     }
 
     public function enableCompression(): void
