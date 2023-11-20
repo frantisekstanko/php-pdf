@@ -32,16 +32,16 @@ final class Fpdf
         'legal' => [612, 1008],
     ];
 
-    private int $currentPage;
-    private int $currentObjectNumber;
+    private int $currentPage = 0;
+    private int $currentObjectNumber = 2;
 
     /** @var array<int, int> */
     private array $objectOffsets;
-    private string $pdfFileBuffer;
+    private string $pdfFileBuffer = '';
 
     /** @var array<int, string> */
-    private array $pages;
-    private int $currentDocumentState;
+    private array $pages = [];
+    private int $currentDocumentState = 0;
     private bool $compressionEnabled;
     private float $scaleFactor;
     private string $defaultOrientation;
@@ -61,7 +61,7 @@ final class Fpdf
      *   n: int,
      * }>
      */
-    private array $pageInfo;
+    private array $pageInfo = [];
     private float $pageWidthInPoints;
     private float $pageHeightInPoints;
     private float $pageWidth;
@@ -73,36 +73,36 @@ final class Fpdf
     private float $cellMargin;
     private float $currentXPosition;
     private float $currentYPosition;
-    private float $lastPrintedCellHeight;
+    private float $lastPrintedCellHeight = 0;
     private float $lineWidth;
     private string $fontPath;
 
     /** @var array<string, array<mixed>> */
-    private array $usedFonts;
+    private array $usedFonts = [];
 
     /** @var array<string, array<mixed>> */
-    private array $fontFiles;
+    private array $fontFiles = [];
 
     /** @var array<mixed> */
-    private array $encodings;
+    private array $encodings = [];
 
-    private string $currentFontFamily;
-    private string $currentFontStyle;
-    private bool $isUnderline;
+    private string $currentFontFamily = '';
+    private string $currentFontStyle = '';
+    private bool $isUnderline = false;
 
     /** @var array<mixed> */
     private array $currentFont;
-    private float $currentFontSizeInPoints;
+    private float $currentFontSizeInPoints = 12;
     private float $currentFontSize;
-    private string $drawColor;
-    private string $fillColor;
-    private string $textColor;
-    private bool $fillColorEqualsTextColor;
-    private bool $transparencyEnabled;
-    private float $wordSpacing;
+    private string $drawColor = '0 G';
+    private string $fillColor = '0 g';
+    private string $textColor = '0 g';
+    private bool $fillColorEqualsTextColor = false;
+    private bool $transparencyEnabled = false;
+    private float $wordSpacing = 0;
 
     /** @var array<string, array<mixed>> */
-    private array $usedImages;
+    private array $usedImages = [];
 
     /** @var array<int, array<int, array{
      *  0: float,
@@ -115,11 +115,11 @@ final class Fpdf
     private array $pageLinks;
 
     /** @var array<int, array{0: int, 1: float}> */
-    private array $internalLinks;
+    private array $internalLinks = [];
     private bool $automaticPageBreak;
     private float $pageBreakThreshold;
-    private bool $isDrawingHeader;
-    private bool $isDrawingFooter;
+    private bool $isDrawingHeader = false;
+    private bool $isDrawingFooter = false;
     private string $aliasForTotalNumberOfPages;
     private float|string $zoomMode;
     private string $layoutMode;
@@ -139,31 +139,6 @@ final class Fpdf
     ) {
         // Some checks
         $this->_dochecks();
-        // Initialization of properties
-        $this->currentDocumentState = 0;
-        $this->currentPage = 0;
-        $this->currentObjectNumber = 2;
-        $this->pdfFileBuffer = '';
-        $this->pages = [];
-        $this->pageInfo = [];
-        $this->usedFonts = [];
-        $this->fontFiles = [];
-        $this->encodings = [];
-        $this->usedImages = [];
-        $this->internalLinks = [];
-        $this->isDrawingHeader = false;
-        $this->isDrawingFooter = false;
-        $this->lastPrintedCellHeight = 0;
-        $this->currentFontFamily = '';
-        $this->currentFontStyle = '';
-        $this->currentFontSizeInPoints = 12;
-        $this->isUnderline = false;
-        $this->drawColor = '0 G';
-        $this->fillColor = '0 g';
-        $this->textColor = '0 g';
-        $this->fillColorEqualsTextColor = false;
-        $this->transparencyEnabled = false;
-        $this->wordSpacing = 0;
         // Scale factor
         if ($unit == 'pt') {
             $this->scaleFactor = 1;
