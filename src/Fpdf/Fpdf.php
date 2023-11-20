@@ -1690,11 +1690,8 @@ final class Fpdf
     private function _putstreamobject(string $data): void
     {
         if ($this->compressionEnabled) {
+            $data = $this->compressData($data);
             $entries = '/Filter /FlateDecode ';
-            $data = gzcompress($data);
-            if ($data === false) {
-                throw new CompressionException('gzcompress() returned false');
-            }
         } else {
             $entries = '';
         }
@@ -1703,6 +1700,16 @@ final class Fpdf
         $this->_put('<<' . $entries . '>>');
         $this->_putstream($data);
         $this->_put('endobj');
+    }
+
+    private function compressData(string $data): string
+    {
+        $data = gzcompress($data);
+        if ($data === false) {
+            throw new CompressionException('gzcompress() returned false');
+        }
+
+        return $data;
     }
 
     private function _putlinks(int $n): void
