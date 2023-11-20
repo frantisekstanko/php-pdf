@@ -1347,7 +1347,10 @@ final class Fpdf
             $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
             $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
             $this->currentOrientation = $orientation;
-            $this->currentPageSize = $size;
+            $this->currentPageSize = [
+                $size[0],
+                $size[1],
+            ];
         }
         if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
             $this->pageInfo[$this->currentPage]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
