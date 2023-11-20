@@ -1009,11 +1009,11 @@ class TtFontFile
 
     // Recursively get composite glyph data
     public function getGlyphData(
-        $originalGlyphIdx,
-        &$maxdepth,
-        &$depth,
-        &$points,
-        &$contours,
+        int $originalGlyphIdx,
+        int &$maxdepth,
+        int &$depth,
+        int &$points,
+        int &$contours,
     ): void {
         ++$depth;
         $maxdepth = max($maxdepth, $depth);
