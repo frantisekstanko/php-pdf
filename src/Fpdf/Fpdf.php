@@ -458,8 +458,7 @@ final class Fpdf
         string $file,
     ): void {
         $fontName = strtolower($fontName);
-        $fontkey = $fontName;
-        if (isset($this->usedFonts[$fontkey])) {
+        if (isset($this->usedFonts[$fontName])) {
             return;
         }
         $ttffilename = $this->fontPath . '/' . $file;
@@ -499,7 +498,7 @@ final class Fpdf
         } else {
             $sbarr = range(0, 32);
         }
-        $this->usedFonts[$fontkey] = [
+        $this->usedFonts[$fontName] = [
             'i' => $i,
             'type' => $type,
             'name' => $name,
@@ -508,11 +507,10 @@ final class Fpdf
             'ut' => $ut,
             'cw' => $cw,
             'ttffile' => $ttffile,
-            'fontkey' => $fontkey,
             'subset' => $sbarr,
         ];
 
-        $this->fontFiles[$fontkey] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
+        $this->fontFiles[$fontName] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
         $this->fontFiles[$file] = ['type' => 'TTF'];
         unset($cw);
     }
