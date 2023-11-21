@@ -1216,23 +1216,23 @@ final class Fpdf
     private function getStringWidth(string $s): float
     {
         $characterWidths = $this->currentFont['cw'];
-        $w = 0;
+        $stringWidth = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
             if (is_string($characterWidths) && isset($characterWidths[2 * $char])) {
-                $w += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
+                $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
             } elseif (is_array($characterWidths) && $char > 0 && $char < 128 && isset($characterWidths[chr($char)])) {
-                $w += $characterWidths[chr($char)];
+                $stringWidth += $characterWidths[chr($char)];
             } elseif (is_array($this->currentFont['desc']) && isset($this->currentFont['desc']['MissingWidth'])) {
-                $w += $this->currentFont['desc']['MissingWidth'];
+                $stringWidth += $this->currentFont['desc']['MissingWidth'];
             } elseif (isset($this->currentFont['MissingWidth'])) {
-                $w += $this->currentFont['MissingWidth'];
+                $stringWidth += $this->currentFont['MissingWidth'];
             } else {
-                $w += 500;
+                $stringWidth += 500;
             }
         }
 
-        return $w * $this->currentFontSize / 1000;
+        return $stringWidth * $this->currentFontSize / 1000;
     }
 
     private function enableCompressionIfAvailable(): void
