@@ -456,7 +456,6 @@ final class Fpdf
         string $fontName,
         string $ttfFile,
     ): void {
-        $fontName = strtolower($fontName);
         if (isset($this->usedFonts[$fontName])) {
             return;
         }
@@ -518,9 +517,8 @@ final class Fpdf
         // Select a font; size given in points
         if ($family == '') {
             $family = $this->currentFontFamily;
-        } else {
-            $family = strtolower($family);
         }
+
         $style = strtoupper($style);
         if (strpos($style, 'U') !== false) {
             $this->isUnderline = true;
