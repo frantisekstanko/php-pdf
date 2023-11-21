@@ -1215,7 +1215,6 @@ final class Fpdf
 
     private function getStringWidth(string $s): float|int
     {
-        // Get width of a string in the current font
         $s = (string) $s;
         $cw = $this->currentFont['cw'];
         $w = 0;
