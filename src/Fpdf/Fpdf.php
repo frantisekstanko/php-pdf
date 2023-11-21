@@ -435,10 +435,10 @@ final class Fpdf
     }
 
     public function drawRectangle(
-        float $x,
-        float $y,
-        float $w,
-        float $h,
+        float $xPosition,
+        float $yPosition,
+        float $width,
+        float $height,
         RectangleStyle $style,
     ): void {
         if ($style == RectangleStyle::FILLED) {
@@ -448,7 +448,7 @@ final class Fpdf
         } else {
             $op = 'S';
         }
-        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $w * $this->scaleFactor, -$h * $this->scaleFactor, $op));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $xPosition * $this->scaleFactor, ($this->pageHeight - $yPosition) * $this->scaleFactor, $width * $this->scaleFactor, -$height * $this->scaleFactor, $op));
     }
 
     public function AddFont(
