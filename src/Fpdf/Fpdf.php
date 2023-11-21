@@ -83,7 +83,6 @@ final class Fpdf
     private array $usedFonts = [];
 
     private string $currentFontFamily = '';
-    private string $currentFontStyle = '';
     private bool $isUnderline = false;
 
     /** @var array<mixed> */
@@ -277,7 +276,6 @@ final class Fpdf
             throw new CannotAddPageToClosedDocumentException();
         }
         $family = $this->currentFontFamily;
-        $style = $this->currentFontStyle . ($this->isUnderline ? 'U' : '');
         $fontsize = $this->currentFontSizeInPoints;
         $lw = $this->lineWidth;
         $dc = $this->drawColor;
@@ -300,7 +298,7 @@ final class Fpdf
         $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         // Set font
         if ($family) {
-            $this->setFont($family, $style, $fontsize);
+            $this->setFont($family, $fontsize);
         }
         // Set colors
         $this->drawColor = $dc;
@@ -324,7 +322,7 @@ final class Fpdf
         }
         // Restore font
         if ($family) {
-            $this->setFont($family, $style, $fontsize);
+            $this->setFont($family, $fontsize);
         }
         // Restore colors
         if ($this->drawColor != $dc) {
@@ -509,37 +507,35 @@ final class Fpdf
         unset($charWidths, $ttfParser);
     }
 
+    public function enableUnderline(): void
+    {
+        $this->isUnderline = true;
+    }
+
+    public function disableUnderline(): void
+    {
+        $this->isUnderline = false;
+    }
+
     public function setFont(
         string $fontName,
-        string $style = '',
         float $size = 0,
     ): void {
-        $style = strtoupper($style);
-        if (strpos($style, 'U') !== false) {
-            $this->isUnderline = true;
-            $style = str_replace('U', '', $style);
-        } else {
-            $this->isUnderline = false;
-        }
-        if ($style == 'IB') {
-            $style = 'BI';
-        }
         if ($size == 0) {
             $size = $this->currentFontSizeInPoints;
         }
         // Test if font is already selected
-        if ($this->currentFontFamily == $fontName && $this->currentFontStyle == $style && $this->currentFontSizeInPoints == $size) {
+        if ($this->currentFontFamily == $fontName && $this->currentFontSizeInPoints == $size) {
             return;
         }
 
         // Test if font is already loaded
-        $fontkey = $fontName . $style;
+        $fontkey = $fontName;
         if (!isset($this->usedFonts[$fontkey])) {
-            $this->Error('Undefined font: ' . $fontName . ' ' . $style);
+            $this->Error('Undefined font: ' . $fontName);
         }
         // Select it
         $this->currentFontFamily = $fontName;
-        $this->currentFontStyle = $style;
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
