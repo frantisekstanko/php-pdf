@@ -133,6 +133,7 @@ final class Fpdf
         $this->currentPageSize = $pageSize;
 
         $this->defaultOrientation = $pageOrientation;
+        $this->currentOrientation = $pageOrientation;
 
         if ($pageOrientation == PageOrientation::PORTRAIT) {
             $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
@@ -144,7 +145,6 @@ final class Fpdf
             $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
         }
 
-        $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
         $this->currentPageRotation = PageRotation::NONE;
