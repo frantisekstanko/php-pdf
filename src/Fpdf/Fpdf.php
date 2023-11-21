@@ -509,8 +509,11 @@ final class Fpdf
         unset($charWidths, $ttfParser);
     }
 
-    public function setFont(string $fontName, string $style = '', float $size = 0): void
-    {
+    public function setFont(
+        string $fontName,
+        string $style = '',
+        float $size = 0,
+    ): void {
         $style = strtoupper($style);
         if (strpos($style, 'U') !== false) {
             $this->isUnderline = true;
