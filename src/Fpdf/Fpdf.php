@@ -458,7 +458,6 @@ final class Fpdf
         string $style = '',
         string $file = '',
     ): void {
-        // Add a TrueType, OpenType or Type1 font
         $family = strtolower($family);
         $style = strtoupper($style);
         if ($style == 'IB') {
