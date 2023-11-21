@@ -454,11 +454,11 @@ final class Fpdf
     }
 
     public function addFont(
-        string $family,
+        string $fontName,
         string $file,
     ): void {
-        $family = strtolower($family);
-        $fontkey = $family;
+        $fontName = strtolower($fontName);
+        $fontkey = $fontName;
         if (isset($this->usedFonts[$fontkey])) {
             return;
         }
