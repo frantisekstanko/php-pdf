@@ -511,10 +511,6 @@ final class Fpdf
 
     public function setFont(string $family, string $style = '', float $size = 0): void
     {
-        if ($family == '') {
-            $family = $this->currentFontFamily;
-        }
-
         $style = strtoupper($style);
         if (strpos($style, 'U') !== false) {
             $this->isUnderline = true;
