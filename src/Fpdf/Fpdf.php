@@ -111,7 +111,7 @@ final class Fpdf
     private float $pageBreakThreshold;
     private bool $isDrawingHeader = false;
     private bool $isDrawingFooter = false;
-    private string $aliasForTotalNumberOfPages;
+    private ?string $aliasForTotalNumberOfPages = null;
     private float|string $zoomMode = 'default';
     private string $layoutMode = 'default';
 
@@ -481,10 +481,10 @@ final class Fpdf
             'MissingWidth' => round($ttfParser->defaultWidth),
         ];
 
-        if (!empty($this->aliasForTotalNumberOfPages)) {
+        $sbarr = range(0, 32);
+
+        if ($this->aliasForTotalNumberOfPages !== null) {
             $sbarr = range(0, 57);
-        } else {
-            $sbarr = range(0, 32);
         }
 
         $fontType = 'TTF';
