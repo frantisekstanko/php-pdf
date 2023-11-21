@@ -411,6 +411,7 @@ final class Fpdf
     public function setLineWidth(float $width): void
     {
         $this->lineWidth = $width;
+
         if ($this->currentPageNumber > 0) {
             $this->_out(sprintf('%.2F w', $width * $this->scaleFactor));
         }
