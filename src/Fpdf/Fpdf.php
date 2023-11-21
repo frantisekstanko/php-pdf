@@ -487,7 +487,7 @@ final class Fpdf
         ];
         $up = round($ttf->underlinePosition);
         $ut = round($ttf->underlineThickness);
-        $originalsize = $ttfstat['size'] + 0;
+        $originalsize = $ttfstat['size'];
         $type = 'TTF';
         unset($ttf);
         $i = count($this->usedFonts) + 1;
