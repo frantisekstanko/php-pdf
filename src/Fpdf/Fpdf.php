@@ -480,7 +480,6 @@ final class Fpdf
             'StemV' => round($ttfParser->stemV),
             'MissingWidth' => round($ttfParser->defaultWidth),
         ];
-        $originalsize = $ttfstat['size'];
         $type = 'TTF';
         $i = count($this->usedFonts) + 1;
         if (!empty($this->aliasForTotalNumberOfPages)) {
@@ -501,7 +500,7 @@ final class Fpdf
         ];
 
         $this->fontFiles[$fontName] = [
-            'length1' => $originalsize,
+            'length1' => $ttfstat['size'],
             'type' => 'TTF',
             'ttffile' => $ttfFile,
         ];
