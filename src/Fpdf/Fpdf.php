@@ -1213,7 +1213,7 @@ final class Fpdf
         $this->metadata = $this->metadata->createdAt($createdAt);
     }
 
-    private function getStringWidth(string $s): float|int
+    private function getStringWidth(string $s): float
     {
         $s = (string) $s;
         $cw = $this->currentFont['cw'];
