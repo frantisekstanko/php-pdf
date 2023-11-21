@@ -525,7 +525,10 @@ final class Fpdf
             $size = $this->currentFontSizeInPoints;
         }
 
-        if ($this->currentFontFamily == $fontName && $this->currentFontSizeInPoints == $size) {
+        if (
+            $this->currentFontFamily == $fontName
+            && $this->currentFontSizeInPoints == $size
+        ) {
             return;
         }
 
