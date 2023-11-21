@@ -84,8 +84,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         );
 
         $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
-        $pdf->setFontPath(__DIR__ . '/../../fonts/OpenSans/');
-        $pdf->addFont('Open Sans', 'OpenSans-Regular.ttf');
+        $pdf->addFont('Open Sans', __DIR__ . '/../../fonts/OpenSans/OpenSans-Regular.ttf');
         $pdf->SetFont('Open Sans');
 
         return $pdf;

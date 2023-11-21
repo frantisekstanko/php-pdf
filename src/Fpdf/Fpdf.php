@@ -67,7 +67,6 @@ final class Fpdf
     private float $currentYPosition;
     private float $lastPrintedCellHeight = 0;
     private float $lineWidth;
-    private string $fontPath;
 
     /** @var array<string, array<mixed>> */
     private array $usedFonts = [];
@@ -461,7 +460,7 @@ final class Fpdf
         if (isset($this->usedFonts[$fontName])) {
             return;
         }
-        $ttffilename = $this->fontPath . '/' . $file;
+        $ttffilename = $file;
         $ttfstat = stat($ttffilename);
 
         if ($ttfstat === false) {
@@ -1182,11 +1181,6 @@ final class Fpdf
         return '';
     }
 
-    public function setFontPath(string $fontPath): void
-    {
-        $this->fontPath = $fontPath;
-    }
-
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->metadata = $this->metadata->createdAt($createdAt);
@@ -1833,7 +1827,7 @@ final class Fpdf
                 // Font file embedding
                 $this->_newobj();
                 $this->fontFiles[$file]['n'] = $this->currentObjectNumber;
-                $font = file_get_contents($this->fontPath . $file, true);
+                $font = file_get_contents($file, true);
                 if (!$font) {
                     throw new FontNotFoundException($file);
                 }
