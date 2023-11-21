@@ -454,20 +454,20 @@ final class Fpdf
 
     public function addFont(
         string $fontName,
-        string $file,
+        string $ttfFile,
     ): void {
         $fontName = strtolower($fontName);
         if (isset($this->usedFonts[$fontName])) {
             return;
         }
-        $ttfstat = stat($file);
+        $ttfstat = stat($ttfFile);
 
         if ($ttfstat === false) {
-            throw new FontNotFoundException($file);
+            throw new FontNotFoundException($ttfFile);
         }
 
         $ttf = new TtFontFile();
-        $ttf->getMetrics($file);
+        $ttf->getMetrics($ttfFile);
         $cw = $ttf->charWidths;
         $name = preg_replace('/[ ()]/', '', $ttf->fullName);
 
@@ -500,16 +500,16 @@ final class Fpdf
             'up' => $up,
             'ut' => $ut,
             'cw' => $cw,
-            'ttffile' => $file,
+            'ttffile' => $ttfFile,
             'subset' => $sbarr,
         ];
 
         $this->fontFiles[$fontName] = [
             'length1' => $originalsize,
             'type' => 'TTF',
-            'ttffile' => $file,
+            'ttffile' => $ttfFile,
         ];
-        $this->fontFiles[$file] = ['type' => 'TTF'];
+        $this->fontFiles[$ttfFile] = ['type' => 'TTF'];
         unset($cw);
     }
 
