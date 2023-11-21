@@ -532,15 +532,14 @@ final class Fpdf
             return;
         }
 
-        $fontkey = $fontName;
-        if (!isset($this->usedFonts[$fontkey])) {
+        if (!isset($this->usedFonts[$fontName])) {
             $this->Error('Undefined font: ' . $fontName);
         }
 
         $this->currentFontFamily = $fontName;
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
-        $this->currentFont = &$this->usedFonts[$fontkey];
+        $this->currentFont = &$this->usedFonts[$fontName];
         if ($this->currentPageNumber > 0) {
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
