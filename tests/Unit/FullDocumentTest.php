@@ -16,7 +16,6 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $this->createTestPdf();
         $pdf->AddFont(
             'Open Sans Bold',
-            '',
             'OpenSans-Bold.ttf',
         );
         $pdf->SetFont('Open Sans', '', 12);
