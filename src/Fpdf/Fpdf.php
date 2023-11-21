@@ -509,7 +509,7 @@ final class Fpdf
         unset($charWidths, $ttfParser);
     }
 
-    public function setFont(string $family, string $style = '', float $size = 0): void
+    public function setFont(string $fontName, string $style = '', float $size = 0): void
     {
         $style = strtoupper($style);
         if (strpos($style, 'U') !== false) {
@@ -525,17 +525,17 @@ final class Fpdf
             $size = $this->currentFontSizeInPoints;
         }
         // Test if font is already selected
-        if ($this->currentFontFamily == $family && $this->currentFontStyle == $style && $this->currentFontSizeInPoints == $size) {
+        if ($this->currentFontFamily == $fontName && $this->currentFontStyle == $style && $this->currentFontSizeInPoints == $size) {
             return;
         }
 
         // Test if font is already loaded
-        $fontkey = $family . $style;
+        $fontkey = $fontName . $style;
         if (!isset($this->usedFonts[$fontkey])) {
-            $this->Error('Undefined font: ' . $family . ' ' . $style);
+            $this->Error('Undefined font: ' . $fontName . ' ' . $style);
         }
         // Select it
-        $this->currentFontFamily = $family;
+        $this->currentFontFamily = $fontName;
         $this->currentFontStyle = $style;
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
