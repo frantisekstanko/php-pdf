@@ -524,17 +524,16 @@ final class Fpdf
         if ($size == 0) {
             $size = $this->currentFontSizeInPoints;
         }
-        // Test if font is already selected
+
         if ($this->currentFontFamily == $fontName && $this->currentFontSizeInPoints == $size) {
             return;
         }
 
-        // Test if font is already loaded
         $fontkey = $fontName;
         if (!isset($this->usedFonts[$fontkey])) {
             $this->Error('Undefined font: ' . $fontName);
         }
-        // Select it
+
         $this->currentFontFamily = $fontName;
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
