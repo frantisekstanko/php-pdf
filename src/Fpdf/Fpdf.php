@@ -45,11 +45,11 @@ final class Fpdf
     private PageSize $defaultPageSize;
     private PageSize $currentPageSize;
 
-    private int $currentPageRotation;
+    private PageRotation $currentPageRotation;
 
     /** @var array<int, array{
      *   size: array<float>,
-     *   rotation: int,
+     *   rotation: PageRotation,
      *   n: int,
      * }>
      */
@@ -147,7 +147,7 @@ final class Fpdf
         $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
-        $this->currentPageRotation = 0;
+        $this->currentPageRotation = PageRotation::NONE;
         $margin = 28.35 / $this->scaleFactor;
         $this->setLeftMargin($margin);
         $this->setTopMargin($margin);
@@ -294,7 +294,7 @@ final class Fpdf
     public function AddPage(
         ?PageOrientation $pageOrientation = null,
         ?PageSize $pageSize = null,
-        int $rotation = 0,
+        ?PageRotation $pageRotation = null,
     ): void {
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
@@ -315,7 +315,7 @@ final class Fpdf
             // Close page
             $this->_endpage();
         }
-        $this->startPage($pageOrientation, $pageSize, $rotation);
+        $this->startPage($pageOrientation, $pageSize, $pageRotation);
         // Set line cap style to square
         $this->_out('2 J');
         // Set line width
@@ -1269,7 +1269,7 @@ final class Fpdf
     private function startPage(
         ?PageOrientation $pageOrientation,
         ?PageSize $pageSize,
-        int $rotation,
+        ?PageRotation $pageRotation,
     ): void {
         ++$this->currentPageNumber;
         $this->rawPageData[$this->currentPageNumber] = '';
@@ -1286,6 +1286,11 @@ final class Fpdf
         if ($pageSize === null) {
             $pageSize = $this->defaultPageSize;
         }
+
+        if ($pageRotation === null) {
+            $pageRotation = PageRotation::NONE;
+        }
+
         if (
             $pageOrientation !== $this->currentOrientation
             || $pageSize->getWidth($this->scaleFactor) != $this->currentPageSize->getWidth($this->scaleFactor)
@@ -1311,13 +1316,9 @@ final class Fpdf
         ) {
             $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
         }
-        if ($rotation != 0) {
-            if ($rotation % 90 != 0) {
-                $this->Error('Incorrect rotation value: ' . $rotation);
-            }
-            $this->pageInfo[$this->currentPageNumber]['rotation'] = $rotation;
-        }
-        $this->currentPageRotation = $rotation;
+
+        $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
+        $this->currentPageRotation = $pageRotation;
     }
 
     private function _endpage(): void
@@ -1753,8 +1754,8 @@ final class Fpdf
         if (isset($this->pageInfo[$n]['size'])) {
             $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfo[$n]['size'][0], $this->pageInfo[$n]['size'][1]));
         }
-        if (isset($this->pageInfo[$n]['rotation'])) {
-            $this->_put('/Rotate ' . $this->pageInfo[$n]['rotation']);
+        if ($this->pageInfo[$n]['rotation'] !== PageRotation::NONE) {
+            $this->_put('/Rotate ' . $this->pageInfo[$n]['rotation']->toInteger());
         }
         $this->_put('/Resources 2 0 R');
         if (!empty($this->pageLinks[$n])) {

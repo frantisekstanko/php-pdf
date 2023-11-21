@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stanko\Fpdf\Tests\Unit;
 
 use Stanko\Fpdf\PageOrientation;
+use Stanko\Fpdf\PageRotation;
 use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\Tests\PdfTestCase;
 
@@ -19,28 +20,28 @@ final class RotationTest extends PdfTestCase
         $pdf->AddPage(
             PageOrientation::PORTRAIT,
             PageSize::a4(),
-            0,
+            PageRotation::NONE,
         );
         $pdf->Cell(100, 100, 'page without rotation');
 
         $pdf->AddPage(
             PageOrientation::PORTRAIT,
             PageSize::a4(),
-            90,
+            PageRotation::CLOCKWISE_90_DEGREES,
         );
         $pdf->Cell(100, 100, 'page rotated clockwise 90 degrees');
 
         $pdf->AddPage(
             PageOrientation::PORTRAIT,
             PageSize::a4(),
-            180,
+            PageRotation::UPSIDE_DOWN,
         );
         $pdf->Cell(100, 100, 'page upside down');
 
         $pdf->AddPage(
             PageOrientation::PORTRAIT,
             PageSize::a4(),
-            270,
+            PageRotation::ANTICLOCKWISE_90_DEGREES,
         );
         $pdf->Cell(100, 100, 'page rotated anticlockwise 90 degrees');
 
