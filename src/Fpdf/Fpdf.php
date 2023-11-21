@@ -89,7 +89,7 @@ final class Fpdf
     private string $drawColor = '0 G';
     private string $fillColor = '0 g';
     private string $textColor = '0 g';
-    private bool $fillColorEqualsTextColor = false;
+    private bool $fillAndTextColorDiffer = false;
     private bool $transparencyEnabled = false;
     private float $wordSpacing = 0;
 
@@ -279,7 +279,7 @@ final class Fpdf
         $dc = $this->drawColor;
         $fc = $this->fillColor;
         $tc = $this->textColor;
-        $cf = $this->fillColorEqualsTextColor;
+        $cf = $this->fillAndTextColorDiffer;
         if ($this->currentPageNumber > 0) {
             // Page footer
             $this->isDrawingFooter = true;
@@ -308,7 +308,7 @@ final class Fpdf
             $this->_out($fc);
         }
         $this->textColor = $tc;
-        $this->fillColorEqualsTextColor = $cf;
+        $this->fillAndTextColorDiffer = $cf;
         // Page header
         $this->isDrawingHeader = true;
         $this->Header();
@@ -332,7 +332,7 @@ final class Fpdf
             $this->_out($fc);
         }
         $this->textColor = $tc;
-        $this->fillColorEqualsTextColor = $cf;
+        $this->fillAndTextColorDiffer = $cf;
     }
 
     public function Header(): void
@@ -385,7 +385,7 @@ final class Fpdf
             $color->getBlue() / 255,
         );
 
-        $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
+        $this->fillAndTextColorDiffer = ($this->fillColor != $this->textColor);
         if ($this->currentPageNumber > 0) {
             $this->_out($this->fillColor);
         }
@@ -405,7 +405,7 @@ final class Fpdf
             $color->getGreen() / 255,
             $color->getBlue() / 255,
         );
-        $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
+        $this->fillAndTextColorDiffer = ($this->fillColor != $this->textColor);
     }
 
     public function SetLineWidth(float $width): void
@@ -617,7 +617,7 @@ final class Fpdf
         if ($this->isUnderline && $txt != '') {
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
-        if ($this->fillColorEqualsTextColor) {
+        if ($this->fillAndTextColorDiffer) {
             $s = 'q ' . $this->textColor . ' ' . $s . ' Q';
         }
         $this->_out($s);
@@ -700,7 +700,7 @@ final class Fpdf
             } else {
                 $dx = $this->interiorCellMargin;
             }
-            if ($this->fillColorEqualsTextColor) {
+            if ($this->fillAndTextColorDiffer) {
                 $s .= 'q ' . $this->textColor . ' ';
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
@@ -742,7 +742,7 @@ final class Fpdf
             if ($this->isUnderline) {
                 $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize, $txt);
             }
-            if ($this->fillColorEqualsTextColor) {
+            if ($this->fillAndTextColorDiffer) {
                 $s .= ' Q';
             }
             if ($link) {
