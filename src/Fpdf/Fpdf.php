@@ -448,7 +448,16 @@ final class Fpdf
         } else {
             $op = 'S';
         }
-        $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $xPosition * $this->scaleFactor, ($this->pageHeight - $yPosition) * $this->scaleFactor, $width * $this->scaleFactor, -$height * $this->scaleFactor, $op));
+        $this->_out(
+            sprintf(
+                '%.2F %.2F %.2F %.2F re %s',
+                $xPosition * $this->scaleFactor,
+                ($this->pageHeight - $yPosition) * $this->scaleFactor,
+                $width * $this->scaleFactor,
+                -$height * $this->scaleFactor,
+                $op,
+            )
+        );
     }
 
     public function AddFont(
