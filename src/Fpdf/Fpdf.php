@@ -540,8 +540,15 @@ final class Fpdf
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontName];
+
         if ($this->currentPageNumber > 0) {
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
+            $this->_out(
+                sprintf(
+                    'BT /F%d %.2F Tf ET',
+                    $this->currentFont['i'],
+                    $this->currentFontSizeInPoints,
+                )
+            );
         }
     }
 
