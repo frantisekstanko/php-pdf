@@ -40,7 +40,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Image(__DIR__ . '/../../images/test.png', 200, 150);
         $pdf->Image(__DIR__ . '/../../images/test.png', 0, 0, 10, 10);
 
-        $pdf->Line(10, 10, 90, 90);
+        $pdf->drawLine(10, 10, 90, 90);
 
         $pdf->Link(50, 50, 100, 100, 'https://nothing.io/');
 

@@ -417,7 +417,7 @@ final class Fpdf
         }
     }
 
-    public function Line(float $x1, float $y1, float $x2, float $y2): void
+    public function drawLine(float $x1, float $y1, float $x2, float $y2): void
     {
         // Draw a line
         $this->_out(sprintf('%.2F %.2F m %.2F %.2F l S', $x1 * $this->scaleFactor, ($this->pageHeight - $y1) * $this->scaleFactor, $x2 * $this->scaleFactor, ($this->pageHeight - $y2) * $this->scaleFactor));
