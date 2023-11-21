@@ -510,7 +510,11 @@ final class Fpdf
             'subset' => $sbarr,
         ];
 
-        $this->fontFiles[$fontName] = ['length1' => $originalsize, 'type' => 'TTF', 'ttffile' => $ttffile];
+        $this->fontFiles[$fontName] = [
+            'length1' => $originalsize,
+            'type' => 'TTF',
+            'ttffile' => $ttffile,
+        ];
         $this->fontFiles[$file] = ['type' => 'TTF'];
         unset($cw);
     }
