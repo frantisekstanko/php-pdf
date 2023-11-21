@@ -1816,15 +1816,6 @@ final class Fpdf
     private function _putfonts(): void
     {
         foreach ($this->usedFonts as $k => $font) {
-            // Encoding
-            if (isset($font['diff'])) {
-                if (!isset($this->encodings[$font['enc']])) {
-                    $this->_newobj();
-                    $this->appendIntoBuffer('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [' . $font['diff'] . ']>>');
-                    $this->appendIntoBuffer('endobj');
-                    $this->encodings[$font['enc']] = $this->currentObjectNumber;
-                }
-            }
             // Font object
             $type = $font['type'];
             $name = $font['name'];
@@ -1843,11 +1834,7 @@ final class Fpdf
                 $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 2) . ' 0 R');
 
                 if ($font['enc']) {
-                    if (isset($font['diff'])) {
-                        $this->appendIntoBuffer('/Encoding ' . $this->encodings[$font['enc']] . ' 0 R');
-                    } else {
-                        $this->appendIntoBuffer('/Encoding /WinAnsiEncoding');
-                    }
+                    $this->appendIntoBuffer('/Encoding /WinAnsiEncoding');
                 }
 
                 $this->appendIntoBuffer('>>');
