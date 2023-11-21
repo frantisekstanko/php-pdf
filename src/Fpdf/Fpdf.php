@@ -261,13 +261,11 @@ final class Fpdf
 
     public function AliasNbPages(string $alias = '{nb}'): void
     {
-        // Define an alias for total number of pages
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
     public function Error(string $msg): never
     {
-        // Fatal error
         throw new Exception('tFPDF error: ' . $msg);
     }
 
