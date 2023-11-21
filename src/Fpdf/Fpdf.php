@@ -480,11 +480,8 @@ final class Fpdf
             'StemV' => round($ttfParser->stemV),
             'MissingWidth' => round($ttfParser->defaultWidth),
         ];
-        $up = round($ttfParser->underlinePosition);
-        $ut = round($ttfParser->underlineThickness);
         $originalsize = $ttfstat['size'];
         $type = 'TTF';
-        unset($ttfParser);
         $i = count($this->usedFonts) + 1;
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $sbarr = range(0, 57);
@@ -496,8 +493,8 @@ final class Fpdf
             'type' => $type,
             'name' => $name,
             'attributes' => $attributes,
-            'up' => $up,
-            'ut' => $ut,
+            'up' => round($ttfParser->underlinePosition),
+            'ut' => round($ttfParser->underlineThickness),
             'cw' => $charWidths,
             'ttffile' => $ttfFile,
             'subset' => $sbarr,
@@ -509,7 +506,7 @@ final class Fpdf
             'ttffile' => $ttfFile,
         ];
         $this->fontFiles[$ttfFile] = ['type' => 'TTF'];
-        unset($charWidths);
+        unset($charWidths, $ttfParser);
     }
 
     public function SetFont(string $family, string $style = '', float $size = 0): void
