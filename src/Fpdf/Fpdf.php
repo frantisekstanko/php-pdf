@@ -1813,184 +1813,128 @@ final class Fpdf
     private function _putfonts(): void
     {
         foreach ($this->usedFonts as $k => $font) {
-            // Font object
-            $type = $font['type'];
-            $name = $font['name'];
-            if ($type == 'Type1' || $type == 'TrueType') {
-                // Additional Type1 or TrueType/OpenType font
-                if (isset($font['subsetted']) && $font['subsetted']) {
-                    $name = 'AAAAAA+' . $name;
-                }
-                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Type /Font');
-                $this->appendIntoBuffer('/BaseFont /' . $name);
-                $this->appendIntoBuffer('/Subtype /' . $type);
-                $this->appendIntoBuffer('/FirstChar 32 /LastChar 255');
-                $this->appendIntoBuffer('/Widths ' . ($this->currentObjectNumber + 1) . ' 0 R');
-                $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 2) . ' 0 R');
+            $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
 
-                if ($font['enc']) {
-                    $this->appendIntoBuffer('/Encoding /WinAnsiEncoding');
-                }
-
-                $this->appendIntoBuffer('>>');
-                $this->appendIntoBuffer('endobj');
-                // Widths
-                $this->_newobj();
-                $cw = $font['cw'];
-                $s = '[';
-                for ($i = 32; $i <= 255; ++$i) {
-                    $s .= $cw[chr($i)] . ' ';
-                }
-                $this->appendIntoBuffer($s . ']');
-                $this->appendIntoBuffer('endobj');
-                // Descriptor
-                $this->_newobj();
-                $s = '<</Type /FontDescriptor /FontName /' . $name;
-                foreach ($font['attributes'] as $k => $v) {
-                    $s .= ' /' . $k . ' ' . $v;
-                }
-
-                if (!empty($font['file'])) {
-                    $s .= ' /FontFile' . ($type == 'Type1' ? '' : '2') . ' ' . $this->fontFiles[$font['file']]['n'] . ' 0 R';
-                }
-                $this->appendIntoBuffer($s . '>>');
-                $this->appendIntoBuffer('endobj');
+            $ttf = new TtfParser();
+            $fontname = 'MPDFAA+' . $font['name'];
+            $subset = $font['subset'];
+            unset($subset[0]);
+            $ttfontstream = $ttf->makeSubset($font['ttffile'], $subset);
+            $ttfontsize = strlen($ttfontstream);
+            $fontstream = gzcompress($ttfontstream);
+            if ($fontstream === false) {
+                throw new CompressionException('gzcompress() returned false');
             }
-            // TrueType embedded SUBSETS or FULL
-            elseif ($type == 'TTF') {
-                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
+            $codeToGlyph = $ttf->codeToGlyph;
+            unset($codeToGlyph[0]);
 
-                $ttf = new TtfParser();
-                $fontname = 'MPDFAA+' . $font['name'];
-                $subset = $font['subset'];
-                unset($subset[0]);
-                $ttfontstream = $ttf->makeSubset($font['ttffile'], $subset);
-                $ttfontsize = strlen($ttfontstream);
-                $fontstream = gzcompress($ttfontstream);
-                if ($fontstream === false) {
-                    throw new CompressionException('gzcompress() returned false');
-                }
-                $codeToGlyph = $ttf->codeToGlyph;
-                unset($codeToGlyph[0]);
+            // Type0 Font
+            // A composite font - a font composed of other fonts, organized hierarchically
+            $this->_newobj();
+            $this->appendIntoBuffer('<</Type /Font');
+            $this->appendIntoBuffer('/Subtype /Type0');
+            $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
+            $this->appendIntoBuffer('/Encoding /Identity-H');
+            $this->appendIntoBuffer('/DescendantFonts [' . ($this->currentObjectNumber + 1) . ' 0 R]');
+            $this->appendIntoBuffer('/ToUnicode ' . ($this->currentObjectNumber + 2) . ' 0 R');
+            $this->appendIntoBuffer('>>');
+            $this->appendIntoBuffer('endobj');
 
-                // Type0 Font
-                // A composite font - a font composed of other fonts, organized hierarchically
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Type /Font');
-                $this->appendIntoBuffer('/Subtype /Type0');
-                $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
-                $this->appendIntoBuffer('/Encoding /Identity-H');
-                $this->appendIntoBuffer('/DescendantFonts [' . ($this->currentObjectNumber + 1) . ' 0 R]');
-                $this->appendIntoBuffer('/ToUnicode ' . ($this->currentObjectNumber + 2) . ' 0 R');
-                $this->appendIntoBuffer('>>');
-                $this->appendIntoBuffer('endobj');
-
-                // CIDFontType2
-                // A CIDFont whose glyph descriptions are based on TrueType font technology
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Type /Font');
-                $this->appendIntoBuffer('/Subtype /CIDFontType2');
-                $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
-                $this->appendIntoBuffer('/CIDSystemInfo ' . ($this->currentObjectNumber + 2) . ' 0 R');
-                $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 3) . ' 0 R');
-                if (isset($font['attributes']['MissingWidth'])) {
-                    $this->_out('/DW ' . $font['attributes']['MissingWidth'] . '');
-                }
-
-                $this->_putTTfontwidths($font, $ttf->maxUni);
-
-                $this->appendIntoBuffer('/CIDToGIDMap ' . ($this->currentObjectNumber + 4) . ' 0 R');
-                $this->appendIntoBuffer('>>');
-                $this->appendIntoBuffer('endobj');
-
-                // ToUnicode
-                $this->_newobj();
-                $toUni = "/CIDInit /ProcSet findresource begin\n";
-                $toUni .= "12 dict begin\n";
-                $toUni .= "begincmap\n";
-                $toUni .= "/CIDSystemInfo\n";
-                $toUni .= "<</Registry (Adobe)\n";
-                $toUni .= "/Ordering (UCS)\n";
-                $toUni .= "/Supplement 0\n";
-                $toUni .= ">> def\n";
-                $toUni .= "/CMapName /Adobe-Identity-UCS def\n";
-                $toUni .= "/CMapType 2 def\n";
-                $toUni .= "1 begincodespacerange\n";
-                $toUni .= "<0000> <FFFF>\n";
-                $toUni .= "endcodespacerange\n";
-                $toUni .= "1 beginbfrange\n";
-                $toUni .= "<0000> <FFFF> <0000>\n";
-                $toUni .= "endbfrange\n";
-                $toUni .= "endcmap\n";
-                $toUni .= "CMapName currentdict /CMap defineresource pop\n";
-                $toUni .= "end\n";
-                $toUni .= 'end';
-                $this->appendIntoBuffer('<</Length ' . strlen($toUni) . '>>');
-                $this->_putstream($toUni);
-                $this->appendIntoBuffer('endobj');
-
-                // CIDSystemInfo dictionary
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Registry (Adobe)');
-                $this->appendIntoBuffer('/Ordering (UCS)');
-                $this->appendIntoBuffer('/Supplement 0');
-                $this->appendIntoBuffer('>>');
-                $this->appendIntoBuffer('endobj');
-
-                // Font descriptor
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Type /FontDescriptor');
-                $this->appendIntoBuffer('/FontName /' . $fontname);
-                foreach ($font['attributes'] as $kd => $v) {
-                    if ($kd == 'Flags') {
-                        $v = $v | 4;
-                        $v = $v & ~32;
-                    }    // SYMBOLIC font flag
-                    $this->_out(' /' . $kd . ' ' . $v);
-                }
-                $this->appendIntoBuffer('/FontFile2 ' . ($this->currentObjectNumber + 2) . ' 0 R');
-                $this->appendIntoBuffer('>>');
-                $this->appendIntoBuffer('endobj');
-
-                // Embed CIDToGIDMap
-                // A specification of the mapping from CIDs to glyph indices
-                $cidtogidmap = '';
-                $cidtogidmap = str_pad('', 256 * 256 * 2, "\x00");
-                foreach ($codeToGlyph as $cc => $glyph) {
-                    $cidtogidmap[$cc * 2] = chr($glyph >> 8);
-                    $cidtogidmap[$cc * 2 + 1] = chr($glyph & 0xFF);
-                }
-                $cidtogidmap = gzcompress($cidtogidmap);
-                if ($cidtogidmap === false) {
-                    throw new CompressionException('gzcompress() returned false');
-                }
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Length ' . strlen($cidtogidmap) . '');
-                $this->appendIntoBuffer('/Filter /FlateDecode');
-                $this->appendIntoBuffer('>>');
-                $this->_putstream($cidtogidmap);
-                $this->appendIntoBuffer('endobj');
-
-                // Font file
-                $this->_newobj();
-                $this->appendIntoBuffer('<</Length ' . strlen($fontstream));
-                $this->appendIntoBuffer('/Filter /FlateDecode');
-                $this->appendIntoBuffer('/Length1 ' . $ttfontsize);
-                $this->appendIntoBuffer('>>');
-                $this->_putstream($fontstream);
-                $this->appendIntoBuffer('endobj');
-                unset($ttf);
-            } else {
-                // Allow for additional types
-                $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
-                $mtd = '_put' . strtolower($type);
-                if (!method_exists($this, $mtd)) {
-                    $this->Error('Unsupported font type: ' . $type);
-                }
-                $this->{$mtd}($font);
+            // CIDFontType2
+            // A CIDFont whose glyph descriptions are based on TrueType font technology
+            $this->_newobj();
+            $this->appendIntoBuffer('<</Type /Font');
+            $this->appendIntoBuffer('/Subtype /CIDFontType2');
+            $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
+            $this->appendIntoBuffer('/CIDSystemInfo ' . ($this->currentObjectNumber + 2) . ' 0 R');
+            $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 3) . ' 0 R');
+            if (isset($font['attributes']['MissingWidth'])) {
+                $this->_out('/DW ' . $font['attributes']['MissingWidth'] . '');
             }
+
+            $this->_putTTfontwidths($font, $ttf->maxUni);
+
+            $this->appendIntoBuffer('/CIDToGIDMap ' . ($this->currentObjectNumber + 4) . ' 0 R');
+            $this->appendIntoBuffer('>>');
+            $this->appendIntoBuffer('endobj');
+
+            // ToUnicode
+            $this->_newobj();
+            $toUni = "/CIDInit /ProcSet findresource begin\n";
+            $toUni .= "12 dict begin\n";
+            $toUni .= "begincmap\n";
+            $toUni .= "/CIDSystemInfo\n";
+            $toUni .= "<</Registry (Adobe)\n";
+            $toUni .= "/Ordering (UCS)\n";
+            $toUni .= "/Supplement 0\n";
+            $toUni .= ">> def\n";
+            $toUni .= "/CMapName /Adobe-Identity-UCS def\n";
+            $toUni .= "/CMapType 2 def\n";
+            $toUni .= "1 begincodespacerange\n";
+            $toUni .= "<0000> <FFFF>\n";
+            $toUni .= "endcodespacerange\n";
+            $toUni .= "1 beginbfrange\n";
+            $toUni .= "<0000> <FFFF> <0000>\n";
+            $toUni .= "endbfrange\n";
+            $toUni .= "endcmap\n";
+            $toUni .= "CMapName currentdict /CMap defineresource pop\n";
+            $toUni .= "end\n";
+            $toUni .= 'end';
+            $this->appendIntoBuffer('<</Length ' . strlen($toUni) . '>>');
+            $this->_putstream($toUni);
+            $this->appendIntoBuffer('endobj');
+
+            // CIDSystemInfo dictionary
+            $this->_newobj();
+            $this->appendIntoBuffer('<</Registry (Adobe)');
+            $this->appendIntoBuffer('/Ordering (UCS)');
+            $this->appendIntoBuffer('/Supplement 0');
+            $this->appendIntoBuffer('>>');
+            $this->appendIntoBuffer('endobj');
+
+            // Font descriptor
+            $this->_newobj();
+            $this->appendIntoBuffer('<</Type /FontDescriptor');
+            $this->appendIntoBuffer('/FontName /' . $fontname);
+            foreach ($font['attributes'] as $kd => $v) {
+                if ($kd == 'Flags') {
+                    $v = $v | 4;
+                    $v = $v & ~32;
+                }    // SYMBOLIC font flag
+                $this->_out(' /' . $kd . ' ' . $v);
+            }
+            $this->appendIntoBuffer('/FontFile2 ' . ($this->currentObjectNumber + 2) . ' 0 R');
+            $this->appendIntoBuffer('>>');
+            $this->appendIntoBuffer('endobj');
+
+            // Embed CIDToGIDMap
+            // A specification of the mapping from CIDs to glyph indices
+            $cidtogidmap = '';
+            $cidtogidmap = str_pad('', 256 * 256 * 2, "\x00");
+            foreach ($codeToGlyph as $cc => $glyph) {
+                $cidtogidmap[$cc * 2] = chr($glyph >> 8);
+                $cidtogidmap[$cc * 2 + 1] = chr($glyph & 0xFF);
+            }
+            $cidtogidmap = gzcompress($cidtogidmap);
+            if ($cidtogidmap === false) {
+                throw new CompressionException('gzcompress() returned false');
+            }
+            $this->_newobj();
+            $this->appendIntoBuffer('<</Length ' . strlen($cidtogidmap) . '');
+            $this->appendIntoBuffer('/Filter /FlateDecode');
+            $this->appendIntoBuffer('>>');
+            $this->_putstream($cidtogidmap);
+            $this->appendIntoBuffer('endobj');
+
+            // Font file
+            $this->_newobj();
+            $this->appendIntoBuffer('<</Length ' . strlen($fontstream));
+            $this->appendIntoBuffer('/Filter /FlateDecode');
+            $this->appendIntoBuffer('/Length1 ' . $ttfontsize);
+            $this->appendIntoBuffer('>>');
+            $this->_putstream($fontstream);
+            $this->appendIntoBuffer('endobj');
+            unset($ttf);
         }
     }
 
