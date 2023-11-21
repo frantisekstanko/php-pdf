@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Stanko\Fpdf\Tests\Unit;
+
+use Stanko\Fpdf\PageOrientation;
+use Stanko\Fpdf\PageSize;
+use Stanko\Fpdf\Tests\PdfTestCase;
+
+final class RotationTest extends PdfTestCase
+{
+    public function testRotations(): void
+    {
+        $expectedHash = 'fadf6d3b138f91e79c1cfd8886f0c2d28e41af5a';
+
+        $pdf = $this->createTestPdf();
+
+        $pdf->AddPage(
+            PageOrientation::PORTRAIT,
+            PageSize::a4(),
+            0,
+        );
+        $pdf->Cell(100, 100, 'page without rotation');
+
+        $pdf->AddPage(
+            PageOrientation::PORTRAIT,
+            PageSize::a4(),
+            90,
+        );
+        $pdf->Cell(100, 100, 'page rotated clockwise 90 degrees');
+
+        $pdf->AddPage(
+            PageOrientation::PORTRAIT,
+            PageSize::a4(),
+            180,
+        );
+        $pdf->Cell(100, 100, 'page upside down');
+
+        $pdf->AddPage(
+            PageOrientation::PORTRAIT,
+            PageSize::a4(),
+            270,
+        );
+        $pdf->Cell(100, 100, 'page rotated anticlockwise 90 degrees');
+
+        $renderedPdf = $pdf->Output('S');
+
+        self::assertEquals($expectedHash, sha1($renderedPdf));
+    }
+}
