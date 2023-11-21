@@ -1107,25 +1107,21 @@ final class Fpdf
 
     public function GetPageWidth(): float
     {
-        // Get current page width
         return $this->pageWidth;
     }
 
     public function GetPageHeight(): float
     {
-        // Get current page height
         return $this->pageHeight;
     }
 
     public function GetX(): float
     {
-        // Get x position
         return $this->currentXPosition;
     }
 
     public function SetX(float $x): void
     {
-        // Set x position
         if ($x >= 0) {
             $this->currentXPosition = $x;
         } else {
@@ -1135,7 +1131,6 @@ final class Fpdf
 
     public function GetY(): float
     {
-        // Get y position
         return $this->currentYPosition;
     }
 
