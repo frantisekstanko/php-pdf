@@ -590,8 +590,13 @@ final class Fpdf
         $this->internalLinks[$link] = [$page, $y];
     }
 
-    public function Link(float $x, float $y, float $w, float $h, mixed $link): void
-    {
+    public function Link(
+        float $x,
+        float $y,
+        float $w,
+        float $h,
+        mixed $link,
+    ): void {
         // Put a link on the page
         $this->pageLinks[$this->currentPageNumber][] = [
             $x * $this->scaleFactor,
