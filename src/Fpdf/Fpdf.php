@@ -546,9 +546,6 @@ final class Fpdf
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
         if ($this->currentPageNumber > 0) {
-            if (is_integer($this->currentFont['i']) === false) {
-                throw new IncorrectFontDefinitionException();
-            }
             $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->currentFont['i'], $this->currentFontSizeInPoints));
         }
     }
