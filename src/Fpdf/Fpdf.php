@@ -435,30 +435,6 @@ final class Fpdf
         $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
     }
 
-    public function GetStringWidth(string $s): float|int
-    {
-        // Get width of a string in the current font
-        $s = (string) $s;
-        $cw = $this->currentFont['cw'];
-        $w = 0;
-        $unicode = $this->UTF8StringToArray($s);
-        foreach ($unicode as $char) {
-            if (is_string($cw) && isset($cw[2 * $char])) {
-                $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
-            } elseif (is_array($cw) && $char > 0 && $char < 128 && isset($cw[chr($char)])) {
-                $w += $cw[chr($char)];
-            } elseif (is_array($this->currentFont['desc']) && isset($this->currentFont['desc']['MissingWidth'])) {
-                $w += $this->currentFont['desc']['MissingWidth'];
-            } elseif (isset($this->currentFont['MissingWidth'])) {
-                $w += $this->currentFont['MissingWidth'];
-            } else {
-                $w += 500;
-            }
-        }
-
-        return $w * $this->currentFontSize / 1000;
-    }
-
     public function SetLineWidth(float $width): void
     {
         // Set line width
@@ -1235,6 +1211,30 @@ final class Fpdf
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->metadata = $this->metadata->createdAt($createdAt);
+    }
+
+    private function GetStringWidth(string $s): float|int
+    {
+        // Get width of a string in the current font
+        $s = (string) $s;
+        $cw = $this->currentFont['cw'];
+        $w = 0;
+        $unicode = $this->UTF8StringToArray($s);
+        foreach ($unicode as $char) {
+            if (is_string($cw) && isset($cw[2 * $char])) {
+                $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
+            } elseif (is_array($cw) && $char > 0 && $char < 128 && isset($cw[chr($char)])) {
+                $w += $cw[chr($char)];
+            } elseif (is_array($this->currentFont['desc']) && isset($this->currentFont['desc']['MissingWidth'])) {
+                $w += $this->currentFont['desc']['MissingWidth'];
+            } elseif (isset($this->currentFont['MissingWidth'])) {
+                $w += $this->currentFont['MissingWidth'];
+            } else {
+                $w += 500;
+            }
+        }
+
+        return $w * $this->currentFontSize / 1000;
     }
 
     private function enableCompressionIfAvailable(): void
