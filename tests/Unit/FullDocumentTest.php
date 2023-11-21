@@ -120,10 +120,17 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
+        $pdf->AddPage();
+
+        $pdf->Image(__DIR__ . '/../../images/test.jpg');
+        $pdf->Image(__DIR__ . '/../../images/test.gif', 100, 100);
+
+        self::assertEquals(6, $pdf->getCurrentPageNumber());
+
         $renderedPdf = $pdf->Output('S');
 
         self::assertEquals(
-            '0151b12fba3398c749cc6fdc75f45adbe3bc888b',
+            '4df29fef2051b6e5ee0e226e59dde5be6d661175',
             sha1($renderedPdf)
         );
     }
