@@ -701,7 +701,11 @@ final class Fpdf
                 $this->wordSpacing = 0;
                 $this->_out('0 Tw');
             }
-            $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
+            $this->AddPage(
+                $this->currentOrientation,
+                $this->currentPageSize,
+                $this->currentPageOrientation
+            );
             $this->currentXPosition = $x;
             if ($ws > 0) {
                 $this->wordSpacing = $ws;
@@ -1089,7 +1093,11 @@ final class Fpdf
             ) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
-                $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
+                $this->AddPage(
+                    $this->currentOrientation,
+                    $this->currentPageSize,
+                    $this->currentPageOrientation
+                );
                 $this->currentXPosition = $x2;
             }
             $y = $this->currentYPosition;
