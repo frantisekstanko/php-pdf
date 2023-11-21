@@ -569,7 +569,7 @@ final class Fpdf
         }
     }
 
-    public function AddLink(): int
+    public function createLink(): int
     {
         // Create a new internal link
         $n = count($this->internalLinks) + 1;
