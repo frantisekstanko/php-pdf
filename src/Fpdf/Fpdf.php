@@ -467,7 +467,7 @@ final class Fpdf
 
         $ttfParser = new TtfParser();
         $ttfParser->getMetrics($ttfFile);
-        $cw = $ttfParser->charWidths;
+        $charWidths = $ttfParser->charWidths;
         $name = preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
         $desc = [
@@ -498,7 +498,7 @@ final class Fpdf
             'desc' => $desc,
             'up' => $up,
             'ut' => $ut,
-            'cw' => $cw,
+            'cw' => $charWidths,
             'ttffile' => $ttfFile,
             'subset' => $sbarr,
         ];
@@ -509,7 +509,7 @@ final class Fpdf
             'ttffile' => $ttfFile,
         ];
         $this->fontFiles[$ttfFile] = ['type' => 'TTF'];
-        unset($cw);
+        unset($charWidths);
     }
 
     public function SetFont(string $family, string $style = '', float $size = 0): void
