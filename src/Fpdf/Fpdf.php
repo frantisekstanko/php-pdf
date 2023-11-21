@@ -505,7 +505,6 @@ final class Fpdf
             'type' => 'TTF',
             'ttffile' => $ttfFile,
         ];
-        $this->fontFiles[$ttfFile] = ['type' => $fontType];
         unset($charWidths, $ttfParser);
     }
 
@@ -1816,32 +1815,6 @@ final class Fpdf
 
     private function _putfonts(): void
     {
-        foreach ($this->fontFiles as $file => $info) {
-            if (!isset($info['type']) || $info['type'] != 'TTF') {
-                // Font file embedding
-                $this->_newobj();
-                $this->fontFiles[$file]['n'] = $this->currentObjectNumber;
-                $font = file_get_contents($file, true);
-                if (!$font) {
-                    throw new FontNotFoundException($file);
-                }
-                $compressed = (substr($file, -2) == '.z');
-                if (!$compressed && isset($info['length2'])) {
-                    $font = substr($font, 6, $info['length1']) . substr($font, 6 + $info['length1'] + 6, $info['length2']);
-                }
-                $this->appendIntoBuffer('<</Length ' . strlen($font));
-                if ($compressed) {
-                    $this->appendIntoBuffer('/Filter /FlateDecode');
-                }
-                $this->appendIntoBuffer('/Length1 ' . $info['length1']);
-                if (isset($info['length2'])) {
-                    $this->appendIntoBuffer('/Length2 ' . $info['length2'] . ' /Length3 0');
-                }
-                $this->appendIntoBuffer('>>');
-                $this->_putstream($font);
-                $this->appendIntoBuffer('endobj');
-            }
-        }
         foreach ($this->usedFonts as $k => $font) {
             // Encoding
             if (isset($font['diff'])) {
