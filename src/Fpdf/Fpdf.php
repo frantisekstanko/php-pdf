@@ -470,7 +470,7 @@ final class Fpdf
         $charWidths = $ttfParser->charWidths;
         $name = preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
-        $desc = [
+        $attributes = [
             'Ascent' => round($ttfParser->ascent),
             'Descent' => round($ttfParser->descent),
             'CapHeight' => round($ttfParser->capHeight),
@@ -495,7 +495,7 @@ final class Fpdf
             'i' => $i,
             'type' => $type,
             'name' => $name,
-            'desc' => $desc,
+            'attributes' => $attributes,
             'up' => $up,
             'ut' => $ut,
             'cw' => $charWidths,
@@ -1218,8 +1218,8 @@ final class Fpdf
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
             } elseif (is_array($characterWidths) && $char > 0 && $char < 128 && isset($characterWidths[chr($char)])) {
                 $stringWidth += $characterWidths[chr($char)];
-            } elseif (is_array($this->currentFont['desc']) && isset($this->currentFont['desc']['MissingWidth'])) {
-                $stringWidth += $this->currentFont['desc']['MissingWidth'];
+            } elseif (is_array($this->currentFont['attributes']) && isset($this->currentFont['attributes']['MissingWidth'])) {
+                $stringWidth += $this->currentFont['attributes']['MissingWidth'];
             } elseif (isset($this->currentFont['MissingWidth'])) {
                 $stringWidth += $this->currentFont['MissingWidth'];
             } else {
@@ -1894,7 +1894,7 @@ final class Fpdf
                 // Descriptor
                 $this->_newobj();
                 $s = '<</Type /FontDescriptor /FontName /' . $name;
-                foreach ($font['desc'] as $k => $v) {
+                foreach ($font['attributes'] as $k => $v) {
                     $s .= ' /' . $k . ' ' . $v;
                 }
 
@@ -1941,8 +1941,8 @@ final class Fpdf
                 $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
                 $this->appendIntoBuffer('/CIDSystemInfo ' . ($this->currentObjectNumber + 2) . ' 0 R');
                 $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 3) . ' 0 R');
-                if (isset($font['desc']['MissingWidth'])) {
-                    $this->_out('/DW ' . $font['desc']['MissingWidth'] . '');
+                if (isset($font['attributes']['MissingWidth'])) {
+                    $this->_out('/DW ' . $font['attributes']['MissingWidth'] . '');
                 }
 
                 $this->_putTTfontwidths($font, $ttf->maxUni);
@@ -1989,7 +1989,7 @@ final class Fpdf
                 $this->_newobj();
                 $this->appendIntoBuffer('<</Type /FontDescriptor');
                 $this->appendIntoBuffer('/FontName /' . $fontname);
-                foreach ($font['desc'] as $kd => $v) {
+                foreach ($font['attributes'] as $kd => $v) {
                     if ($kd == 'Flags') {
                         $v = $v | 4;
                         $v = $v & ~32;
