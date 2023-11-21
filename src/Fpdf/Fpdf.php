@@ -434,7 +434,7 @@ final class Fpdf
         );
     }
 
-    public function Rect(float $x, float $y, float $w, float $h, string $style = ''): void
+    public function drawRectangle(float $x, float $y, float $w, float $h, string $style = ''): void
     {
         // Draw a rectangle
         if ($style == 'F') {

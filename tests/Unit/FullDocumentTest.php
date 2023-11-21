@@ -58,11 +58,11 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setLineWidth(3);
         $pdf->setDrawColor(Color::fromRgb(255, 0, 0));
         $pdf->setFillColor(Color::fromRgb(255, 255, 0));
-        $pdf->Rect(66, 77, 100, 100);
+        $pdf->drawRectangle(66, 77, 100, 100);
         $pdf->setDrawColor(Color::fromRgb(0, 255, 0));
-        $pdf->Rect(90, 90, 100, 100, 'F');
+        $pdf->drawRectangle(90, 90, 100, 100, 'F');
         $pdf->setDrawColor(Color::fromRgb(0, 0, 255));
-        $pdf->Rect(120, 120, 100, 100, 'DF');
+        $pdf->drawRectangle(120, 120, 100, 100, 'DF');
 
         $pdf->setAuthor('Author is the unit test <3');
         $pdf->setCreator('Nobody');
