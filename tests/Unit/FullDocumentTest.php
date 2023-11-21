@@ -28,7 +28,8 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Ln();
         $pdf->Cell(70, 40, 'Left border', 'L', 0, 'L');
         $pdf->Cell(44, 32, 'Right border', 'R', 1, 'C');
-        $pdf->Cell(44, 32, 'Top border', 'T', 2, 'R');
+        $pdf->SetFont('Open Sans', 'U', 12);
+        $pdf->Cell(44, 32, 'Top border, underlined text', 'T', 2, 'R');
         $pdf->Cell(44, 32, 'With fill', 'B', 0, 'L', true);
 
         $pdf->AliasNbPages('{pagesTotalTest}');
@@ -121,7 +122,7 @@ final class FullDocumentTest extends PdfTestCase
         $renderedPdf = $pdf->Output('S');
 
         self::assertEquals(
-            'b57be5326c568495cc8bf7b81f11fd60525fad12',
+            '0151b12fba3398c749cc6fdc75f45adbe3bc888b',
             sha1($renderedPdf)
         );
     }
