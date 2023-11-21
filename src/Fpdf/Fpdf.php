@@ -68,7 +68,18 @@ final class Fpdf
     private float $lastPrintedCellHeight = 0;
     private float $lineWidth;
 
-    /** @var array<string, array<mixed>> */
+    /** @var array<string, array{
+     * i: int,
+     * type: string,
+     * name: string,
+     * attributes: array<string, mixed>,
+     * up: float,
+     * ut: float,
+     * cw: string,
+     * ttffile: string,
+     * subset: array<int, int>,
+     * n: int,
+     * }> */
     private array $usedFonts = [];
 
     private string $currentFontFamily = '';
@@ -462,7 +473,7 @@ final class Fpdf
         $ttfParser = new TtfParser();
         $ttfParser->getMetrics($ttfFile);
         $charWidths = $ttfParser->charWidths;
-        $name = preg_replace('/[ ()]/', '', $ttfParser->fullName);
+        $name = (string) preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
         $attributes = [
             'Ascent' => round($ttfParser->ascent),
@@ -492,6 +503,7 @@ final class Fpdf
             'cw' => $charWidths,
             'ttffile' => $ttfFile,
             'subset' => $sbarr,
+            'n' => 0,
         ];
 
         unset($charWidths, $ttfParser);
