@@ -408,7 +408,7 @@ final class Fpdf
         $this->fillAndTextColorDiffer = ($this->fillColor != $this->textColor);
     }
 
-    public function SetLineWidth(float $width): void
+    public function setLineWidth(float $width): void
     {
         // Set line width
         $this->lineWidth = $width;

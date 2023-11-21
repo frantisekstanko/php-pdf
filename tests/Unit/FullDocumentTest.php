@@ -55,7 +55,7 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(2, $pdf->getCurrentPageNumber());
 
-        $pdf->SetLineWidth(3);
+        $pdf->setLineWidth(3);
         $pdf->setDrawColor(Color::fromRgb(255, 0, 0));
         $pdf->setFillColor(Color::fromRgb(255, 255, 0));
         $pdf->Rect(66, 77, 100, 100);
