@@ -441,7 +441,6 @@ final class Fpdf
         float $h,
         string $style = '',
     ): void {
-        // Draw a rectangle
         if ($style == 'F') {
             $op = 'f';
         } elseif ($style == 'FD' || $style == 'DF') {
