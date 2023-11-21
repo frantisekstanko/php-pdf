@@ -468,10 +468,8 @@ final class Fpdf
             throw new FontNotFoundException($ttffilename);
         }
 
-        $ttffile = $ttffilename;
-
         $ttf = new TtFontFile();
-        $ttf->getMetrics($ttffile);
+        $ttf->getMetrics($ttffilename);
         $cw = $ttf->charWidths;
         $name = preg_replace('/[ ()]/', '', $ttf->fullName);
 
@@ -504,14 +502,14 @@ final class Fpdf
             'up' => $up,
             'ut' => $ut,
             'cw' => $cw,
-            'ttffile' => $ttffile,
+            'ttffile' => $ttffilename,
             'subset' => $sbarr,
         ];
 
         $this->fontFiles[$fontName] = [
             'length1' => $originalsize,
             'type' => 'TTF',
-            'ttffile' => $ttffile,
+            'ttffile' => $ttffilename,
         ];
         $this->fontFiles[$file] = ['type' => 'TTF'];
         unset($cw);
