@@ -6,7 +6,8 @@ namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Fpdf\Fpdf;
-use Stanko\Fpdf\Orientation;
+use Stanko\Fpdf\PageOrientation;
+use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
@@ -17,9 +18,9 @@ final class CompressionTest extends PdfTestCase
         $expectedHash = 'd22a77735a2152f2aa795ceb450a42bfdc34e470';
 
         $pdf = new Fpdf(
-            Orientation::PORTRAIT,
+            PageSize::a4(),
+            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-            'a4',
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
@@ -35,9 +36,9 @@ final class CompressionTest extends PdfTestCase
         $expectedHash = 'd55fe06bed5c73c1b104094e12c66f6e2b7653df';
 
         $pdf = new Fpdf(
-            Orientation::PORTRAIT,
+            PageSize::a4(),
+            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-            'a4',
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 

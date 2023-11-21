@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
+use Stanko\Fpdf\Color;
 use Stanko\Fpdf\Tests\PdfTestCase;
 
 final class FullDocumentTest extends PdfTestCase
@@ -18,9 +19,9 @@ final class FullDocumentTest extends PdfTestCase
             'OpenSans-Bold.ttf',
         );
         $pdf->SetFont('Open Sans', '', 12);
-        $pdf->SetFillColor(50, 10, 5);
+        $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->AddPage();
-        self::assertEquals(1, $pdf->PageNo());
+        self::assertEquals(1, $pdf->getCurrentPageNumber());
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
         $pdf->Cell(100, 30, 'Cell test !@#* ÁČŠĎ');
         $pdf->Cell(90, 25, 'With border', 1);
@@ -52,15 +53,15 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->MultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
 
-        self::assertEquals(2, $pdf->PageNo());
+        self::assertEquals(2, $pdf->getCurrentPageNumber());
 
         $pdf->SetLineWidth(3);
-        $pdf->SetDrawColor(255, 0, 0);
-        $pdf->SetFillColor(255, 255, 0);
+        $pdf->setDrawColor(Color::fromRgb(255, 0, 0));
+        $pdf->setFillColor(Color::fromRgb(255, 255, 0));
         $pdf->Rect(66, 77, 100, 100);
-        $pdf->SetDrawColor(0, 255, 0);
+        $pdf->setDrawColor(Color::fromRgb(0, 255, 0));
         $pdf->Rect(90, 90, 100, 100, 'F');
-        $pdf->SetDrawColor(0, 0, 255);
+        $pdf->setDrawColor(Color::fromRgb(0, 0, 255));
         $pdf->Rect(120, 120, 100, 100, 'DF');
 
         $pdf->setAuthor('Author is the unit test <3');
@@ -79,7 +80,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setRightMargin(90);
         $pdf->setTopMargin(44);
         $pdf->setSubject('What is this? I hope this is not Chris.');
-        $pdf->SetTextColor(0, 255, 100);
+        $pdf->setTextColor(Color::fromRgb(0, 255, 100));
         $pdf->setTitle('at last!');
         $pdf->Text(111, 122, 'Hello world!');
         $pdf->Write(55, 'Hello world!');
@@ -93,7 +94,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
 
-        self::assertEquals(4, $pdf->PageNo());
+        self::assertEquals(4, $pdf->getCurrentPageNumber());
 
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
@@ -103,7 +104,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
 
-        self::assertEquals(5, $pdf->PageNo());
+        self::assertEquals(5, $pdf->getCurrentPageNumber());
 
         $pdf->disableAutomaticPageBreaking();
 
@@ -115,7 +116,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(100, 40, 'new line', 1, 2);
         $pdf->Cell(100, 40, 'new line', 1, 2);
 
-        self::assertEquals(5, $pdf->PageNo());
+        self::assertEquals(5, $pdf->getCurrentPageNumber());
 
         $renderedPdf = $pdf->Output('S');
 

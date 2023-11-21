@@ -4,10 +4,10 @@ namespace Stanko\Fpdf;
 
 use DateTimeImmutable;
 use Exception;
+use Stanko\Fpdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Fpdf\Exception\CannotOpenImageFileException;
 use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
-use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontNotFoundException;
 use Stanko\Fpdf\Exception\IncorrectFontDefinitionException;
@@ -17,24 +17,17 @@ use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Exception\InvalidLayoutModeException;
 use Stanko\Fpdf\Exception\InvalidZoomModeException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
+use Stanko\Fpdf\Exception\NoPageHasBeenAddedException;
+use Stanko\Fpdf\Exception\TheDocumentIsClosedException;
 use Stanko\Fpdf\Exception\UnknownColorTypeException;
 use Stanko\Fpdf\Exception\UnknownCompressionMethodException;
 use Stanko\Fpdf\Exception\UnknownFilterMethodException;
-use Stanko\Fpdf\Exception\UnknownPageSizeException;
 use Stanko\Fpdf\Exception\UnpackException;
 use Stanko\Fpdf\Exception\UnsupportedImageTypeException;
 
 final class Fpdf
 {
-    public const PAGE_SIZES = [
-        'a3' => [841.89, 1190.55],
-        'a4' => [595.28, 841.89],
-        'a5' => [420.94, 595.28],
-        'letter' => [612, 792],
-        'legal' => [612, 1008],
-    ];
-
-    private int $currentPage = 0;
+    private int $currentPageNumber = 0;
     private int $currentObjectNumber = 2;
 
     /** @var array<int, int> */
@@ -42,18 +35,15 @@ final class Fpdf
     private string $pdfFileBuffer = '';
 
     /** @var array<int, string> */
-    private array $pages = [];
-    private int $currentDocumentState = 0;
+    private array $rawPageData = [];
+    private DocumentState $currentDocumentState;
     private bool $compressionEnabled;
     private float $scaleFactor;
-    private string $defaultOrientation;
-    private string $currentOrientation;
+    private PageOrientation $defaultOrientation;
+    private PageOrientation $currentOrientation;
 
-    /** @var array<mixed> */
-    private array $defaultPageSize;
-
-    /** @var array{0: float, 1: float} */
-    private array $currentPageSize;
+    private PageSize $defaultPageSize;
+    private PageSize $currentPageSize;
 
     private int $currentPageOrientation;
 
@@ -72,7 +62,7 @@ final class Fpdf
     private float $topMargin;
     private float $rightMargin;
     private float $pageBreakMargin;
-    private float $cellMargin;
+    private float $interiorCellMargin;
     private float $currentXPosition;
     private float $currentYPosition;
     private float $lastPrintedCellHeight = 0;
@@ -126,50 +116,43 @@ final class Fpdf
     private float|string $zoomMode = 'default';
     private string $layoutMode = 'default';
 
-    /** @var array<mixed> */
-    private array $documentMetadata;
-    private ?DateTimeImmutable $createdAt = null;
+    private Metadata $metadata;
     private string $pdfVersion = '1.3';
 
-    /**
-     * @param array<float> $size
-     */
     public function __construct(
-        Orientation $orientation = Orientation::PORTRAIT,
+        PageSize $pageSize,
+        PageOrientation $pageOrientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
-        array|string $size = 'A4',
     ) {
-        $this->scaleFactor = $units->getScaleFactor();
-        $size = $this->_getpagesize($size);
-        $this->defaultPageSize = $size;
-        $this->currentPageSize = $size;
+        $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
 
-        if ($orientation == Orientation::PORTRAIT) {
-            $this->defaultOrientation = 'P';
-            $this->pageWidth = $size[0];
-            $this->pageHeight = $size[1];
+        $this->metadata = Metadata::empty();
+
+        $this->scaleFactor = $units->getScaleFactor();
+        $this->defaultPageSize = $pageSize;
+        $this->currentPageSize = $pageSize;
+
+        $this->defaultOrientation = $pageOrientation;
+
+        if ($pageOrientation == PageOrientation::PORTRAIT) {
+            $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
+            $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
         }
 
-        if ($orientation == Orientation::LANDSCAPE) {
-            $this->defaultOrientation = 'L';
-            $this->pageWidth = $size[1];
-            $this->pageHeight = $size[0];
+        if ($pageOrientation == PageOrientation::LANDSCAPE) {
+            $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
+            $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
         }
 
         $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
-        // Page rotation
         $this->currentPageOrientation = 0;
-        // Page margins (1 cm)
         $margin = 28.35 / $this->scaleFactor;
         $this->setLeftMargin($margin);
         $this->setTopMargin($margin);
-        // Interior cell margin (1 mm)
-        $this->cellMargin = $margin / 10;
-        // Line width (0.2 mm)
+        $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
-        // Automatic page break
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
     }
@@ -177,7 +160,7 @@ final class Fpdf
     public function setLeftMargin(float $margin): void
     {
         $this->leftMargin = $margin;
-        if ($this->currentPage > 0 && $this->currentXPosition < $margin) {
+        if ($this->currentPageNumber > 0 && $this->currentXPosition < $margin) {
             $this->currentXPosition = $margin;
         }
     }
@@ -253,27 +236,27 @@ final class Fpdf
 
     public function setTitle(string $title): void
     {
-        $this->documentMetadata['Title'] = $title;
+        $this->metadata = $this->metadata->withTitle($title);
     }
 
     public function setAuthor(string $author): void
     {
-        $this->documentMetadata['Author'] = $author;
+        $this->metadata = $this->metadata->withAuthor($author);
     }
 
     public function setSubject(string $subject): void
     {
-        $this->documentMetadata['Subject'] = $subject;
+        $this->metadata = $this->metadata->withSubject($subject);
     }
 
     public function setKeywords(string $keywords): void
     {
-        $this->documentMetadata['Keywords'] = $keywords;
+        $this->metadata = $this->metadata->withKeywords($keywords);
     }
 
     public function setCreator(string $creator): void
     {
-        $this->documentMetadata['Creator'] = $creator;
+        $this->metadata = $this->metadata->createdBy($creator);
     }
 
     public function AliasNbPages(string $alias = '{nb}'): void
@@ -290,13 +273,14 @@ final class Fpdf
 
     public function Close(): void
     {
-        // Terminate document
-        if ($this->currentDocumentState == 3) {
+        if ($this->currentDocumentState == DocumentState::CLOSED) {
             return;
         }
-        if ($this->currentPage == 0) {
+
+        if ($this->currentPageNumber == 0) {
             $this->AddPage();
         }
+
         // Page footer
         $this->isDrawingFooter = true;
         $this->Footer();
@@ -307,14 +291,13 @@ final class Fpdf
         $this->_enddoc();
     }
 
-    /**
-     * @param array<float> $size
-     */
-    public function AddPage(string $orientation = '', array|string $size = '', int $rotation = 0): void
-    {
-        // Start a new page
-        if ($this->currentDocumentState == 3) {
-            $this->Error('The document is closed');
+    public function AddPage(
+        ?PageOrientation $pageOrientation = null,
+        ?PageSize $pageSize = null,
+        int $rotation = 0,
+    ): void {
+        if ($this->currentDocumentState === DocumentState::CLOSED) {
+            throw new CannotAddPageToClosedDocumentException();
         }
         $family = $this->currentFontFamily;
         $style = $this->currentFontStyle . ($this->isUnderline ? 'U' : '');
@@ -324,7 +307,7 @@ final class Fpdf
         $fc = $this->fillColor;
         $tc = $this->textColor;
         $cf = $this->fillColorEqualsTextColor;
-        if ($this->currentPage > 0) {
+        if ($this->currentPageNumber > 0) {
             // Page footer
             $this->isDrawingFooter = true;
             $this->Footer();
@@ -332,8 +315,7 @@ final class Fpdf
             // Close page
             $this->_endpage();
         }
-        // Start new page
-        $this->_beginpage($orientation, $size, $rotation);
+        $this->startPage($pageOrientation, $pageSize, $rotation);
         // Set line cap style to square
         $this->_out('2 J');
         // Set line width
@@ -390,47 +372,66 @@ final class Fpdf
         // To be implemented in your own inherited class
     }
 
-    public function PageNo(): int
+    public function getCurrentPageNumber(): int
     {
-        // Get current page number
-        return $this->currentPage;
+        return $this->currentPageNumber;
     }
 
-    public function SetDrawColor(int $r, ?int $g = null, ?int $b = null): void
+    public function setDrawColor(Color $color): void
     {
-        // Set color for all stroking operations
-        if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->drawColor = sprintf('%.3F G', $r / 255);
-        } else {
-            $this->drawColor = sprintf('%.3F %.3F %.3F RG', $r / 255, $g / 255, $b / 255);
+        if ($color->isBlack()) {
+            $this->drawColor = sprintf('%.3F G', 0);
+
+            return;
         }
-        if ($this->currentPage > 0) {
+
+        $this->drawColor = sprintf(
+            '%.3F %.3F %.3F RG',
+            $color->getRed() / 255,
+            $color->getGreen() / 255,
+            $color->getBlue() / 255,
+        );
+
+        if ($this->currentPageNumber > 0) {
             $this->_out($this->drawColor);
         }
     }
 
-    public function SetFillColor(int $r, ?int $g = null, ?int $b = null): void
+    public function setFillColor(Color $color): void
     {
-        // Set color for all filling operations
-        if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->fillColor = sprintf('%.3F g', $r / 255);
-        } else {
-            $this->fillColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
+        if ($color->isBlack()) {
+            $this->fillColor = sprintf('%.3F g', 0);
+
+            return;
         }
+
+        $this->fillColor = sprintf(
+            '%.3F %.3F %.3F rg',
+            $color->getRed() / 255,
+            $color->getGreen() / 255,
+            $color->getBlue() / 255,
+        );
+
         $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
-        if ($this->currentPage > 0) {
+        if ($this->currentPageNumber > 0) {
             $this->_out($this->fillColor);
         }
     }
 
-    public function SetTextColor(int $r, ?int $g = null, ?int $b = null): void
+    public function setTextColor(Color $color): void
     {
-        // Set color for text
-        if (($r == 0 && $g == 0 && $b == 0) || $g === null) {
-            $this->textColor = sprintf('%.3F g', $r / 255);
-        } else {
-            $this->textColor = sprintf('%.3F %.3F %.3F rg', $r / 255, $g / 255, $b / 255);
+        if ($color->isBlack()) {
+            $this->textColor = sprintf('%.3F g', 0);
+
+            return;
         }
+
+        $this->textColor = sprintf(
+            '%.3F %.3F %.3F rg',
+            $color->getRed() / 255,
+            $color->getGreen() / 255,
+            $color->getBlue() / 255,
+        );
         $this->fillColorEqualsTextColor = ($this->fillColor != $this->textColor);
     }
 
@@ -462,7 +463,7 @@ final class Fpdf
     {
         // Set line width
         $this->lineWidth = $width;
-        if ($this->currentPage > 0) {
+        if ($this->currentPageNumber > 0) {
             $this->_out(sprintf('%.2F w', $width * $this->scaleFactor));
         }
     }
@@ -596,7 +597,7 @@ final class Fpdf
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
         $this->currentFont = &$this->usedFonts[$fontkey];
-        if ($this->currentPage > 0) {
+        if ($this->currentPageNumber > 0) {
             if (is_integer($this->currentFont['i']) === false) {
                 throw new IncorrectFontDefinitionException();
             }
@@ -612,7 +613,7 @@ final class Fpdf
         }
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
-        if ($this->currentPage > 0) {
+        if ($this->currentPageNumber > 0) {
             if (is_integer($this->currentFont['i']) === false) {
                 throw new IncorrectFontDefinitionException();
             }
@@ -636,7 +637,7 @@ final class Fpdf
             $y = $this->currentYPosition;
         }
         if ($page == -1) {
-            $page = $this->currentPage;
+            $page = $this->currentPageNumber;
         }
         $this->internalLinks[$link] = [$page, $y];
     }
@@ -644,7 +645,7 @@ final class Fpdf
     public function Link(float $x, float $y, float $w, float $h, mixed $link): void
     {
         // Put a link on the page
-        $this->pageLinks[$this->currentPage][] = [
+        $this->pageLinks[$this->currentPageNumber][] = [
             $x * $this->scaleFactor,
             $this->pageHeightInPoints - $y * $this->scaleFactor,
             $w * $this->scaleFactor,
@@ -673,12 +674,6 @@ final class Fpdf
         $this->_out($s);
     }
 
-    public function AcceptPageBreak(): bool
-    {
-        // Accept automatic page break or not
-        return $this->automaticPageBreaking;
-    }
-
     public function Cell(
         float $w,
         float $h = 0,
@@ -696,7 +691,7 @@ final class Fpdf
             $this->currentYPosition + $h > $this->pageBreakThreshold
             && !$this->isDrawingHeader
             && !$this->isDrawingFooter
-            && $this->AcceptPageBreak()
+            && $this->automaticPageBreaking
             && $this->currentYPosition !== $this->topMargin
         ) {
             // Automatic page break
@@ -746,11 +741,11 @@ final class Fpdf
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
-                $dx = $w - $this->cellMargin - $this->GetStringWidth($txt);
+                $dx = $w - $this->interiorCellMargin - $this->GetStringWidth($txt);
             } elseif ($align == 'C') {
                 $dx = ($w - $this->GetStringWidth($txt)) / 2;
             } else {
-                $dx = $this->cellMargin;
+                $dx = $this->interiorCellMargin;
             }
             if ($this->fillColorEqualsTextColor) {
                 $s .= 'q ' . $this->textColor . ' ';
@@ -761,7 +756,11 @@ final class Fpdf
                     $this->currentFont['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
-                $s .= sprintf('BT 0 Tw %.2F %.2F Td [', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k);
+                $s .= sprintf(
+                    'BT 0 Tw %.2F %.2F Td [',
+                    ($this->currentXPosition + $dx) * $k,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k
+                );
                 $t = explode(' ', $txt);
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
@@ -769,7 +768,7 @@ final class Fpdf
                     $tx = '(' . $this->_escape($this->UTF8ToUTF16BE($tx, false)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
-                        $adj = -($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
+                        $adj = - ($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
                         $s .= sprintf('%d(%s) ', $adj, $space);
                     }
                 }
@@ -780,7 +779,12 @@ final class Fpdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->currentFont['subset'][$uni] = $uni;
                 }
-                $s .= sprintf('BT %.2F %.2F Td %s Tj ET', ($this->currentXPosition + $dx) * $k, ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k, $txt2);
+                $s .= sprintf(
+                    'BT %.2F %.2F Td %s Tj ET',
+                    ($this->currentXPosition + $dx) * $k,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k,
+                    $txt2
+                );
             }
             if ($this->isUnderline) {
                 $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize, $txt);
@@ -822,7 +826,7 @@ final class Fpdf
         if ($w == 0) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
-        $wmax = ($w - 2 * $this->cellMargin);
+        $wmax = ($w - 2 * $this->interiorCellMargin);
         // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'utf-8');
@@ -934,7 +938,7 @@ final class Fpdf
             $this->Error('No font has been set');
         }
         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-        $wmax = ($w - 2 * $this->cellMargin);
+        $wmax = ($w - 2 * $this->interiorCellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
@@ -960,7 +964,7 @@ final class Fpdf
                 if ($nl == 1) {
                     $this->currentXPosition = $this->leftMargin;
                     $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                    $wmax = ($w - 2 * $this->cellMargin);
+                    $wmax = ($w - 2 * $this->interiorCellMargin);
                 }
                 ++$nl;
 
@@ -980,7 +984,7 @@ final class Fpdf
                         $this->currentXPosition = $this->leftMargin;
                         $this->currentYPosition += $h;
                         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                        $wmax = ($w - 2 * $this->cellMargin);
+                        $wmax = ($w - 2 * $this->interiorCellMargin);
                         ++$i;
                         ++$nl;
 
@@ -1000,7 +1004,7 @@ final class Fpdf
                 if ($nl == 1) {
                     $this->currentXPosition = $this->leftMargin;
                     $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                    $wmax = ($w - 2 * $this->cellMargin);
+                    $wmax = ($w - 2 * $this->interiorCellMargin);
                 }
                 ++$nl;
             } else {
@@ -1077,7 +1081,12 @@ final class Fpdf
 
         // Flowing mode
         if ($y === null) {
-            if ($this->currentYPosition + $h > $this->pageBreakThreshold && !$this->isDrawingHeader && !$this->isDrawingFooter && $this->AcceptPageBreak()) {
+            if (
+                $this->currentYPosition + $h > $this->pageBreakThreshold
+                && !$this->isDrawingHeader
+                && !$this->isDrawingFooter
+                && $this->automaticPageBreaking
+            ) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
                 $this->AddPage($this->currentOrientation, $this->currentPageSize, $this->currentPageOrientation);
@@ -1098,25 +1107,21 @@ final class Fpdf
 
     public function GetPageWidth(): float
     {
-        // Get current page width
         return $this->pageWidth;
     }
 
     public function GetPageHeight(): float
     {
-        // Get current page height
         return $this->pageHeight;
     }
 
     public function GetX(): float
     {
-        // Get x position
         return $this->currentXPosition;
     }
 
     public function SetX(float $x): void
     {
-        // Set x position
         if ($x >= 0) {
             $this->currentXPosition = $x;
         } else {
@@ -1126,7 +1131,6 @@ final class Fpdf
 
     public function GetY(): float
     {
-        // Get y position
         return $this->currentYPosition;
     }
 
@@ -1222,7 +1226,7 @@ final class Fpdf
 
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
-        $this->createdAt = $createdAt;
+        $this->metadata = $this->metadata->createdAt($createdAt);
     }
 
     private function enableCompressionIfAvailable(): void
@@ -1254,89 +1258,63 @@ final class Fpdf
         }
     }
 
-    /**
-     * @param array<float> $size
-     *
-     * @return array{0: float, 1: float}
-     */
-    private function _getpagesize(array|string $size): array
-    {
-        if (is_string($size)) {
-            $size = strtolower($size);
-            if (!isset(self::PAGE_SIZES[$size])) {
-                throw new UnknownPageSizeException($size);
-            }
-            $a = self::PAGE_SIZES[$size];
-
-            return [$a[0] / $this->scaleFactor, $a[1] / $this->scaleFactor];
-        }
-
-        if ($size[0] > $size[1]) {
-            return [$size[1], $size[0]];
-        }
-
-        return $size;
-    }
-
-    /**
-     * @param array<float> $size
-     */
-    private function _beginpage(
-        string $orientation,
-        array|string $size,
+    private function startPage(
+        ?PageOrientation $pageOrientation,
+        ?PageSize $pageSize,
         int $rotation,
     ): void {
-        ++$this->currentPage;
-        $this->pages[$this->currentPage] = '';
-        $this->pageLinks[$this->currentPage] = [];
-        $this->currentDocumentState = 2;
+        ++$this->currentPageNumber;
+        $this->rawPageData[$this->currentPageNumber] = '';
+        $this->pageLinks[$this->currentPageNumber] = [];
+        $this->currentDocumentState = DocumentState::PAGE_STARTED;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
         $this->currentFontFamily = '';
-        // Check page size and orientation
-        if ($orientation == '') {
-            $orientation = $this->defaultOrientation;
-        } else {
-            $orientation = strtoupper($orientation[0]);
+
+        if ($pageOrientation === null) {
+            $pageOrientation = $this->defaultOrientation;
         }
-        if ($size == '') {
-            $size = $this->defaultPageSize;
-        } else {
-            $size = $this->_getpagesize($size);
+
+        if ($pageSize === null) {
+            $pageSize = $this->defaultPageSize;
         }
-        if ($orientation != $this->currentOrientation || $size[0] != $this->currentPageSize[0] || $size[1] != $this->currentPageSize[1]) {
-            // New size or orientation
-            if ($orientation == 'P') {
-                $this->pageWidth = $size[0];
-                $this->pageHeight = $size[1];
+        if (
+            $pageOrientation !== $this->currentOrientation
+            || $pageSize->getWidth($this->scaleFactor) != $this->currentPageSize->getWidth($this->scaleFactor)
+            || $pageSize->getHeight($this->scaleFactor) != $this->currentPageSize->getHeight($this->scaleFactor)
+        ) {
+            if ($pageOrientation === PageOrientation::PORTRAIT) {
+                $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
+                $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
             } else {
-                $this->pageWidth = $size[1];
-                $this->pageHeight = $size[0];
+                $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
+                $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
             }
             $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
             $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
             $this->recalculatePageBreakThreshold();
-            $this->currentOrientation = $orientation;
-            $this->currentPageSize = [
-                $size[0],
-                $size[1],
-            ];
+            $this->currentOrientation = $pageOrientation;
+            $this->currentPageSize = $pageSize;
         }
-        if ($orientation != $this->defaultOrientation || $size[0] != $this->defaultPageSize[0] || $size[1] != $this->defaultPageSize[1]) {
-            $this->pageInfo[$this->currentPage]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
+        if (
+            $pageOrientation != $this->defaultOrientation
+            || $pageSize->getWidth($this->scaleFactor) != $this->defaultPageSize->getWidth($this->scaleFactor)
+            || $pageSize->getHeight($this->scaleFactor) != $this->defaultPageSize->getHeight($this->scaleFactor)
+        ) {
+            $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
         }
         if ($rotation != 0) {
             if ($rotation % 90 != 0) {
                 $this->Error('Incorrect rotation value: ' . $rotation);
             }
-            $this->pageInfo[$this->currentPage]['rotation'] = $rotation;
+            $this->pageInfo[$this->currentPageNumber]['rotation'] = $rotation;
         }
         $this->currentPageOrientation = $rotation;
     }
 
     private function _endpage(): void
     {
-        $this->currentDocumentState = 1;
+        $this->currentDocumentState = DocumentState::PAGE_ENDED;
     }
 
     private function _isascii(string $s): bool
@@ -1660,15 +1638,24 @@ final class Fpdf
 
     private function _out(string $s): void
     {
-        // Add a line to the document
-        if ($this->currentDocumentState == 2) {
-            $this->pages[$this->currentPage] .= $s . "\n";
-        } elseif ($this->currentDocumentState == 1) {
+        if ($this->currentDocumentState === DocumentState::PAGE_STARTED) {
+            $this->rawPageData[$this->currentPageNumber] .= $s . "\n";
+
+            return;
+        }
+
+        if ($this->currentDocumentState === DocumentState::PAGE_ENDED) {
             $this->_put($s);
-        } elseif ($this->currentDocumentState == 0) {
-            $this->Error('No page has been added yet');
-        } elseif ($this->currentDocumentState == 3) {
-            $this->Error('The document is closed');
+
+            return;
+        }
+
+        if ($this->currentDocumentState === DocumentState::NOT_INITIALIZED) {
+            throw new NoPageHasBeenAddedException();
+        }
+
+        if ($this->currentDocumentState === DocumentState::CLOSED) {
+            throw new TheDocumentIsClosedException();
         }
     }
 
@@ -1739,7 +1726,9 @@ final class Fpdf
                 if (isset($this->pageInfo[$l[0]]['size'])) {
                     $h = $this->pageInfo[$l[0]]['size'][1];
                 } else {
-                    $h = ($this->defaultOrientation == 'P') ? $this->defaultPageSize[1] * $this->scaleFactor : $this->defaultPageSize[0] * $this->scaleFactor;
+                    $h = ($this->defaultOrientation === PageOrientation::PORTRAIT) ?
+                        $this->defaultPageSize->getHeight($this->scaleFactor) * $this->scaleFactor :
+                        $this->defaultPageSize->getWidth($this->scaleFactor) * $this->scaleFactor;
                 }
                 $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->pageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
             }
@@ -1779,19 +1768,19 @@ final class Fpdf
         // Page content
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $alias = $this->UTF8ToUTF16BE($this->aliasForTotalNumberOfPages, false);
-            $r = $this->UTF8ToUTF16BE((string) $this->currentPage, false);
-            $this->pages[$n] = str_replace($alias, $r, $this->pages[$n]);
+            $r = $this->UTF8ToUTF16BE((string) $this->currentPageNumber, false);
+            $this->rawPageData[$n] = str_replace($alias, $r, $this->rawPageData[$n]);
             // Now repeat for no pages in non-subset fonts
-            $this->pages[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPage, $this->pages[$n]);
+            $this->rawPageData[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPageNumber, $this->rawPageData[$n]);
         }
-        $this->_putstreamobject($this->pages[$n]);
+        $this->_putstreamobject($this->rawPageData[$n]);
         // Link annotations
         $this->_putlinks($n);
     }
 
     private function _putpages(): void
     {
-        $nb = $this->currentPage;
+        $nb = $this->currentPageNumber;
         $n = $this->currentObjectNumber;
         for ($i = 1; $i <= $nb; ++$i) {
             $this->pageInfo[$i]['n'] = ++$n;
@@ -1814,12 +1803,12 @@ final class Fpdf
         $kids .= ']';
         $this->_put($kids);
         $this->_put('/Count ' . $nb);
-        if ($this->defaultOrientation == 'P') {
-            $w = $this->defaultPageSize[0];
-            $h = $this->defaultPageSize[1];
+        if ($this->defaultOrientation === PageOrientation::PORTRAIT) {
+            $w = $this->defaultPageSize->getWidth($this->scaleFactor);
+            $h = $this->defaultPageSize->getHeight($this->scaleFactor);
         } else {
-            $w = $this->defaultPageSize[1];
-            $h = $this->defaultPageSize[0];
+            $w = $this->defaultPageSize->getHeight($this->scaleFactor);
+            $h = $this->defaultPageSize->getWidth($this->scaleFactor);
         }
         $this->_put(sprintf('/MediaBox [0 0 %.2F %.2F]', $w * $this->scaleFactor, $h * $this->scaleFactor));
         $this->_put('>>');
@@ -2249,12 +2238,9 @@ final class Fpdf
 
     private function _putinfo(): void
     {
-        if ($this->createdAt === null) {
-            throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
-        }
-        $date = $this->createdAt->format('YmdHisO');
-        $this->documentMetadata['CreationDate'] = 'D:' . substr($date, 0, -2) . "'" . substr($date, -2) . "'";
-        foreach ($this->documentMetadata as $key => $value) {
+        $metadataAsArray = $this->metadata->toArray();
+
+        foreach ($metadataAsArray as $key => $value) {
             $this->_put('/' . $key . ' ' . $this->_textstring($value));
         }
     }
@@ -2327,7 +2313,7 @@ final class Fpdf
         $this->_put('startxref');
         $this->_put((string) $offset);
         $this->_put('%%EOF');
-        $this->currentDocumentState = 3;
+        $this->currentDocumentState = DocumentState::CLOSED;
     }
 
     // ********* NEW FUNCTIONS *********

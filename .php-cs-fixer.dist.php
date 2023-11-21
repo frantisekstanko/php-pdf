@@ -44,6 +44,7 @@ return $config
         'yoda_style' => false,
         'php_unit_internal_class' => false,
         'php_unit_test_class_requires_covers' => false,
+        'unary_operator_spaces' => false,
     ])
     ->setFinder($finder)
 ;

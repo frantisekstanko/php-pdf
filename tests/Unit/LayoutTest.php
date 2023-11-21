@@ -6,7 +6,8 @@ namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Fpdf\Fpdf;
-use Stanko\Fpdf\Orientation;
+use Stanko\Fpdf\PageOrientation;
+use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
@@ -24,9 +25,9 @@ final class LayoutTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = new Fpdf(
-            Orientation::PORTRAIT,
+            PageSize::a4(),
+            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-            'a4',
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
