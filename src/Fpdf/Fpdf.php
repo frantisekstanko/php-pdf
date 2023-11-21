@@ -721,9 +721,9 @@ final class Fpdf
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
-                $dx = $w - $this->interiorCellMargin - $this->GetStringWidth($txt);
+                $dx = $w - $this->interiorCellMargin - $this->getStringWidth($txt);
             } elseif ($align == 'C') {
-                $dx = ($w - $this->GetStringWidth($txt)) / 2;
+                $dx = ($w - $this->getStringWidth($txt)) / 2;
             } else {
                 $dx = $this->interiorCellMargin;
             }
@@ -773,7 +773,7 @@ final class Fpdf
                 $s .= ' Q';
             }
             if ($link) {
-                $this->Link($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h - .5 * $this->currentFontSize, $this->GetStringWidth($txt), $this->currentFontSize, $link);
+                $this->Link($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h - .5 * $this->currentFontSize, $this->getStringWidth($txt), $this->currentFontSize, $link);
             }
         }
         if ($s) {
@@ -866,7 +866,7 @@ final class Fpdf
                 ++$ns;
             }
 
-            $l += $this->GetStringWidth($c);
+            $l += $this->getStringWidth($c);
 
             if ($l > $wmax) {
                 // Automatic line break
@@ -922,7 +922,7 @@ final class Fpdf
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
-            $this->currentXPosition += $this->GetStringWidth($s);
+            $this->currentXPosition += $this->getStringWidth($s);
 
             return;
         }
@@ -954,7 +954,7 @@ final class Fpdf
                 $sep = $i;
             }
 
-            $l += $this->GetStringWidth($c);
+            $l += $this->getStringWidth($c);
 
             if ($l > $wmax) {
                 // Automatic line break
@@ -1213,7 +1213,7 @@ final class Fpdf
         $this->metadata = $this->metadata->createdAt($createdAt);
     }
 
-    private function GetStringWidth(string $s): float|int
+    private function getStringWidth(string $s): float|int
     {
         // Get width of a string in the current font
         $s = (string) $s;
@@ -1389,7 +1389,7 @@ final class Fpdf
         // Underline text
         $up = $this->currentFont['up'];
         $ut = $this->currentFont['ut'];
-        $w = $this->GetStringWidth($txt) + $this->wordSpacing * substr_count($txt, ' ');
+        $w = $this->getStringWidth($txt) + $this->wordSpacing * substr_count($txt, ' ');
 
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
