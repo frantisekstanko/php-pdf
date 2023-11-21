@@ -462,7 +462,6 @@ final class Fpdf
             return;
         }
         $ttffilename = $this->fontPath . '/' . $file;
-        $originalsize = 0;
         $ttfstat = stat($ttffilename);
 
         if ($ttfstat === false) {
