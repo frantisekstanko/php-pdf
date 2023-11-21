@@ -45,7 +45,7 @@ final class Fpdf
     private PageSize $defaultPageSize;
     private PageSize $currentPageSize;
 
-    private int $currentPageOrientation;
+    private int $currentPageRotation;
 
     /** @var array<int, array{
      *   size: array<float>,
@@ -147,7 +147,7 @@ final class Fpdf
         $this->currentOrientation = $this->defaultOrientation;
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
-        $this->currentPageOrientation = 0;
+        $this->currentPageRotation = 0;
         $margin = 28.35 / $this->scaleFactor;
         $this->setLeftMargin($margin);
         $this->setTopMargin($margin);
@@ -704,7 +704,7 @@ final class Fpdf
             $this->AddPage(
                 $this->currentOrientation,
                 $this->currentPageSize,
-                $this->currentPageOrientation
+                $this->currentPageRotation
             );
             $this->currentXPosition = $x;
             if ($ws > 0) {
@@ -1096,7 +1096,7 @@ final class Fpdf
                 $this->AddPage(
                     $this->currentOrientation,
                     $this->currentPageSize,
-                    $this->currentPageOrientation
+                    $this->currentPageRotation
                 );
                 $this->currentXPosition = $x2;
             }
@@ -1317,7 +1317,7 @@ final class Fpdf
             }
             $this->pageInfo[$this->currentPageNumber]['rotation'] = $rotation;
         }
-        $this->currentPageOrientation = $rotation;
+        $this->currentPageRotation = $rotation;
     }
 
     private function _endpage(): void
