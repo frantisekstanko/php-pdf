@@ -511,7 +511,6 @@ final class Fpdf
 
     public function setFont(string $family, string $style = '', float $size = 0): void
     {
-        // Select a font; size given in points
         if ($family == '') {
             $family = $this->currentFontFamily;
         }
