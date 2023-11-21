@@ -557,8 +557,10 @@ final class Fpdf
         if ($this->currentFontSizeInPoints == $size) {
             return;
         }
+
         $this->currentFontSizeInPoints = $size;
         $this->currentFontSize = $size / $this->scaleFactor;
+
         if ($this->currentPageNumber > 0) {
             if (is_integer($this->currentFont['i']) === false) {
                 throw new IncorrectFontDefinitionException();
