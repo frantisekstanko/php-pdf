@@ -71,7 +71,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setZoom('fullpage');
         $pdf->setLayout('single');
 
-        $pdf->SetFontSize(17);
+        $pdf->setFontSize(17);
 
         $pdf->Cell(4, 4, 'TEXT');
         $pdf->setKeywords('test, unit, pdf');
