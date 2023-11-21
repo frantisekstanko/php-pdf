@@ -453,7 +453,7 @@ final class Fpdf
         );
     }
 
-    public function AddFont(
+    public function addFont(
         string $family,
         string $file = '',
     ): void {
