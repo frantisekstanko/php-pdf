@@ -264,31 +264,6 @@ final class Fpdf
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
-    public function Error(string $msg): never
-    {
-        throw new Exception('tFPDF error: ' . $msg);
-    }
-
-    public function Close(): void
-    {
-        if ($this->currentDocumentState == DocumentState::CLOSED) {
-            return;
-        }
-
-        if ($this->currentPageNumber == 0) {
-            $this->AddPage();
-        }
-
-        // Page footer
-        $this->isDrawingFooter = true;
-        $this->Footer();
-        $this->isDrawingFooter = false;
-        // Close page
-        $this->_endpage();
-        // Close document
-        $this->_enddoc();
-    }
-
     public function AddPage(
         ?PageOrientation $pageOrientation = null,
         ?PageSize $pageSize = null,
@@ -1209,6 +1184,31 @@ final class Fpdf
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->metadata = $this->metadata->createdAt($createdAt);
+    }
+
+    private function Error(string $msg): never
+    {
+        throw new Exception('tFPDF error: ' . $msg);
+    }
+
+    private function Close(): void
+    {
+        if ($this->currentDocumentState == DocumentState::CLOSED) {
+            return;
+        }
+
+        if ($this->currentPageNumber == 0) {
+            $this->AddPage();
+        }
+
+        // Page footer
+        $this->isDrawingFooter = true;
+        $this->Footer();
+        $this->isDrawingFooter = false;
+        // Close page
+        $this->_endpage();
+        // Close document
+        $this->_enddoc();
     }
 
     private function getStringWidth(string $s): float
