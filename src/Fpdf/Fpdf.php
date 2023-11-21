@@ -1215,14 +1215,14 @@ final class Fpdf
 
     private function getStringWidth(string $s): float
     {
-        $cw = $this->currentFont['cw'];
+        $characterWidths = $this->currentFont['cw'];
         $w = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
-            if (is_string($cw) && isset($cw[2 * $char])) {
-                $w += (ord($cw[2 * $char]) << 8) + ord($cw[2 * $char + 1]);
-            } elseif (is_array($cw) && $char > 0 && $char < 128 && isset($cw[chr($char)])) {
-                $w += $cw[chr($char)];
+            if (is_string($characterWidths) && isset($characterWidths[2 * $char])) {
+                $w += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
+            } elseif (is_array($characterWidths) && $char > 0 && $char < 128 && isset($characterWidths[chr($char)])) {
+                $w += $characterWidths[chr($char)];
             } elseif (is_array($this->currentFont['desc']) && isset($this->currentFont['desc']['MissingWidth'])) {
                 $w += $this->currentFont['desc']['MissingWidth'];
             } elseif (isset($this->currentFont['MissingWidth'])) {
