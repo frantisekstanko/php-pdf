@@ -18,7 +18,7 @@ final class FullDocumentTest extends PdfTestCase
             'Open Sans Bold',
             __DIR__ . '/../../fonts/OpenSans/OpenSans-Bold.ttf',
         );
-        $pdf->SetFont('Open Sans', '', 12);
+        $pdf->setFont('Open Sans', '', 12);
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->AddPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
@@ -28,7 +28,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Ln();
         $pdf->Cell(70, 40, 'Left border', 'L', 0, 'L');
         $pdf->Cell(44, 32, 'Right border', 'R', 1, 'C');
-        $pdf->SetFont('Open Sans', 'U', 12);
+        $pdf->setFont('Open Sans', 'U', 12);
         $pdf->Cell(44, 32, 'Top border, underlined text', 'T', 2, 'R');
         $pdf->Cell(44, 32, 'With fill', 'B', 0, 'L', true);
 
@@ -50,7 +50,7 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->AddPage();
 
-        $pdf->SetFont('Open Sans Bold', '', 12);
+        $pdf->setFont('Open Sans Bold', '', 12);
 
         $pdf->MultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
 

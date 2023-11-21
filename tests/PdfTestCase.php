@@ -16,7 +16,7 @@ abstract class PdfTestCase extends TestCase
         $pdf = new Fpdf(PageSize::a4());
         $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
         $pdf->addFont('Open Sans', __DIR__ . '/../fonts/OpenSans/OpenSans-Regular.ttf');
-        $pdf->SetFont('Open Sans');
+        $pdf->setFont('Open Sans');
 
         return $pdf;
     }

@@ -300,7 +300,7 @@ final class Fpdf
         $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         // Set font
         if ($family) {
-            $this->SetFont($family, $style, $fontsize);
+            $this->setFont($family, $style, $fontsize);
         }
         // Set colors
         $this->drawColor = $dc;
@@ -324,7 +324,7 @@ final class Fpdf
         }
         // Restore font
         if ($family) {
-            $this->SetFont($family, $style, $fontsize);
+            $this->setFont($family, $style, $fontsize);
         }
         // Restore colors
         if ($this->drawColor != $dc) {
@@ -509,7 +509,7 @@ final class Fpdf
         unset($charWidths, $ttfParser);
     }
 
-    public function SetFont(string $family, string $style = '', float $size = 0): void
+    public function setFont(string $family, string $style = '', float $size = 0): void
     {
         // Select a font; size given in points
         if ($family == '') {
