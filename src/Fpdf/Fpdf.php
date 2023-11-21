@@ -385,7 +385,7 @@ final class Fpdf
             $color->getBlue() / 255,
         );
 
-        $this->fillAndTextColorDiffer = ($this->fillColor != $this->textColor);
+        $this->fillAndTextColorDiffer = ($this->fillColor !== $this->textColor);
         if ($this->currentPageNumber > 0) {
             $this->_out($this->fillColor);
         }
