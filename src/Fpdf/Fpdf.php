@@ -8,7 +8,6 @@ use Stanko\Fpdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Fpdf\Exception\CannotOpenImageFileException;
 use Stanko\Fpdf\Exception\CompressionException;
 use Stanko\Fpdf\Exception\ContentBufferException;
-use Stanko\Fpdf\Exception\CreatedAtIsNotSetException;
 use Stanko\Fpdf\Exception\FileStreamException;
 use Stanko\Fpdf\Exception\FontNotFoundException;
 use Stanko\Fpdf\Exception\IncorrectFontDefinitionException;
@@ -117,9 +116,7 @@ final class Fpdf
     private float|string $zoomMode = 'default';
     private string $layoutMode = 'default';
 
-    /** @var array<mixed> */
-    private array $documentMetadata;
-    private ?DateTimeImmutable $createdAt = null;
+    private Metadata $metadata;
     private string $pdfVersion = '1.3';
 
     public function __construct(
@@ -128,6 +125,8 @@ final class Fpdf
         Units $units = Units::MILLIMETERS,
     ) {
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
+
+        $this->metadata = Metadata::empty();
 
         $this->scaleFactor = $units->getScaleFactor();
         $this->defaultPageSize = $pageSize;
@@ -237,27 +236,27 @@ final class Fpdf
 
     public function setTitle(string $title): void
     {
-        $this->documentMetadata['Title'] = $title;
+        $this->metadata = $this->metadata->withTitle($title);
     }
 
     public function setAuthor(string $author): void
     {
-        $this->documentMetadata['Author'] = $author;
+        $this->metadata = $this->metadata->withAuthor($author);
     }
 
     public function setSubject(string $subject): void
     {
-        $this->documentMetadata['Subject'] = $subject;
+        $this->metadata = $this->metadata->withSubject($subject);
     }
 
     public function setKeywords(string $keywords): void
     {
-        $this->documentMetadata['Keywords'] = $keywords;
+        $this->metadata = $this->metadata->withKeywords($keywords);
     }
 
     public function setCreator(string $creator): void
     {
-        $this->documentMetadata['Creator'] = $creator;
+        $this->metadata = $this->metadata->createdBy($creator);
     }
 
     public function AliasNbPages(string $alias = '{nb}'): void
@@ -1232,7 +1231,7 @@ final class Fpdf
 
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
-        $this->createdAt = $createdAt;
+        $this->metadata = $this->metadata->createdAt($createdAt);
     }
 
     private function enableCompressionIfAvailable(): void
@@ -2244,12 +2243,9 @@ final class Fpdf
 
     private function _putinfo(): void
     {
-        if ($this->createdAt === null) {
-            throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
-        }
-        $date = $this->createdAt->format('YmdHisO');
-        $this->documentMetadata['CreationDate'] = 'D:' . substr($date, 0, -2) . "'" . substr($date, -2) . "'";
-        foreach ($this->documentMetadata as $key => $value) {
+        $metadataAsArray = $this->metadata->toArray();
+
+        foreach ($metadataAsArray as $key => $value) {
             $this->_put('/' . $key . ' ' . $this->_textstring($value));
         }
     }
