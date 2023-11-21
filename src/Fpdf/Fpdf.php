@@ -480,11 +480,13 @@ final class Fpdf
             'StemV' => round($ttfParser->stemV),
             'MissingWidth' => round($ttfParser->defaultWidth),
         ];
+
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $sbarr = range(0, 57);
         } else {
             $sbarr = range(0, 32);
         }
+
         $fontType = 'TTF';
         $this->usedFonts[$fontName] = [
             'i' => count($this->usedFonts) + 1,
