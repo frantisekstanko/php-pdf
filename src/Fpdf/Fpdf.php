@@ -71,9 +71,6 @@ final class Fpdf
     /** @var array<string, array<mixed>> */
     private array $usedFonts = [];
 
-    /** @var array<string, array<mixed>> */
-    private array $fontFiles = [];
-
     private string $currentFontFamily = '';
     private string $currentFontStyle = '';
     private bool $isUnderline = false;
@@ -497,11 +494,6 @@ final class Fpdf
             'subset' => $sbarr,
         ];
 
-        $this->fontFiles[$fontName] = [
-            'length1' => $ttfstat['size'],
-            'type' => 'TTF',
-            'ttffile' => $ttfFile,
-        ];
         unset($charWidths, $ttfParser);
     }
 
