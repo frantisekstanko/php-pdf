@@ -439,11 +439,11 @@ final class Fpdf
         float $y,
         float $w,
         float $h,
-        string $style = '',
+        RectangleStyle $style,
     ): void {
-        if ($style == 'F') {
+        if ($style == RectangleStyle::FILLED) {
             $op = 'f';
-        } elseif ($style == 'FD' || $style == 'DF') {
+        } elseif ($style == RectangleStyle::FILLED_AND_BORDERED) {
             $op = 'B';
         } else {
             $op = 'S';
