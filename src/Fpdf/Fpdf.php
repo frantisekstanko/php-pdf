@@ -465,7 +465,7 @@ final class Fpdf
             throw new FontNotFoundException($ttfFile);
         }
 
-        $ttf = new TtFontFile();
+        $ttf = new TtfParser();
         $ttf->getMetrics($ttfFile);
         $cw = $ttf->charWidths;
         $name = preg_replace('/[ ()]/', '', $ttf->fullName);
@@ -1908,7 +1908,7 @@ final class Fpdf
             elseif ($type == 'TTF') {
                 $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
 
-                $ttf = new TtFontFile();
+                $ttf = new TtfParser();
                 $fontname = 'MPDFAA+' . $font['name'];
                 $subset = $font['subset'];
                 unset($subset[0]);

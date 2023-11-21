@@ -39,7 +39,7 @@ define('GF_MORE', 1 << 5);
 define('GF_XYSCALE', 1 << 6);
 define('GF_TWOBYTWO', 1 << 7);
 
-class TtFontFile
+class TtfParser
 {
     public int $maxUni;
     public int $maxUniChar;
