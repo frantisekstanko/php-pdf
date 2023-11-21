@@ -571,10 +571,10 @@ final class Fpdf
 
     public function createLink(): int
     {
-        $n = count($this->internalLinks) + 1;
-        $this->internalLinks[$n] = [0, 0];
+        $newId = count($this->internalLinks) + 1;
+        $this->internalLinks[$newId] = [0, 0];
 
-        return $n;
+        return $newId;
     }
 
     public function SetLink(int $link, float $y = 0, int $page = -1): void
