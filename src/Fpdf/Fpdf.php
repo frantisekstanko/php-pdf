@@ -455,12 +455,9 @@ final class Fpdf
 
     public function addFont(
         string $family,
-        string $file = '',
+        string $file,
     ): void {
         $family = strtolower($family);
-        if ($file == '') {
-            $file = str_replace(' ', '', $family) . '.ttf';
-        }
         $fontkey = $family;
         if (isset($this->usedFonts[$fontkey])) {
             return;
