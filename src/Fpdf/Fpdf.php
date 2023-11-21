@@ -441,13 +441,6 @@ final class Fpdf
         float $height,
         RectangleStyle $style,
     ): void {
-        if ($style == RectangleStyle::FILLED) {
-            $op = 'f';
-        } elseif ($style == RectangleStyle::FILLED_AND_BORDERED) {
-            $op = 'B';
-        } else {
-            $op = 'S';
-        }
         $this->_out(
             sprintf(
                 '%.2F %.2F %.2F %.2F re %s',
@@ -455,7 +448,7 @@ final class Fpdf
                 ($this->pageHeight - $yPosition) * $this->scaleFactor,
                 $width * $this->scaleFactor,
                 -$height * $this->scaleFactor,
-                $op,
+                $style->toPdfOperation(),
             )
         );
     }
