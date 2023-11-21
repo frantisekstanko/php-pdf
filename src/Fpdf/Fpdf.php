@@ -74,9 +74,6 @@ final class Fpdf
     /** @var array<string, array<mixed>> */
     private array $fontFiles = [];
 
-    /** @var array<mixed> */
-    private array $encodings = [];
-
     private string $currentFontFamily = '';
     private string $currentFontStyle = '';
     private bool $isUnderline = false;
