@@ -465,26 +465,26 @@ final class Fpdf
             throw new FontNotFoundException($ttfFile);
         }
 
-        $ttf = new TtfParser();
-        $ttf->getMetrics($ttfFile);
-        $cw = $ttf->charWidths;
-        $name = preg_replace('/[ ()]/', '', $ttf->fullName);
+        $ttfParser = new TtfParser();
+        $ttfParser->getMetrics($ttfFile);
+        $cw = $ttfParser->charWidths;
+        $name = preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
         $desc = [
-            'Ascent' => round($ttf->ascent),
-            'Descent' => round($ttf->descent),
-            'CapHeight' => round($ttf->capHeight),
-            'Flags' => $ttf->flags,
-            'FontBBox' => '[' . round($ttf->bbox[0]) . ' ' . round($ttf->bbox[1]) . ' ' . round($ttf->bbox[2]) . ' ' . round($ttf->bbox[3]) . ']',
-            'ItalicAngle' => $ttf->italicAngle,
-            'StemV' => round($ttf->stemV),
-            'MissingWidth' => round($ttf->defaultWidth),
+            'Ascent' => round($ttfParser->ascent),
+            'Descent' => round($ttfParser->descent),
+            'CapHeight' => round($ttfParser->capHeight),
+            'Flags' => $ttfParser->flags,
+            'FontBBox' => '[' . round($ttfParser->bbox[0]) . ' ' . round($ttfParser->bbox[1]) . ' ' . round($ttfParser->bbox[2]) . ' ' . round($ttfParser->bbox[3]) . ']',
+            'ItalicAngle' => $ttfParser->italicAngle,
+            'StemV' => round($ttfParser->stemV),
+            'MissingWidth' => round($ttfParser->defaultWidth),
         ];
-        $up = round($ttf->underlinePosition);
-        $ut = round($ttf->underlineThickness);
+        $up = round($ttfParser->underlinePosition);
+        $ut = round($ttfParser->underlineThickness);
         $originalsize = $ttfstat['size'];
         $type = 'TTF';
-        unset($ttf);
+        unset($ttfParser);
         $i = count($this->usedFonts) + 1;
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $sbarr = range(0, 57);
