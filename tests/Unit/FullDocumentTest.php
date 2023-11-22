@@ -40,9 +40,9 @@ final class FullDocumentTest extends PdfTestCase
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
 
-        $pdf->insertImage(__DIR__ . '/../../images/test_solid.png');
-        $pdf->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150);
-        $pdf->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10);
+        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test_solid.png');
+        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150);
+        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10);
 
         $pdf->drawLine(10, 10, 90, 90);
 
@@ -124,8 +124,8 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->addPage();
 
-        $pdf->insertImage(__DIR__ . '/../../images/test.jpg');
-        $pdf->insertImage(__DIR__ . '/../../images/test.gif', 100, 100);
+        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test.jpg');
+        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test.gif', 100, 100);
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
 

@@ -889,12 +889,14 @@ final class Pdf
         float $imageHeight = 0,
         string $fileType = '',
         string $link = '',
-    ): void {
+    ): self {
         if ($file === '') {
             throw new CannotOpenImageFileException($file);
         }
 
-        if (!isset($this->usedImages[$file])) {
+        $pdf = clone $this;
+
+        if (!isset($pdf->usedImages[$file])) {
             if ($fileType == '') {
                 $pos = strrpos($file, '.');
                 if (!$pos) {
@@ -908,10 +910,10 @@ final class Pdf
 
             $info = (new ImageParser())->parseImage($file, $fileType);
 
-            $info['i'] = count($this->usedImages) + 1;
-            $this->usedImages[$file] = $info;
+            $info['i'] = count($pdf->usedImages) + 1;
+            $pdf->usedImages[$file] = $info;
         } else {
-            $info = $this->usedImages[$file];
+            $info = $pdf->usedImages[$file];
         }
 
         // Automatic width and height calculation if needed
@@ -921,10 +923,10 @@ final class Pdf
             $imageHeight = -96;
         }
         if ($imageWidth < 0) {
-            $imageWidth = -$info['w'] * 72 / $imageWidth / $this->scaleFactor;
+            $imageWidth = -$info['w'] * 72 / $imageWidth / $pdf->scaleFactor;
         }
         if ($imageHeight < 0) {
-            $imageHeight = -$info['h'] * 72 / $imageHeight / $this->scaleFactor;
+            $imageHeight = -$info['h'] * 72 / $imageHeight / $pdf->scaleFactor;
         }
         if ($imageWidth == 0) {
             $imageWidth = $imageHeight * $info['w'] / $info['h'];
@@ -936,29 +938,31 @@ final class Pdf
         // Flowing mode
         if ($yPosition === null) {
             if (
-                $this->currentYPosition + $imageHeight > $this->pageBreakThreshold
-                && $this->automaticPageBreaking
+                $pdf->currentYPosition + $imageHeight > $pdf->pageBreakThreshold
+                && $pdf->automaticPageBreaking
             ) {
                 // Automatic page break
-                $x2 = $this->currentXPosition;
-                $this->addPage(
-                    $this->currentOrientation,
-                    $this->currentPageSize,
-                    $this->currentPageRotation
+                $x2 = $pdf->currentXPosition;
+                $pdf->addPage(
+                    $pdf->currentOrientation,
+                    $pdf->currentPageSize,
+                    $pdf->currentPageRotation
                 );
-                $this->currentXPosition = $x2;
+                $pdf->currentXPosition = $x2;
             }
-            $yPosition = $this->currentYPosition;
-            $this->currentYPosition += $imageHeight;
+            $yPosition = $pdf->currentYPosition;
+            $pdf->currentYPosition += $imageHeight;
         }
 
         if ($xPosition === null) {
-            $xPosition = $this->currentXPosition;
+            $xPosition = $pdf->currentXPosition;
         }
-        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $imageWidth * $this->scaleFactor, $imageHeight * $this->scaleFactor, $xPosition * $this->scaleFactor, ($this->pageHeight - ($yPosition + $imageHeight)) * $this->scaleFactor, $info['i']));
+        $pdf->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $imageWidth * $pdf->scaleFactor, $imageHeight * $pdf->scaleFactor, $xPosition * $pdf->scaleFactor, ($pdf->pageHeight - ($yPosition + $imageHeight)) * $pdf->scaleFactor, $info['i']));
         if ($link) {
-            $this->Link($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
+            $pdf->Link($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
         }
+
+        return $pdf;
     }
 
     public function GetPageWidth(): float
