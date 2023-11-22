@@ -80,7 +80,7 @@ final class Pdf
      * }> */
     private array $usedFonts = [];
 
-    private ?FontInterface $currentFontFamily = null;
+    private ?FontInterface $currentFont = null;
     private bool $isUnderline = false;
 
     private float $currentFontSizeInPoints = 12;
@@ -248,7 +248,7 @@ final class Pdf
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
         }
-        $family = $this->currentFontFamily;
+        $family = $this->currentFont;
         if ($this->currentPageNumber > 0) {
             $this->endPage();
         }
@@ -449,7 +449,7 @@ final class Pdf
     public function setFont(
         FontInterface $font,
     ): void {
-        if ($this->currentFontFamily === $font) {
+        if ($this->currentFont === $font) {
             return;
         }
 
@@ -457,7 +457,7 @@ final class Pdf
             $this->Error('Undefined font: ' . $font::class);
         }
 
-        $this->currentFontFamily = $font;
+        $this->currentFont = $font;
         $this->currentFontSizeInPoints = $font->getSizeInPoints();
         $this->currentFontSize = $font->getSizeInPoints() / $this->scaleFactor;
 
@@ -476,10 +476,10 @@ final class Pdf
         $this->currentFontSize = $size / $this->scaleFactor;
 
         if ($this->currentPageNumber > 0) {
-            if ($this->currentFontFamily === null) {
+            if ($this->currentFont === null) {
                 throw new IncorrectFontDefinitionException();
             }
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->usedFonts[$this->currentFontFamily::class]['i'], $this->currentFontSizeInPoints));
+            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->usedFonts[$this->currentFont::class]['i'], $this->currentFontSizeInPoints));
         }
     }
 
@@ -524,12 +524,12 @@ final class Pdf
     {
         // Output a string
         $txt = (string) $txt;
-        if ($this->currentFontFamily === null) {
+        if ($this->currentFont === null) {
             $this->Error('No font has been set');
         }
         $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
         foreach ($this->UTF8StringToArray($txt) as $uni) {
-            $this->usedFonts[$this->currentFontFamily::class]['subset'][$uni] = $uni;
+            $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
         }
         $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $txt2);
         if ($this->isUnderline && $txt != '') {
@@ -606,7 +606,7 @@ final class Pdf
             }
         }
         if ($txt !== '') {
-            if ($this->currentFontFamily === null) {
+            if ($this->currentFont === null) {
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
@@ -622,7 +622,7 @@ final class Pdf
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
             if ($this->wordSpacing) {
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
-                    $this->usedFonts[$this->currentFontFamily::class]['subset'][$uni] = $uni;
+                    $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
                 $s .= sprintf(
@@ -646,7 +646,7 @@ final class Pdf
             } else {
                 $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
-                    $this->usedFonts[$this->currentFontFamily::class]['subset'][$uni] = $uni;
+                    $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $s .= sprintf(
                     'BT %.2F %.2F Td %s Tj ET',
@@ -689,7 +689,7 @@ final class Pdf
         bool $fill = false,
     ): void {
         // Output text with automatic or explicit line breaks
-        if ($this->currentFontFamily === null) {
+        if ($this->currentFont === null) {
             $this->Error('No font has been set');
         }
         if ($w == 0) {
@@ -803,7 +803,7 @@ final class Pdf
     public function Write(float $h, string $txt, string $link = ''): void
     {
         // Output text in flowing mode
-        if ($this->currentFontFamily === null) {
+        if ($this->currentFont === null) {
             $this->Error('No font has been set');
         }
         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
@@ -1148,18 +1148,18 @@ final class Pdf
 
     private function getStringWidth(string $s): float
     {
-        if ($this->currentFontFamily === null) {
+        if ($this->currentFont === null) {
             throw new IncorrectFontDefinitionException();
         }
 
-        $characterWidths = $this->usedFonts[$this->currentFontFamily::class]['cw'];
+        $characterWidths = $this->usedFonts[$this->currentFont::class]['cw'];
         $stringWidth = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
             if (isset($characterWidths[2 * $char])) {
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
-            } elseif (isset($this->usedFonts[$this->currentFontFamily::class]['attributes']['MissingWidth'])) {
-                $stringWidth += $this->usedFonts[$this->currentFontFamily::class]['attributes']['MissingWidth'];
+            } elseif (isset($this->usedFonts[$this->currentFont::class]['attributes']['MissingWidth'])) {
+                $stringWidth += $this->usedFonts[$this->currentFont::class]['attributes']['MissingWidth'];
             } else {
                 $stringWidth += 500;
             }
@@ -1208,7 +1208,7 @@ final class Pdf
         $this->currentDocumentState = DocumentState::PAGE_STARTED;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
-        $this->currentFontFamily = null;
+        $this->currentFont = null;
 
         if ($pageOrientation === null) {
             $pageOrientation = $this->defaultOrientation;
@@ -1317,13 +1317,13 @@ final class Pdf
 
     private function _dounderline(float $x, float $y, string $txt): string
     {
-        if ($this->currentFontFamily === null) {
+        if ($this->currentFont === null) {
             throw new IncorrectFontDefinitionException();
         }
 
         // Underline text
-        $up = $this->usedFonts[$this->currentFontFamily::class]['up'];
-        $ut = $this->usedFonts[$this->currentFontFamily::class]['ut'];
+        $up = $this->usedFonts[$this->currentFont::class]['up'];
+        $ut = $this->usedFonts[$this->currentFont::class]['ut'];
         $w = $this->getStringWidth($txt) + $this->wordSpacing * substr_count($txt, ' ');
 
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
