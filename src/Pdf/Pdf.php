@@ -11,6 +11,7 @@ use Stanko\Pdf\Exception\FontNotFoundException;
 use Stanko\Pdf\Exception\IncorrectFontDefinitionException;
 use Stanko\Pdf\Exception\IncorrectPageLinksException;
 use Stanko\Pdf\Exception\InvalidLayoutModeException;
+use Stanko\Pdf\Exception\NoFontHasBeenSetException;
 use Stanko\Pdf\Exception\NoPageHasBeenAddedException;
 use Stanko\Pdf\Exception\TheDocumentIsClosedException;
 
@@ -506,7 +507,7 @@ final class Pdf
     public function writeText(float $x, float $y, string $txt): void
     {
         if ($this->currentFont === null) {
-            $this->Error('No font has been set');
+            throw new NoFontHasBeenSetException();
         }
         $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
         foreach ($this->UTF8StringToArray($txt) as $uni) {
