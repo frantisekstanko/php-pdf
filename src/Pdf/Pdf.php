@@ -250,8 +250,7 @@ final class Pdf
         }
         $family = $this->currentFontFamily;
         if ($this->currentPageNumber > 0) {
-            // Close page
-            $this->_endpage();
+            $this->endPage();
         }
         $this->startPage($pageOrientation, $pageSize, $pageRotation);
         // Set line cap style to square
@@ -1143,8 +1142,7 @@ final class Pdf
             $this->addPage();
         }
 
-        // Close page
-        $this->_endpage();
+        $this->endPage();
         // Close document
         $this->_enddoc();
     }
@@ -1255,7 +1253,7 @@ final class Pdf
         $this->currentPageRotation = $pageRotation;
     }
 
-    private function _endpage(): void
+    private function endPage(): void
     {
         $this->currentDocumentState = DocumentState::PAGE_ENDED;
     }
