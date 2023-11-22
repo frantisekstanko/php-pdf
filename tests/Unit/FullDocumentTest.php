@@ -28,7 +28,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf->createdAt(new DateTimeImmutable('1999-12-26'));
         $pdf->Cell(100, 30, 'Cell test !@#* ÁČŠĎ');
         $pdf->Cell(90, 25, 'With border', 1);
-        $pdf->Ln();
+        $pdf = $pdf->onNextRow();
         $pdf->Cell(70, 40, 'Left border', 'L', 0, 'L');
         $pdf->Cell(44, 32, 'Right border', 'R', 1, 'C');
         $pdf->enableUnderline();

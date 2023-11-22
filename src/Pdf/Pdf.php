@@ -869,15 +869,14 @@ final class Pdf
         }
     }
 
-    public function Ln(float $h = null): void
+    public function onNextRow(): self
     {
-        // Line feed; default value is the last cell height
-        $this->currentXPosition = $this->leftMargin;
-        if ($h === null) {
-            $this->currentYPosition += $this->lastPrintedCellHeight;
-        } else {
-            $this->currentYPosition += $h;
-        }
+        $pdf = clone $this;
+
+        $pdf->currentXPosition = $pdf->leftMargin;
+        $pdf->currentYPosition += $pdf->lastPrintedCellHeight;
+
+        return $pdf;
     }
 
     public function Image(
