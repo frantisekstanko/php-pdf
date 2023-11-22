@@ -1279,7 +1279,12 @@ final class Pdf
 
     private function escapeSpecialCharacters(string $s): string
     {
-        if (strpos($s, '(') !== false || strpos($s, ')') !== false || strpos($s, '\\') !== false || strpos($s, "\r") !== false) {
+        if (
+            strpos($s, '(') !== false
+            || strpos($s, ')') !== false
+            || strpos($s, '\\') !== false
+            || strpos($s, "\r") !== false
+        ) {
             return str_replace(['\\', '(', ')', "\r"], ['\\\\', '\\(', '\\)', '\\r'], $s);
         }
 
