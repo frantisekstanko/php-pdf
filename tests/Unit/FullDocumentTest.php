@@ -37,9 +37,9 @@ final class FullDocumentTest extends PdfTestCase
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
 
-        $pdf->Image(__DIR__ . '/../../images/test.png');
-        $pdf->Image(__DIR__ . '/../../images/test.png', 200, 150);
-        $pdf->Image(__DIR__ . '/../../images/test.png', 0, 0, 10, 10);
+        $pdf->Image(__DIR__ . '/../../images/test_solid.png');
+        $pdf->Image(__DIR__ . '/../../images/test_solid.png', 200, 150);
+        $pdf->Image(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10);
 
         $pdf->drawLine(10, 10, 90, 90);
 
