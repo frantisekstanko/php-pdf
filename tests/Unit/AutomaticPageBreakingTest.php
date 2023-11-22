@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stanko\Pdf\Tests\Unit;
 
-use DateTimeImmutable;
 use Stanko\Pdf\Fonts\OpenSansRegular;
 use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\Pdf;
@@ -82,7 +81,6 @@ final class AutomaticPageBreakingTest extends PdfTestCase
             Units::MILLIMETERS,
         ))->loadFont(OpenSansRegular::points(12));
 
-        $pdf->createdAt(new DateTimeImmutable('2023-11-20'));
         $pdf->setFont(OpenSansRegular::points(12));
 
         return $pdf;
