@@ -1906,28 +1906,38 @@ final class Pdf
         $out = [];
         $len = strlen($str);
         for ($i = 0; $i < $len; ++$i) {
-            $uni = -1;
             $h = ord($str[$i]);
-            if ($h <= 0x7F) {
-                $uni = $h;
-            } elseif ($h >= 0xC2) {
-                if (($h <= 0xDF) && ($i < $len - 1)) {
-                    $uni = ($h & 0x1F) << 6 | (ord($str[++$i]) & 0x3F);
-                } elseif (($h <= 0xEF) && ($i < $len - 2)) {
-                    $uni = ($h & 0x0F) << 12 | (ord($str[++$i]) & 0x3F) << 6
-                        | (ord($str[++$i]) & 0x3F);
-                } elseif (($h <= 0xF4) && ($i < $len - 3)) {
-                    $uni = ($h & 0x0F) << 18 | (ord($str[++$i]) & 0x3F) << 12
-                        | (ord($str[++$i]) & 0x3F) << 6
-                        | (ord($str[++$i]) & 0x3F);
-                }
-            }
-            if ($uni >= 0) {
-                $out[] = $uni;
+
+            $unicode = $this->getUnicode($str, $i, $len, $h);
+
+            if ($unicode !== null) {
+                $out[] = $unicode;
             }
         }
 
         return $out;
+    }
+
+    private function getUnicode(string $str, int $i, int $len, int $h): ?int
+    {
+        $uni = null;
+
+        if ($h <= 0x7F) {
+            $uni = $h;
+        } elseif ($h >= 0xC2) {
+            if (($h <= 0xDF) && ($i < $len - 1)) {
+                $uni = ($h & 0x1F) << 6 | (ord($str[++$i]) & 0x3F);
+            } elseif (($h <= 0xEF) && ($i < $len - 2)) {
+                $uni = ($h & 0x0F) << 12 | (ord($str[++$i]) & 0x3F) << 6
+                    | (ord($str[++$i]) & 0x3F);
+            } elseif (($h <= 0xF4) && ($i < $len - 3)) {
+                $uni = ($h & 0x0F) << 18 | (ord($str[++$i]) & 0x3F) << 12
+                    | (ord($str[++$i]) & 0x3F) << 6
+                    | (ord($str[++$i]) & 0x3F);
+            }
+        }
+
+        return $uni;
     }
 
     private function recalculatePageBreakThreshold(): void
