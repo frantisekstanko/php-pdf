@@ -490,13 +490,7 @@ final class Pdf
         $this->currentFontSize = $font->getSizeInPoints() / $this->scaleFactor;
 
         if ($this->currentPageNumber > 0) {
-            $this->_out(
-                sprintf(
-                    'BT /F%d %.2F Tf ET',
-                    $this->usedFonts[$this->currentFontFamily::class]['i'],
-                    $this->currentFontSizeInPoints,
-                )
-            );
+            $this->writeFontInformationToDocument($font);
         }
     }
 
@@ -1131,6 +1125,18 @@ final class Pdf
         $pdf->metadata = $pdf->metadata->createdAt($createdAt);
 
         return $pdf;
+    }
+
+    private function writeFontInformationToDocument(
+        FontInterface $font,
+    ): void {
+        $this->_out(
+            sprintf(
+                'BT /F%d %.2F Tf ET',
+                $this->usedFonts[$font::class]['i'],
+                $this->currentFontSizeInPoints,
+            )
+        );
     }
 
     private function setPageSize(PageSize $pageSize): void
