@@ -16,10 +16,10 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'));
-
-        $pdf->loadFont(OpenSansRegular::points(12));
-        $pdf->loadFont(OpenSansBold::points(12));
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'))
+            ->loadFont(OpenSansRegular::points(12))
+            ->loadFont(OpenSansBold::points(12))
+        ;
 
         $pdf->setFont(OpenSansRegular::points(12));
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));

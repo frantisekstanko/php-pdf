@@ -424,10 +424,11 @@ final class Pdf
 
     public function loadFont(
         FontInterface $font,
-    ): void {
+    ): self {
         if (isset($this->usedFonts[$font::class])) {
-            return;
+            return $this;
         }
+
         $ttfstat = stat($font->getTtfFilePath());
 
         if ($ttfstat === false) {
@@ -457,7 +458,10 @@ final class Pdf
         }
 
         $fontType = 'TTF';
-        $this->usedFonts[$font::class] = [
+
+        $pdf = clone $this;
+
+        $pdf->usedFonts[$font::class] = [
             'i' => count($this->usedFonts) + 1,
             'type' => $fontType,
             'name' => $name,
@@ -470,7 +474,7 @@ final class Pdf
             'n' => 0,
         ];
 
-        unset($charWidths, $ttfParser);
+        return $pdf;
     }
 
     public function enableUnderline(): void
