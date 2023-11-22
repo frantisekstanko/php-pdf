@@ -1910,9 +1910,11 @@ final class Pdf
 
             $unicode = $this->getUnicode($str, $i, $len, $h);
 
-            if ($unicode !== null) {
-                $out[] = $unicode;
+            if ($unicode === null) {
+                continue;
             }
+
+            $out[] = $unicode;
         }
 
         return $out;
