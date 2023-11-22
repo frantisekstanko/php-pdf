@@ -108,8 +108,6 @@ final class Pdf
     private array $internalLinks = [];
     private bool $automaticPageBreaking;
     private float $pageBreakThreshold;
-    private bool $isDrawingHeader = false;
-    private bool $isDrawingFooter = false;
     private ?string $aliasForTotalNumberOfPages = null;
     private string $layoutMode = 'default';
 
@@ -257,10 +255,6 @@ final class Pdf
         $tc = $this->textColor;
         $cf = $this->fillAndTextColorDiffer;
         if ($this->currentPageNumber > 0) {
-            // Page footer
-            $this->isDrawingFooter = true;
-            $this->Footer();
-            $this->isDrawingFooter = false;
             // Close page
             $this->_endpage();
         }
@@ -285,10 +279,6 @@ final class Pdf
         }
         $this->textColor = $tc;
         $this->fillAndTextColorDiffer = $cf;
-        // Page header
-        $this->isDrawingHeader = true;
-        $this->Header();
-        $this->isDrawingHeader = false;
         // Restore line width
         if ($this->lineWidth != $lw) {
             $this->lineWidth = $lw;
@@ -309,16 +299,6 @@ final class Pdf
         }
         $this->textColor = $tc;
         $this->fillAndTextColorDiffer = $cf;
-    }
-
-    public function Header(): void
-    {
-        // To be implemented in your own inherited class
-    }
-
-    public function Footer(): void
-    {
-        // To be implemented in your own inherited class
     }
 
     public function getCurrentPageNumber(): int
@@ -610,8 +590,6 @@ final class Pdf
         $k = $this->scaleFactor;
         if (
             $this->currentYPosition + $h > $this->pageBreakThreshold
-            && !$this->isDrawingHeader
-            && !$this->isDrawingFooter
             && $this->automaticPageBreaking
             && $this->currentYPosition !== $this->topMargin
         ) {
@@ -1008,8 +986,6 @@ final class Pdf
         if ($y === null) {
             if (
                 $this->currentYPosition + $h > $this->pageBreakThreshold
-                && !$this->isDrawingHeader
-                && !$this->isDrawingFooter
                 && $this->automaticPageBreaking
             ) {
                 // Automatic page break
@@ -1188,10 +1164,6 @@ final class Pdf
             $this->addPage();
         }
 
-        // Page footer
-        $this->isDrawingFooter = true;
-        $this->Footer();
-        $this->isDrawingFooter = false;
         // Close page
         $this->_endpage();
         // Close document
