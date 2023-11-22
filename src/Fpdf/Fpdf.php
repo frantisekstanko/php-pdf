@@ -262,7 +262,7 @@ final class Fpdf
         $this->metadata = $this->metadata->createdBy($creator);
     }
 
-    public function AliasNbPages(string $alias = '{nb}'): void
+    public function setAliasForTotalNumberOfPages(string $alias = '{nb}'): void
     {
         $this->aliasForTotalNumberOfPages = $alias;
     }

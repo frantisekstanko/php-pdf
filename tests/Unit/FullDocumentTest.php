@@ -32,7 +32,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(44, 32, 'Top border, underlined text', 'T', 2, 'R');
         $pdf->Cell(44, 32, 'With fill', 'B', 0, 'L', true);
 
-        $pdf->AliasNbPages('{pagesTotalTest}');
+        $pdf->setAliasForTotalNumberOfPages('{pagesTotalTest}');
 
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
