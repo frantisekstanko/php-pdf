@@ -1921,8 +1921,6 @@ final class Pdf
         $this->currentDocumentState = DocumentState::CLOSED;
     }
 
-    // ********* NEW FUNCTIONS *********
-    // Converts UTF-8 strings to UTF16-BE.
     private function UTF8ToUTF16BE(string $str, bool $setbom = true): string
     {
         $outstr = '';
@@ -1934,7 +1932,6 @@ final class Pdf
         return $outstr;
     }
 
-    // Converts UTF-8 strings to codepoints array
     /**
      * @return array<int>
      */
