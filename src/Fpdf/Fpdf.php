@@ -246,7 +246,6 @@ final class Fpdf
             throw new CannotAddPageToClosedDocumentException();
         }
         $family = $this->currentFontFamily;
-        $fontsize = $this->currentFontSizeInPoints;
         $lw = $this->lineWidth;
         $dc = $this->drawColor;
         $fc = $this->fillColor;
