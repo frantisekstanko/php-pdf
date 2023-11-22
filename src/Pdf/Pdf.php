@@ -113,28 +113,16 @@ final class Pdf
         PageOrientation $pageOrientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
     ) {
-        $pageSize = PageSize::a4();
-
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
 
         $this->metadata = Metadata::empty();
 
         $this->scaleFactor = $units->getScaleFactor();
-        $this->defaultPageSize = $pageSize;
-        $this->currentPageSize = $pageSize;
 
         $this->defaultOrientation = $pageOrientation;
         $this->currentOrientation = $pageOrientation;
 
-        if ($pageOrientation == PageOrientation::PORTRAIT) {
-            $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
-            $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
-        }
-
-        if ($pageOrientation == PageOrientation::LANDSCAPE) {
-            $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
-            $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
-        }
+        $this->setPageSize(PageSize::a4());
 
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
@@ -151,21 +139,8 @@ final class Pdf
     public function withPageSize(PageSize $pageSize): self
     {
         $pdf = clone $this;
-        $pdf->defaultPageSize = $pageSize;
-        $pdf->currentPageSize = $pageSize;
 
-        if ($pdf->defaultOrientation == PageOrientation::PORTRAIT) {
-            $pdf->pageWidth = $pageSize->getWidth($pdf->scaleFactor);
-            $pdf->pageHeight = $pageSize->getHeight($pdf->scaleFactor);
-        }
-
-        if ($pdf->defaultOrientation == PageOrientation::LANDSCAPE) {
-            $pdf->pageWidth = $pageSize->getHeight($pdf->scaleFactor);
-            $pdf->pageHeight = $pageSize->getWidth($pdf->scaleFactor);
-        }
-
-        $pdf->pageWidthInPoints = $pdf->pageWidth * $pdf->scaleFactor;
-        $pdf->pageHeightInPoints = $pdf->pageHeight * $pdf->scaleFactor;
+        $pdf->setPageSize($pageSize);
 
         return $pdf;
     }
@@ -1166,6 +1141,22 @@ final class Pdf
     public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->metadata = $this->metadata->createdAt($createdAt);
+    }
+
+    private function setPageSize(PageSize $pageSize): void
+    {
+        $this->defaultPageSize = $pageSize;
+        $this->currentPageSize = $pageSize;
+
+        if ($this->currentOrientation == PageOrientation::PORTRAIT) {
+            $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
+            $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
+        }
+
+        if ($this->currentOrientation == PageOrientation::LANDSCAPE) {
+            $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
+            $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
+        }
     }
 
     private function Error(string $msg): never
