@@ -1872,7 +1872,6 @@ final class Fpdf
 
     private function _putcatalog(): void
     {
-        $n = $this->pageInfo[1]['n'];
         $this->appendIntoBuffer('/Type /Catalog');
         $this->appendIntoBuffer('/Pages 1 0 R');
         if ($this->layoutMode == 'single') {
