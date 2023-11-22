@@ -86,7 +86,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setSubject('What is this? I hope this is not Chris.');
         $pdf->setTextColor(Color::fromRgb(0, 255, 100));
         $pdf->setTitle('at last!');
-        $pdf->Text(111, 122, 'Hello world!');
+        $pdf->writeText(111, 122, 'Hello world!');
         $pdf->Write(55, 'Hello world!');
         $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
 

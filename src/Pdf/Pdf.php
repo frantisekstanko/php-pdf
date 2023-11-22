@@ -503,7 +503,7 @@ final class Pdf
         ];
     }
 
-    public function Text(float $x, float $y, string $txt): void
+    public function writeText(float $x, float $y, string $txt): void
     {
         // Output a string
         $txt = (string) $txt;
