@@ -509,7 +509,11 @@ final class Pdf
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
-        $txt2 = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt, false)) . ')';
+
+        $txt2 = '(' . $this->escapeSpecialCharacters(
+            $this->UTF8ToUTF16BE($txt, false)
+        ) . ')';
+
         foreach ($this->UTF8StringToArray($txt) as $uni) {
             $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
         }
@@ -1285,7 +1289,11 @@ final class Pdf
             || mb_strpos($s, '\\') !== false
             || mb_strpos($s, "\r") !== false
         ) {
-            return str_replace(['\\', '(', ')', "\r"], ['\\\\', '\\(', '\\)', '\\r'], $s);
+            return str_replace(
+                ['\\', '(', ')', "\r"],
+                ['\\\\', '\\(', '\\)', '\\r'],
+                $s
+            );
         }
 
         return $s;
