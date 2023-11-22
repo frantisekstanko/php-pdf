@@ -1208,9 +1208,9 @@ final class Pdf
         $stringWidth = 0;
         $unicode = $this->UTF8StringToArray($s);
         foreach ($unicode as $char) {
-            if (is_string($characterWidths) && isset($characterWidths[2 * $char])) {
+            if (isset($characterWidths[2 * $char])) {
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
-            } elseif (is_array($this->usedFonts[$this->currentFontFamily::class]['attributes']) && isset($this->usedFonts[$this->currentFontFamily::class]['attributes']['MissingWidth'])) {
+            } elseif (isset($this->usedFonts[$this->currentFontFamily::class]['attributes']['MissingWidth'])) {
                 $stringWidth += $this->usedFonts[$this->currentFontFamily::class]['attributes']['MissingWidth'];
             } else {
                 $stringWidth += 500;
