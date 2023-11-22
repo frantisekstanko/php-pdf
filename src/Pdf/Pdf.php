@@ -466,29 +466,6 @@ final class Pdf
         }
     }
 
-    public function setFontSize(float $size): void
-    {
-        if ($this->currentFontSizeInPoints == $size) {
-            return;
-        }
-
-        $this->currentFontSizeInPoints = $size;
-        $this->currentFontSize = $size / $this->scaleFactor;
-
-        if ($this->currentPageNumber > 0) {
-            if ($this->currentFont === null) {
-                throw new IncorrectFontDefinitionException();
-            }
-            $this->_out(
-                sprintf(
-                    'BT /F%d %.2F Tf ET',
-                    $this->usedFonts[$this->currentFont::class]['i'],
-                    $this->currentFontSizeInPoints,
-                )
-            );
-        }
-    }
-
     public function createLink(): int
     {
         $newId = count($this->internalLinks) + 1;
