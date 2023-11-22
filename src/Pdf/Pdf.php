@@ -879,13 +879,13 @@ final class Pdf
         return $pdf;
     }
 
-    public function Image(
+    public function insertImage(
         string $file,
-        float $x = null,
-        float $y = null,
-        float $w = 0,
-        float $h = 0,
-        string $type = '',
+        float $xPosition = null,
+        float $yPosition = null,
+        float $imageWidth = 0,
+        float $imageHeight = 0,
+        string $fileType = '',
         string $link = '',
     ): void {
         // Put an image on the page
@@ -894,16 +894,16 @@ final class Pdf
         }
         if (!isset($this->usedImages[$file])) {
             // First use of this image, get info
-            if ($type == '') {
+            if ($fileType == '') {
                 $pos = strrpos($file, '.');
                 if (!$pos) {
                     $this->Error('Image file has no extension and no type was specified: ' . $file);
                 }
-                $type = substr($file, $pos + 1);
+                $fileType = substr($file, $pos + 1);
             }
-            $type = strtolower($type);
+            $fileType = strtolower($fileType);
 
-            $info = (new ImageParser())->parseImage($file, $type);
+            $info = (new ImageParser())->parseImage($file, $fileType);
 
             $info['i'] = count($this->usedImages) + 1;
             $this->usedImages[$file] = $info;
@@ -912,28 +912,28 @@ final class Pdf
         }
 
         // Automatic width and height calculation if needed
-        if ($w == 0 && $h == 0) {
+        if ($imageWidth == 0 && $imageHeight == 0) {
             // Put image at 96 dpi
-            $w = -96;
-            $h = -96;
+            $imageWidth = -96;
+            $imageHeight = -96;
         }
-        if ($w < 0) {
-            $w = -$info['w'] * 72 / $w / $this->scaleFactor;
+        if ($imageWidth < 0) {
+            $imageWidth = -$info['w'] * 72 / $imageWidth / $this->scaleFactor;
         }
-        if ($h < 0) {
-            $h = -$info['h'] * 72 / $h / $this->scaleFactor;
+        if ($imageHeight < 0) {
+            $imageHeight = -$info['h'] * 72 / $imageHeight / $this->scaleFactor;
         }
-        if ($w == 0) {
-            $w = $h * $info['w'] / $info['h'];
+        if ($imageWidth == 0) {
+            $imageWidth = $imageHeight * $info['w'] / $info['h'];
         }
-        if ($h == 0) {
-            $h = $w * $info['h'] / $info['w'];
+        if ($imageHeight == 0) {
+            $imageHeight = $imageWidth * $info['h'] / $info['w'];
         }
 
         // Flowing mode
-        if ($y === null) {
+        if ($yPosition === null) {
             if (
-                $this->currentYPosition + $h > $this->pageBreakThreshold
+                $this->currentYPosition + $imageHeight > $this->pageBreakThreshold
                 && $this->automaticPageBreaking
             ) {
                 // Automatic page break
@@ -945,16 +945,16 @@ final class Pdf
                 );
                 $this->currentXPosition = $x2;
             }
-            $y = $this->currentYPosition;
-            $this->currentYPosition += $h;
+            $yPosition = $this->currentYPosition;
+            $this->currentYPosition += $imageHeight;
         }
 
-        if ($x === null) {
-            $x = $this->currentXPosition;
+        if ($xPosition === null) {
+            $xPosition = $this->currentXPosition;
         }
-        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $w * $this->scaleFactor, $h * $this->scaleFactor, $x * $this->scaleFactor, ($this->pageHeight - ($y + $h)) * $this->scaleFactor, $info['i']));
+        $this->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $imageWidth * $this->scaleFactor, $imageHeight * $this->scaleFactor, $xPosition * $this->scaleFactor, ($this->pageHeight - ($yPosition + $imageHeight)) * $this->scaleFactor, $info['i']));
         if ($link) {
-            $this->Link($x, $y, $w, $h, $link);
+            $this->Link($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
         }
     }
 
