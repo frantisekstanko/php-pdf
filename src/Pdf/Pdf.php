@@ -16,6 +16,7 @@ use Stanko\Pdf\Exception\NoFontHasBeenSetException;
 use Stanko\Pdf\Exception\NoPageHasBeenAddedException;
 use Stanko\Pdf\Exception\TheDocumentIsClosedException;
 use Stanko\Pdf\Exception\UndefinedFontException;
+use Stanko\Pdf\Exception\UnsupportedImageTypeException;
 
 final class Pdf
 {
@@ -897,7 +898,9 @@ final class Pdf
             if ($fileType == '') {
                 $pos = strrpos($file, '.');
                 if (!$pos) {
-                    $this->Error('Image file has no extension and no type was specified: ' . $file);
+                    throw new UnsupportedImageTypeException(
+                        'Image file has no extension and no type was specified: ' . $file
+                    );
                 }
                 $fileType = substr($file, $pos + 1);
             }
