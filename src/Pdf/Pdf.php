@@ -894,7 +894,6 @@ final class Pdf
         }
 
         if (!isset($this->usedImages[$file])) {
-            // First use of this image, get info
             if ($fileType == '') {
                 $pos = strrpos($file, '.');
                 if (!$pos) {
