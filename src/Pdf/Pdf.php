@@ -511,7 +511,7 @@ final class Pdf
         }
 
         $txt2 = '(' . $this->escapeSpecialCharacters(
-            $this->UTF8ToUTF16BE($txt, false)
+            $this->UTF8ToUTF16BE($txt)
         ) . ')';
 
         foreach ($this->UTF8StringToArray($txt) as $uni) {
@@ -610,7 +610,7 @@ final class Pdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
-                $space = $this->escapeSpecialCharacters($this->UTF8ToUTF16BE(' ', false));
+                $space = $this->escapeSpecialCharacters($this->UTF8ToUTF16BE(' '));
                 $s .= sprintf(
                     'BT 0 Tw %.2F %.2F Td [',
                     ($this->currentXPosition + $dx) * $k,
@@ -620,7 +620,7 @@ final class Pdf
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
                     $tx = $t[$i];
-                    $tx = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($tx, false)) . ')';
+                    $tx = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
                         $adj = - ($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
@@ -630,7 +630,7 @@ final class Pdf
                 $s .= '] TJ';
                 $s .= ' ET';
             } else {
-                $txt2 = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt, false)) . ')';
+                $txt2 = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt)) . ')';
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
@@ -1451,8 +1451,8 @@ final class Pdf
         $this->appendIntoBuffer('endobj');
         // Page content
         if (!empty($this->aliasForTotalNumberOfPages)) {
-            $alias = $this->UTF8ToUTF16BE($this->aliasForTotalNumberOfPages, false);
-            $r = $this->UTF8ToUTF16BE((string) $this->currentPageNumber, false);
+            $alias = $this->UTF8ToUTF16BE($this->aliasForTotalNumberOfPages);
+            $r = $this->UTF8ToUTF16BE((string) $this->currentPageNumber);
             $this->rawPageData[$n] = str_replace($alias, $r, $this->rawPageData[$n]);
             // Now repeat for no pages in non-subset fonts
             $this->rawPageData[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPageNumber, $this->rawPageData[$n]);
@@ -1893,15 +1893,9 @@ final class Pdf
         $this->currentDocumentState = DocumentState::CLOSED;
     }
 
-    private function UTF8ToUTF16BE(string $str, bool $setbom = true): string
+    private function UTF8ToUTF16BE(string $str): string
     {
-        $outstr = '';
-        if ($setbom) {
-            $outstr .= "\xFE\xFF"; // Byte Order Mark (BOM)
-        }
-        $outstr .= mb_convert_encoding($str, 'UTF-16BE', 'UTF-8');
-
-        return $outstr;
+        return mb_convert_encoding($str, 'UTF-16BE', 'UTF-8');
     }
 
     /**
