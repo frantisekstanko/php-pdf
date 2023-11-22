@@ -505,8 +505,6 @@ final class Pdf
 
     public function writeText(float $x, float $y, string $txt): void
     {
-        // Output a string
-        $txt = (string) $txt;
         if ($this->currentFont === null) {
             $this->Error('No font has been set');
         }
