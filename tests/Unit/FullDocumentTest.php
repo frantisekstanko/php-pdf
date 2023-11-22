@@ -20,9 +20,9 @@ final class FullDocumentTest extends PdfTestCase
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
             ->withFont(OpenSansRegular::points(12))
+            ->withFillColor(Color::fromRgb(50, 10, 5))
         ;
 
-        $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         $pdf = $pdf->createdAt(new DateTimeImmutable('1999-12-26'));
@@ -62,7 +62,7 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->setLineWidth(3);
         $pdf->setDrawColor(Color::fromRgb(255, 0, 0));
-        $pdf->setFillColor(Color::fromRgb(255, 255, 0));
+        $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 0));
         $pdf->drawRectangle(66, 77, 100, 100, RectangleStyle::BORDERED);
         $pdf->setDrawColor(Color::fromRgb(0, 255, 0));
         $pdf->drawRectangle(90, 90, 100, 100, RectangleStyle::FILLED);

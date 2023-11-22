@@ -36,7 +36,7 @@ final class ImageTest extends PdfTestCase
 
         $pdf->addPage();
 
-        $pdf->setFillColor(Color::fromRgb(50, 150, 50));
+        $pdf = $pdf->withFillColor(Color::fromRgb(50, 150, 50));
 
         $pdf->drawRectangle(0, 0, 400, 400, RectangleStyle::FILLED);
 
