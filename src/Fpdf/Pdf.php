@@ -14,7 +14,7 @@ use Stanko\Fpdf\Exception\InvalidLayoutModeException;
 use Stanko\Fpdf\Exception\NoPageHasBeenAddedException;
 use Stanko\Fpdf\Exception\TheDocumentIsClosedException;
 
-final class Fpdf
+final class Pdf
 {
     private int $currentPageNumber = 0;
     private int $currentObjectNumber = 2;

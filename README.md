@@ -1,14 +1,13 @@
-# Fpdf
+# A fresh PDF generator written in PHP
 
-This project is a fork of [tFPDF](http://fpdf.org/fr/script/script92.php),
+This project is a work-in-progress, complete rewrite of
+[tFPDF](http://fpdf.org/fr/script/script92.php),
 which is a modified version of [FPDF](http://www.fpdf.org/).
-
-This will be a complete rewrite.
 
 ## Installation
 
 ```bash
-composer require stanko/fpdf
+composer require stanko/pdf
 ```
 
 ### Code quality

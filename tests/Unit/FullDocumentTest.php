@@ -8,8 +8,8 @@ use DateTimeImmutable;
 use Stanko\Fpdf\Color;
 use Stanko\Fpdf\Fonts\OpenSansBold;
 use Stanko\Fpdf\Fonts\OpenSansRegular;
-use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\PageSize;
+use Stanko\Fpdf\Pdf;
 use Stanko\Fpdf\RectangleStyle;
 use Stanko\Fpdf\Tests\PdfTestCase;
 
@@ -17,7 +17,7 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $pdf = new Fpdf(PageSize::a4());
+        $pdf = new Pdf(PageSize::a4());
 
         $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
 

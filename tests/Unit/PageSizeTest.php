@@ -6,9 +6,9 @@ namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
 use RuntimeException;
-use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\PageOrientation;
 use Stanko\Fpdf\PageSize;
+use Stanko\Fpdf\Pdf;
 use Stanko\Fpdf\Tests\PdfTestCase;
 use Stanko\Fpdf\Units;
 
@@ -26,7 +26,7 @@ final class PageSizeTest extends PdfTestCase
         string $pageSize,
         string $expectedHash,
     ): void {
-        $pdf = new Fpdf(
+        $pdf = new Pdf(
             $this->pageSizeFromString($pageSize),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
