@@ -237,7 +237,7 @@ final class Fpdf
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
-    public function AddPage(
+    public function addPage(
         ?PageOrientation $pageOrientation = null,
         ?PageSize $pageSize = null,
         ?PageRotation $pageRotation = null,
@@ -624,7 +624,7 @@ final class Fpdf
                 $this->wordSpacing = 0;
                 $this->_out('0 Tw');
             }
-            $this->AddPage(
+            $this->addPage(
                 $this->currentOrientation,
                 $this->currentPageSize,
                 $this->currentPageRotation
@@ -1016,7 +1016,7 @@ final class Fpdf
             ) {
                 // Automatic page break
                 $x2 = $this->currentXPosition;
-                $this->AddPage(
+                $this->addPage(
                     $this->currentOrientation,
                     $this->currentPageSize,
                     $this->currentPageRotation
@@ -1167,7 +1167,7 @@ final class Fpdf
         }
 
         if ($this->currentPageNumber == 0) {
-            $this->AddPage();
+            $this->addPage();
         }
 
         // Page footer

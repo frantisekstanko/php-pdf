@@ -20,7 +20,7 @@ final class FullDocumentTest extends PdfTestCase
         );
         $pdf->setFont('Open Sans', 12);
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));
-        $pdf->AddPage();
+        $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
         $pdf->Cell(100, 30, 'Cell test !@#* ÁČŠĎ');
@@ -48,7 +48,7 @@ final class FullDocumentTest extends PdfTestCase
         self::assertEquals(54.00125, $pdf->GetX());
         self::assertEqualsWithDelta(178.3762, $pdf->GetY(), 0.0001);
 
-        $pdf->AddPage();
+        $pdf->addPage();
 
         $pdf->disableUnderline();
         $pdf->setFont('Open Sans Bold', 12);
@@ -75,7 +75,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->Cell(4, 4, 'TEXT');
         $pdf->setKeywords('test, unit, pdf');
 
-        $pdf->AddPage();
+        $pdf->addPage();
 
         $pdf->setLeftMargin(50);
         $pdf->setRightMargin(90);
@@ -119,7 +119,7 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
-        $pdf->AddPage();
+        $pdf->addPage();
 
         $pdf->Image(__DIR__ . '/../../images/test.jpg');
         $pdf->Image(__DIR__ . '/../../images/test.gif', 100, 100);

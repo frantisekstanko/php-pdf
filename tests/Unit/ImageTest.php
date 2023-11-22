@@ -37,7 +37,7 @@ final class ImageTest extends PdfTestCase
         );
         $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
 
-        $pdf->AddPage();
+        $pdf->addPage();
 
         $pdf->setFillColor(Color::fromRgb(50, 150, 50));
 
