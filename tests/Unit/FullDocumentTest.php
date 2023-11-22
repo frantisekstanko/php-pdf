@@ -68,7 +68,6 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf->setAuthor('Author is the unit test <3');
         $pdf->setCreator('Nobody');
-        $pdf->setZoom('fullpage');
         $pdf->setLayout('single');
 
         $pdf->setFontSize(17);
@@ -130,7 +129,7 @@ final class FullDocumentTest extends PdfTestCase
         $renderedPdf = $pdf->Output('S');
 
         self::assertEquals(
-            '4df29fef2051b6e5ee0e226e59dde5be6d661175',
+            '0162a629cdb01c4865aa6d3d1328f2a99b2019f1',
             sha1($renderedPdf)
         );
     }

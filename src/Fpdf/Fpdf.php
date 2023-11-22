@@ -15,7 +15,6 @@ use Stanko\Fpdf\Exception\IncorrectPageLinksException;
 use Stanko\Fpdf\Exception\IncorrectPngFileException;
 use Stanko\Fpdf\Exception\InterlacingNotSupportedException;
 use Stanko\Fpdf\Exception\InvalidLayoutModeException;
-use Stanko\Fpdf\Exception\InvalidZoomModeException;
 use Stanko\Fpdf\Exception\MemoryStreamException;
 use Stanko\Fpdf\Exception\NoPageHasBeenAddedException;
 use Stanko\Fpdf\Exception\TheDocumentIsClosedException;
@@ -116,7 +115,6 @@ final class Fpdf
     private bool $isDrawingHeader = false;
     private bool $isDrawingFooter = false;
     private ?string $aliasForTotalNumberOfPages = null;
-    private float|string $zoomMode = 'default';
     private string $layoutMode = 'default';
 
     private Metadata $metadata;
@@ -188,23 +186,6 @@ final class Fpdf
     public function disableAutomaticPageBreaking(): void
     {
         $this->automaticPageBreaking = false;
-    }
-
-    public function setZoom(float|string $zoom): void
-    {
-        if (
-            $zoom == 'fullpage'
-            || $zoom == 'fullwidth'
-            || $zoom == 'real'
-            || $zoom == 'default'
-            || !is_string($zoom)
-        ) {
-            $this->zoomMode = $zoom;
-
-            return;
-        }
-
-        throw new InvalidZoomModeException();
     }
 
     public function setLayout(string $layout = 'default'): void
@@ -2159,15 +2140,6 @@ final class Fpdf
         $n = $this->pageInfo[1]['n'];
         $this->appendIntoBuffer('/Type /Catalog');
         $this->appendIntoBuffer('/Pages 1 0 R');
-        if ($this->zoomMode == 'fullpage') {
-            $this->appendIntoBuffer('/OpenAction [' . $n . ' 0 R /Fit]');
-        } elseif ($this->zoomMode == 'fullwidth') {
-            $this->appendIntoBuffer('/OpenAction [' . $n . ' 0 R /FitH null]');
-        } elseif ($this->zoomMode == 'real') {
-            $this->appendIntoBuffer('/OpenAction [' . $n . ' 0 R /XYZ null null 1]');
-        } elseif (!is_string($this->zoomMode)) {
-            $this->appendIntoBuffer('/OpenAction [' . $n . ' 0 R /XYZ null null ' . sprintf('%.2F', $this->zoomMode / 100) . ']');
-        }
         if ($this->layoutMode == 'single') {
             $this->appendIntoBuffer('/PageLayout /SinglePage');
         } elseif ($this->layoutMode == 'continuous') {
