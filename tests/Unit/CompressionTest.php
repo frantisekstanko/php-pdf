@@ -6,7 +6,6 @@ namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Pdf\PageOrientation;
-use Stanko\Pdf\PageSize;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
 use Stanko\Pdf\Units;
@@ -18,7 +17,6 @@ final class CompressionTest extends PdfTestCase
         $expectedHash = 'd22a77735a2152f2aa795ceb450a42bfdc34e470';
 
         $pdf = new Pdf(
-            PageSize::a4(),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         );
@@ -36,7 +34,6 @@ final class CompressionTest extends PdfTestCase
         $expectedHash = 'd55fe06bed5c73c1b104094e12c66f6e2b7653df';
 
         $pdf = new Pdf(
-            PageSize::a4(),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         );

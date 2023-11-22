@@ -7,7 +7,6 @@ namespace Stanko\Pdf\Tests\Unit;
 use DateTimeImmutable;
 use Stanko\Pdf\Fonts\OpenSansRegular;
 use Stanko\Pdf\PageOrientation;
-use Stanko\Pdf\PageSize;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
 use Stanko\Pdf\Units;
@@ -79,7 +78,6 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     private function createPdf(): Pdf
     {
         $pdf = new Pdf(
-            PageSize::a4(),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         );

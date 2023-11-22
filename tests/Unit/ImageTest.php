@@ -7,7 +7,6 @@ namespace Stanko\Pdf\Tests\Unit;
 use DateTimeImmutable;
 use Stanko\Pdf\Color;
 use Stanko\Pdf\PageOrientation;
-use Stanko\Pdf\PageSize;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\RectangleStyle;
 use Stanko\Pdf\Tests\PdfTestCase;
@@ -31,7 +30,6 @@ final class ImageTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = new Pdf(
-            PageSize::a4(),
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         );

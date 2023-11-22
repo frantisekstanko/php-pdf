@@ -110,10 +110,11 @@ final class Pdf
     private string $pdfVersion = '1.3';
 
     public function __construct(
-        PageSize $pageSize,
         PageOrientation $pageOrientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
     ) {
+        $pageSize = PageSize::a4();
+
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
 
         $this->metadata = Metadata::empty();
@@ -145,6 +146,28 @@ final class Pdf
         $this->lineWidth = .567 / $this->scaleFactor;
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
+    }
+
+    public function withPageSize(PageSize $pageSize): self
+    {
+        $pdf = clone $this;
+        $pdf->defaultPageSize = $pageSize;
+        $pdf->currentPageSize = $pageSize;
+
+        if ($pdf->defaultOrientation == PageOrientation::PORTRAIT) {
+            $pdf->pageWidth = $pageSize->getWidth($pdf->scaleFactor);
+            $pdf->pageHeight = $pageSize->getHeight($pdf->scaleFactor);
+        }
+
+        if ($pdf->defaultOrientation == PageOrientation::LANDSCAPE) {
+            $pdf->pageWidth = $pageSize->getHeight($pdf->scaleFactor);
+            $pdf->pageHeight = $pageSize->getWidth($pdf->scaleFactor);
+        }
+
+        $pdf->pageWidthInPoints = $pdf->pageWidth * $pdf->scaleFactor;
+        $pdf->pageHeightInPoints = $pdf->pageHeight * $pdf->scaleFactor;
+
+        return $pdf;
     }
 
     public function setLeftMargin(float $margin): void
