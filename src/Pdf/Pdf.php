@@ -509,7 +509,7 @@ final class Pdf
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
-        $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
+        $txt2 = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt, false)) . ')';
         foreach ($this->UTF8StringToArray($txt) as $uni) {
             $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
         }
@@ -606,7 +606,7 @@ final class Pdf
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
-                $space = $this->_escape($this->UTF8ToUTF16BE(' ', false));
+                $space = $this->escapeSpecialCharacters($this->UTF8ToUTF16BE(' ', false));
                 $s .= sprintf(
                     'BT 0 Tw %.2F %.2F Td [',
                     ($this->currentXPosition + $dx) * $k,
@@ -616,7 +616,7 @@ final class Pdf
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
                     $tx = $t[$i];
-                    $tx = '(' . $this->_escape($this->UTF8ToUTF16BE($tx, false)) . ')';
+                    $tx = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($tx, false)) . ')';
                     $s .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
                         $adj = - ($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
@@ -626,7 +626,7 @@ final class Pdf
                 $s .= '] TJ';
                 $s .= ' ET';
             } else {
-                $txt2 = '(' . $this->_escape($this->UTF8ToUTF16BE($txt, false)) . ')';
+                $txt2 = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt, false)) . ')';
                 foreach ($this->UTF8StringToArray($txt) as $uni) {
                     $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
@@ -1277,9 +1277,8 @@ final class Pdf
         return "\xFE\xFF" . mb_convert_encoding($s, 'UTF-16BE', 'UTF-8');
     }
 
-    private function _escape(string $s): string
+    private function escapeSpecialCharacters(string $s): string
     {
-        // Escape special characters
         if (strpos($s, '(') !== false || strpos($s, ')') !== false || strpos($s, '\\') !== false || strpos($s, "\r") !== false) {
             return str_replace(['\\', '(', ')', "\r"], ['\\\\', '\\(', '\\)', '\\r'], $s);
         }
@@ -1294,7 +1293,7 @@ final class Pdf
             $s = $this->_UTF8toUTF16($s);
         }
 
-        return '(' . $this->_escape($s) . ')';
+        return '(' . $this->escapeSpecialCharacters($s) . ')';
     }
 
     private function _dounderline(float $x, float $y, string $txt): string
