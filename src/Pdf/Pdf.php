@@ -5,6 +5,7 @@ namespace Stanko\Pdf;
 use DateTimeImmutable;
 use Exception;
 use Stanko\Pdf\Exception\CannotAddPageToClosedDocumentException;
+use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\ContentBufferException;
 use Stanko\Pdf\Exception\FontNotFoundException;
@@ -888,9 +889,10 @@ final class Pdf
         string $fileType = '',
         string $link = '',
     ): void {
-        if ($file == '') {
-            $this->Error('Image file name is empty');
+        if ($file === '') {
+            throw new CannotOpenImageFileException($file);
         }
+
         if (!isset($this->usedImages[$file])) {
             // First use of this image, get info
             if ($fileType == '') {
