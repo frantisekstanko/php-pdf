@@ -888,7 +888,6 @@ final class Pdf
         string $fileType = '',
         string $link = '',
     ): void {
-        // Put an image on the page
         if ($file == '') {
             $this->Error('Image file name is empty');
         }
