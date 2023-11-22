@@ -6,6 +6,8 @@ namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Fpdf\Color;
+use Stanko\Fpdf\Fonts\OpenSansBold;
+use Stanko\Fpdf\Fonts\OpenSansRegular;
 use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\RectangleStyle;
@@ -13,18 +15,16 @@ use Stanko\Fpdf\Tests\PdfTestCase;
 
 final class FullDocumentTest extends PdfTestCase
 {
-    private const FONT_PATH = __DIR__ . '/../../fonts/OpenSans';
-
     public function testFullDocument(): void
     {
         $pdf = new Fpdf(PageSize::a4());
 
         $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
 
-        $pdf->addFont('Open Sans', self::FONT_PATH . '/OpenSans-Regular.ttf');
-        $pdf->addFont('Open Sans Bold', self::FONT_PATH . '/OpenSans-Bold.ttf');
+        $pdf->addFont(OpenSansRegular::points(12));
+        $pdf->addFont(OpenSansBold::points(12));
 
-        $pdf->setFont('Open Sans', 12);
+        $pdf->setFont(OpenSansRegular::points(12));
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
@@ -57,7 +57,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->addPage();
 
         $pdf->disableUnderline();
-        $pdf->setFont('Open Sans Bold', 12);
+        $pdf->setFont(OpenSansBold::points(12));
 
         $pdf->MultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
 
@@ -76,7 +76,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setCreator('Nobody');
         $pdf->setLayout('single');
 
-        $pdf->setFontSize(17);
+        $pdf->setFont(OpenSansBold::points(17));
 
         $pdf->Cell(4, 4, 'TEXT');
         $pdf->setKeywords('test, unit, pdf');

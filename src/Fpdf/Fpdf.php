@@ -71,7 +71,7 @@ final class Fpdf
      * }> */
     private array $usedFonts = [];
 
-    private string $currentFontFamily = '';
+    private ?FontInterface $currentFontFamily = null;
     private bool $isUnderline = false;
 
     /** @var array<mixed> */
@@ -268,7 +268,7 @@ final class Fpdf
         $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
         // Set font
         if ($family) {
-            $this->setFont($family, $fontsize);
+            $this->setFont($family);
         }
         // Set colors
         $this->drawColor = $dc;
@@ -292,7 +292,7 @@ final class Fpdf
         }
         // Restore font
         if ($family) {
-            $this->setFont($family, $fontsize);
+            $this->setFont($family);
         }
         // Restore colors
         if ($this->drawColor != $dc) {
@@ -426,20 +426,19 @@ final class Fpdf
     }
 
     public function addFont(
-        string $fontName,
-        string $ttfFile,
+        FontInterface $font,
     ): void {
-        if (isset($this->usedFonts[$fontName])) {
+        if (isset($this->usedFonts[$font::class])) {
             return;
         }
-        $ttfstat = stat($ttfFile);
+        $ttfstat = stat($font->getTtfFilePath());
 
         if ($ttfstat === false) {
-            throw new FontNotFoundException($ttfFile);
+            throw new FontNotFoundException($font->getTtfFilePath());
         }
 
         $ttfParser = new TtfParser();
-        $ttfParser->getMetrics($ttfFile);
+        $ttfParser->getMetrics($font->getTtfFilePath());
         $charWidths = $ttfParser->charWidths;
         $name = (string) preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
@@ -461,7 +460,7 @@ final class Fpdf
         }
 
         $fontType = 'TTF';
-        $this->usedFonts[$fontName] = [
+        $this->usedFonts[$font::class] = [
             'i' => count($this->usedFonts) + 1,
             'type' => $fontType,
             'name' => $name,
@@ -469,7 +468,7 @@ final class Fpdf
             'up' => round($ttfParser->underlinePosition),
             'ut' => round($ttfParser->underlineThickness),
             'cw' => $charWidths,
-            'ttffile' => $ttfFile,
+            'ttffile' => $font->getTtfFilePath(),
             'subset' => $sbarr,
             'n' => 0,
         ];
@@ -488,28 +487,20 @@ final class Fpdf
     }
 
     public function setFont(
-        string $fontName,
-        float $size = 0,
+        FontInterface $font,
     ): void {
-        if ($size == 0) {
-            $size = $this->currentFontSizeInPoints;
-        }
-
-        if (
-            $this->currentFontFamily == $fontName
-            && $this->currentFontSizeInPoints == $size
-        ) {
+        if ($this->currentFontFamily === $font) {
             return;
         }
 
-        if (!isset($this->usedFonts[$fontName])) {
-            $this->Error('Undefined font: ' . $fontName);
+        if (!isset($this->usedFonts[$font::class])) {
+            $this->Error('Undefined font: ' . $font::class);
         }
 
-        $this->currentFontFamily = $fontName;
-        $this->currentFontSizeInPoints = $size;
-        $this->currentFontSize = $size / $this->scaleFactor;
-        $this->currentFont = &$this->usedFonts[$fontName];
+        $this->currentFontFamily = $font;
+        $this->currentFontSizeInPoints = $font->getSizeInPoints();
+        $this->currentFontSize = $font->getSizeInPoints() / $this->scaleFactor;
+        $this->currentFont = &$this->usedFonts[$font::class];
 
         if ($this->currentPageNumber > 0) {
             $this->_out(
@@ -1242,7 +1233,7 @@ final class Fpdf
         $this->currentDocumentState = DocumentState::PAGE_STARTED;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
-        $this->currentFontFamily = '';
+        $this->currentFontFamily = null;
 
         if ($pageOrientation === null) {
             $pageOrientation = $this->defaultOrientation;

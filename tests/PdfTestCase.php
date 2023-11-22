@@ -6,6 +6,7 @@ namespace Stanko\Fpdf\Tests;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Stanko\Fpdf\Fonts\OpenSansRegular;
 use Stanko\Fpdf\Fpdf;
 use Stanko\Fpdf\PageSize;
 
@@ -15,8 +16,8 @@ abstract class PdfTestCase extends TestCase
     {
         $pdf = new Fpdf(PageSize::a4());
         $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
-        $pdf->addFont('Open Sans', __DIR__ . '/../fonts/OpenSans/OpenSans-Regular.ttf');
-        $pdf->setFont('Open Sans');
+        $pdf->addFont(OpenSansRegular::points(12));
+        $pdf->setFont(OpenSansRegular::points(12));
 
         return $pdf;
     }
