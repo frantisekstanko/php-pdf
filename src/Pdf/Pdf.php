@@ -1143,8 +1143,7 @@ final class Pdf
         }
 
         $this->endPage();
-        // Close document
-        $this->_enddoc();
+        $this->closeDocument();
     }
 
     private function getStringWidth(string $s): float
@@ -1864,7 +1863,7 @@ final class Pdf
         $this->appendIntoBuffer('/Info ' . ($this->currentObjectNumber - 1) . ' 0 R');
     }
 
-    private function _enddoc(): void
+    private function closeDocument(): void
     {
         $this->_putheader();
         $this->_putpages();
