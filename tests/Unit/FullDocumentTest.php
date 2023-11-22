@@ -6,18 +6,24 @@ namespace Stanko\Fpdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Fpdf\Color;
+use Stanko\Fpdf\Fpdf;
+use Stanko\Fpdf\PageSize;
 use Stanko\Fpdf\RectangleStyle;
 use Stanko\Fpdf\Tests\PdfTestCase;
 
 final class FullDocumentTest extends PdfTestCase
 {
+    private const FONT_PATH = __DIR__ . '/../../fonts/OpenSans';
+
     public function testFullDocument(): void
     {
-        $pdf = $this->createTestPdf();
-        $pdf->addFont(
-            'Open Sans Bold',
-            __DIR__ . '/../../fonts/OpenSans/OpenSans-Bold.ttf',
-        );
+        $pdf = new Fpdf(PageSize::a4());
+
+        $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
+
+        $pdf->addFont('Open Sans', self::FONT_PATH . '/OpenSans-Regular.ttf');
+        $pdf->addFont('Open Sans Bold', self::FONT_PATH . '/OpenSans-Bold.ttf');
+
         $pdf->setFont('Open Sans', 12);
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->addPage();
