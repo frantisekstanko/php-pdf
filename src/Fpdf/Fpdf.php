@@ -92,7 +92,6 @@ final class Fpdf
     private string $fillColor = '0 g';
     private string $textColor = '0 g';
     private bool $fillAndTextColorDiffer = false;
-    private bool $transparencyEnabled = false;
     private float $wordSpacing = 0;
 
     /** @var array<string, array<mixed>> */
@@ -1540,10 +1539,6 @@ final class Fpdf
             unset($data);
             $data = gzcompress($color);
             $info['smask'] = gzcompress($alpha);
-            $this->transparencyEnabled = true;
-            if ($this->pdfVersion < '1.4') {
-                $this->pdfVersion = '1.4';
-            }
         }
         $info['data'] = $data;
 
@@ -1744,9 +1739,6 @@ final class Fpdf
             }
             $s .= ']';
             $this->appendIntoBuffer($s);
-        }
-        if ($this->transparencyEnabled) {
-            $this->appendIntoBuffer('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
         }
         $this->appendIntoBuffer('/Contents ' . ($this->currentObjectNumber + 1) . ' 0 R>>');
         $this->appendIntoBuffer('endobj');
