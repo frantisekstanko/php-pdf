@@ -29,9 +29,9 @@ final class PageSizeTest extends PdfTestCase
         $pdf = (new Pdf(
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-        ))->withPageSize($this->pageSizeFromString($pageSize));
-
-        $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
+        ))->withPageSize($this->pageSizeFromString($pageSize))
+            ->createdAt(new DateTimeImmutable('1999-12-26'))
+        ;
 
         $renderedPdf = $pdf->Output('S');
 

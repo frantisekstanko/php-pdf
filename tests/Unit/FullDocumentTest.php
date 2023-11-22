@@ -16,9 +16,7 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $pdf = new Pdf();
-
-        $pdf->setCreatedAt(new DateTimeImmutable('2023-11-20'));
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'));
 
         $pdf->addFont(OpenSansRegular::points(12));
         $pdf->addFont(OpenSansBold::points(12));
@@ -27,7 +25,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
-        $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
+        $pdf = $pdf->createdAt(new DateTimeImmutable('1999-12-26'));
         $pdf->Cell(100, 30, 'Cell test !@#* ÁČŠĎ');
         $pdf->Cell(90, 25, 'With border', 1);
         $pdf->Ln();

@@ -29,11 +29,10 @@ final class ImageTest extends PdfTestCase
         float $height,
         string $expectedHash,
     ): void {
-        $pdf = new Pdf(
+        $pdf = (new Pdf(
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-        );
-        $pdf->setCreatedAt(new DateTimeImmutable('1999-12-26'));
+        ))->createdAt(new DateTimeImmutable('1999-12-26'));
 
         $pdf->addPage();
 

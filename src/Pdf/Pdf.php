@@ -1138,9 +1138,13 @@ final class Pdf
         return '';
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): void
+    public function createdAt(DateTimeImmutable $createdAt): self
     {
-        $this->metadata = $this->metadata->createdAt($createdAt);
+        $pdf = clone $this;
+
+        $pdf->metadata = $pdf->metadata->createdAt($createdAt);
+
+        return $pdf;
     }
 
     private function setPageSize(PageSize $pageSize): void
