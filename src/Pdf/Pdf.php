@@ -422,7 +422,7 @@ final class Pdf
         );
     }
 
-    public function addFont(
+    public function loadFont(
         FontInterface $font,
     ): void {
         if (isset($this->usedFonts[$font::class])) {

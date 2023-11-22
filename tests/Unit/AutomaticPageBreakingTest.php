@@ -83,7 +83,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         );
 
         $pdf->createdAt(new DateTimeImmutable('2023-11-20'));
-        $pdf->addFont(OpenSansRegular::points(12));
+        $pdf->loadFont(OpenSansRegular::points(12));
         $pdf->setFont(OpenSansRegular::points(12));
 
         return $pdf;
