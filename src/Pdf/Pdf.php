@@ -249,11 +249,6 @@ final class Pdf
             throw new CannotAddPageToClosedDocumentException();
         }
         $family = $this->currentFontFamily;
-        $lw = $this->lineWidth;
-        $dc = $this->drawColor;
-        $fc = $this->fillColor;
-        $tc = $this->textColor;
-        $cf = $this->fillAndTextColorDiffer;
         if ($this->currentPageNumber > 0) {
             // Close page
             $this->_endpage();
@@ -262,43 +257,21 @@ final class Pdf
         // Set line cap style to square
         $this->_out('2 J');
         // Set line width
-        $this->lineWidth = $lw;
-        $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
+        $this->_out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
         // Set font
         if ($family) {
             $this->setFont($family);
         }
-        // Set colors
-        $this->drawColor = $dc;
-        if ($dc != '0 G') {
-            $this->_out($dc);
+        if ($this->drawColor != '0 G') {
+            $this->_out($this->drawColor);
         }
-        $this->fillColor = $fc;
-        if ($fc != '0 g') {
-            $this->_out($fc);
-        }
-        $this->textColor = $tc;
-        $this->fillAndTextColorDiffer = $cf;
-        // Restore line width
-        if ($this->lineWidth != $lw) {
-            $this->lineWidth = $lw;
-            $this->_out(sprintf('%.2F w', $lw * $this->scaleFactor));
+        if ($this->fillColor != '0 g') {
+            $this->_out($this->fillColor);
         }
         // Restore font
         if ($family) {
             $this->setFont($family);
         }
-        // Restore colors
-        if ($this->drawColor != $dc) {
-            $this->drawColor = $dc;
-            $this->_out($dc);
-        }
-        if ($this->fillColor != $fc) {
-            $this->fillColor = $fc;
-            $this->_out($fc);
-        }
-        $this->textColor = $tc;
-        $this->fillAndTextColorDiffer = $cf;
     }
 
     public function getCurrentPageNumber(): int
