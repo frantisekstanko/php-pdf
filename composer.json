@@ -25,5 +25,12 @@
         "friendsofphp/php-cs-fixer": "^3.38",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10"
+    },
+    "scripts": {
+        "test": [
+            "phpstan",
+            "phpunit tests",
+            "php-cs-fixer check"
+        ]
     }
 }

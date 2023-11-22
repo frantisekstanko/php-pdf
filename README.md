@@ -14,3 +14,11 @@ composer require stanko/fpdf
 ### Code quality
 
 Whole codebase currently passes PHPStan at max level, including the tests.
+
+### Development
+
+To run all checks and tests, execute:
+
+```bash
+composer test
+```
