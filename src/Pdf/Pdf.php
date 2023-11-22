@@ -1933,12 +1933,14 @@ final class Pdf
         }
 
         if (($h <= 0xEF) && ($i < $len - 2)) {
-            return ($h & 0x0F) << 12 | (ord($str[++$i]) & 0x3F) << 6
+            return ($h & 0x0F) << 12
+                | (ord($str[++$i]) & 0x3F) << 6
                 | (ord($str[++$i]) & 0x3F);
         }
 
         if (($h <= 0xF4) && ($i < $len - 3)) {
-            return ($h & 0x0F) << 18 | (ord($str[++$i]) & 0x3F) << 12
+            return ($h & 0x0F) << 18
+                | (ord($str[++$i]) & 0x3F) << 12
                 | (ord($str[++$i]) & 0x3F) << 6
                 | (ord($str[++$i]) & 0x3F);
         }
