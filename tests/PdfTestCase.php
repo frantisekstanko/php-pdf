@@ -13,11 +13,9 @@ abstract class PdfTestCase extends TestCase
 {
     protected static function createTestPdf(): Pdf
     {
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'))
+        return (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'))
             ->loadFont(OpenSansRegular::points(12))
+            ->withFont(OpenSansRegular::points(12))
         ;
-        $pdf->setFont(OpenSansRegular::points(12));
-
-        return $pdf;
     }
 }

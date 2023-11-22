@@ -19,9 +19,9 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'))
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
+            ->withFont(OpenSansRegular::points(12))
         ;
 
-        $pdf->setFont(OpenSansRegular::points(12));
         $pdf->setFillColor(Color::fromRgb(50, 10, 5));
         $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
@@ -54,7 +54,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->addPage();
 
         $pdf->disableUnderline();
-        $pdf->setFont(OpenSansBold::points(12));
+        $pdf = $pdf->withFont(OpenSansBold::points(12));
 
         $pdf->MultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
 
@@ -73,7 +73,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setCreator('Nobody');
         $pdf->setLayout('single');
 
-        $pdf->setFont(OpenSansBold::points(17));
+        $pdf = $pdf->withFont(OpenSansBold::points(17));
 
         $pdf->Cell(4, 4, 'TEXT');
         $pdf->setKeywords('test, unit, pdf');

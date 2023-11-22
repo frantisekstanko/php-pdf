@@ -14,6 +14,7 @@ use Stanko\Pdf\Exception\InvalidLayoutModeException;
 use Stanko\Pdf\Exception\NoFontHasBeenSetException;
 use Stanko\Pdf\Exception\NoPageHasBeenAddedException;
 use Stanko\Pdf\Exception\TheDocumentIsClosedException;
+use Stanko\Pdf\Exception\UndefinedFontException;
 
 final class Pdf
 {
@@ -249,7 +250,7 @@ final class Pdf
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
         }
-        $family = $this->currentFont;
+        $font = $this->currentFont;
         if ($this->currentPageNumber > 0) {
             $this->endPage();
         }
@@ -258,9 +259,8 @@ final class Pdf
         $this->_out('2 J');
         // Set line width
         $this->_out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
-        // Set font
-        if ($family) {
-            $this->setFont($family);
+        if ($font) {
+            $this->setFont($font);
         }
         if ($this->drawColor != '0 G') {
             $this->_out($this->drawColor);
@@ -268,9 +268,8 @@ final class Pdf
         if ($this->fillColor != '0 g') {
             $this->_out($this->fillColor);
         }
-        // Restore font
-        if ($family) {
-            $this->setFont($family);
+        if ($font) {
+            $this->setFont($font);
         }
     }
 
@@ -447,24 +446,18 @@ final class Pdf
         $this->isUnderline = false;
     }
 
-    public function setFont(
+    public function withFont(
         FontInterface $font,
-    ): void {
-        if ($this->currentFont === $font) {
-            return;
-        }
-
+    ): self {
         if (!isset($this->usedFonts[$font::class])) {
-            $this->Error('Undefined font: ' . $font::class);
+            throw new UndefinedFontException();
         }
 
-        $this->currentFont = $font;
-        $this->currentFontSizeInPoints = $font->getSizeInPoints();
-        $this->currentFontSize = $font->getSizeInPoints() / $this->scaleFactor;
+        $pdf = clone $this;
 
-        if ($this->currentPageNumber > 0) {
-            $this->writeFontInformationToDocument($font);
-        }
+        $pdf->setFont($font);
+
+        return $pdf;
     }
 
     public function createLink(): int
@@ -1083,6 +1076,22 @@ final class Pdf
         $pdf->metadata = $pdf->metadata->createdAt($createdAt);
 
         return $pdf;
+    }
+
+    private function setFont(
+        FontInterface $font,
+    ): void {
+        if ($this->currentFont === $font) {
+            return;
+        }
+
+        $this->currentFont = $font;
+        $this->currentFontSizeInPoints = $font->getSizeInPoints();
+        $this->currentFontSize = $font->getSizeInPoints() / $this->scaleFactor;
+
+        if ($this->currentPageNumber > 0) {
+            $this->writeFontInformationToDocument($font);
+        }
     }
 
     private function writeFontInformationToDocument(

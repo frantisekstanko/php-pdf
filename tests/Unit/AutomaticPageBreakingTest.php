@@ -76,13 +76,11 @@ final class AutomaticPageBreakingTest extends PdfTestCase
 
     private function createPdf(): Pdf
     {
-        $pdf = (new Pdf(
+        return (new Pdf(
             PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
-        ))->loadFont(OpenSansRegular::points(12));
-
-        $pdf->setFont(OpenSansRegular::points(12));
-
-        return $pdf;
+        ))->loadFont(OpenSansRegular::points(12))
+            ->withFont(OpenSansRegular::points(12))
+        ;
     }
 }
