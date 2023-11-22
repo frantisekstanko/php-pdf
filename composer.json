@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Stanko\\Pdf\\": "src/Fpdf",
+            "Stanko\\Pdf\\": "src/Pdf",
             "Stanko\\Pdf\\Tests\\": "tests"
         }
     },

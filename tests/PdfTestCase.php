@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Stanko\Fpdf\Tests;
+namespace Stanko\Pdf\Tests;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Stanko\Fpdf\Fonts\OpenSansRegular;
-use Stanko\Fpdf\PageSize;
-use Stanko\Fpdf\Pdf;
+use Stanko\Pdf\Fonts\OpenSansRegular;
+use Stanko\Pdf\PageSize;
+use Stanko\Pdf\Pdf;
 
 abstract class PdfTestCase extends TestCase
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Stanko\Fpdf\Tests\Unit;
+namespace Stanko\Pdf\Tests\Unit;
 
-use Stanko\Fpdf\PageOrientation;
-use Stanko\Fpdf\PageRotation;
-use Stanko\Fpdf\PageSize;
-use Stanko\Fpdf\Tests\PdfTestCase;
+use Stanko\Pdf\PageOrientation;
+use Stanko\Pdf\PageRotation;
+use Stanko\Pdf\PageSize;
+use Stanko\Pdf\Tests\PdfTestCase;
 
 final class RotationTest extends PdfTestCase
 {

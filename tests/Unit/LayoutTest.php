@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Stanko\Fpdf\Tests\Unit;
+namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
-use Stanko\Fpdf\PageOrientation;
-use Stanko\Fpdf\PageSize;
-use Stanko\Fpdf\Pdf;
-use Stanko\Fpdf\Tests\PdfTestCase;
-use Stanko\Fpdf\Units;
+use Stanko\Pdf\PageOrientation;
+use Stanko\Pdf\PageSize;
+use Stanko\Pdf\Pdf;
+use Stanko\Pdf\Tests\PdfTestCase;
+use Stanko\Pdf\Units;
 
 final class LayoutTest extends PdfTestCase
 {

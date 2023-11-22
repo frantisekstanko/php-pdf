@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Stanko\Fpdf\Tests\Unit;
+namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
-use Stanko\Fpdf\Color;
-use Stanko\Fpdf\Fonts\OpenSansBold;
-use Stanko\Fpdf\Fonts\OpenSansRegular;
-use Stanko\Fpdf\PageSize;
-use Stanko\Fpdf\Pdf;
-use Stanko\Fpdf\RectangleStyle;
-use Stanko\Fpdf\Tests\PdfTestCase;
+use Stanko\Pdf\Color;
+use Stanko\Pdf\Fonts\OpenSansBold;
+use Stanko\Pdf\Fonts\OpenSansRegular;
+use Stanko\Pdf\PageSize;
+use Stanko\Pdf\Pdf;
+use Stanko\Pdf\RectangleStyle;
+use Stanko\Pdf\Tests\PdfTestCase;
 
 final class FullDocumentTest extends PdfTestCase
 {
