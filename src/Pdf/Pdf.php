@@ -479,7 +479,13 @@ final class Pdf
             if ($this->currentFont === null) {
                 throw new IncorrectFontDefinitionException();
             }
-            $this->_out(sprintf('BT /F%d %.2F Tf ET', $this->usedFonts[$this->currentFont::class]['i'], $this->currentFontSizeInPoints));
+            $this->_out(
+                sprintf(
+                    'BT /F%d %.2F Tf ET',
+                    $this->usedFonts[$this->currentFont::class]['i'],
+                    $this->currentFontSizeInPoints,
+                )
+            );
         }
     }
 
