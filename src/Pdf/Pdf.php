@@ -536,7 +536,7 @@ final class Pdf
         bool $fill = false,
         mixed $link = '',
     ): void {
-        $k = $this->scaleFactor;
+        $scaleFactor = $this->scaleFactor;
         if (
             $this->currentYPosition + $h > $this->pageBreakThreshold
             && $this->automaticPageBreaking
@@ -557,7 +557,7 @@ final class Pdf
             $this->currentXPosition = $x;
             if ($ws > 0) {
                 $this->wordSpacing = $ws;
-                $this->_out(sprintf('%.3F Tw', $ws * $k));
+                $this->_out(sprintf('%.3F Tw', $ws * $scaleFactor));
             }
         }
         if ($w == 0) {
@@ -570,22 +570,22 @@ final class Pdf
             } else {
                 $op = 'S';
             }
-            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->currentXPosition * $k, ($this->pageHeight - $this->currentYPosition) * $k, $w * $k, -$h * $k, $op);
+            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->currentXPosition * $scaleFactor, ($this->pageHeight - $this->currentYPosition) * $scaleFactor, $w * $scaleFactor, -$h * $scaleFactor, $op);
         }
         if (is_string($border)) {
             $x = $this->currentXPosition;
             $y = $this->currentYPosition;
             if (strpos($border, 'L') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - $y) * $k, $x * $k, ($this->pageHeight - ($y + $h)) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor, $x * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor);
             }
             if (strpos($border, 'T') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - $y) * $k, ($x + $w) * $k, ($this->pageHeight - $y) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor, ($x + $w) * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor);
             }
             if (strpos($border, 'R') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', ($x + $w) * $k, ($this->pageHeight - $y) * $k, ($x + $w) * $k, ($this->pageHeight - ($y + $h)) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', ($x + $w) * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor, ($x + $w) * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor);
             }
             if (strpos($border, 'B') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->pageHeight - ($y + $h)) * $k, ($x + $w) * $k, ($this->pageHeight - ($y + $h)) * $k);
+                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor, ($x + $w) * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor);
             }
         }
         if ($txt !== '') {
@@ -610,8 +610,8 @@ final class Pdf
                 $space = $this->escapeSpecialCharacters($this->UTF8ToUTF16BE(' '));
                 $s .= sprintf(
                     'BT 0 Tw %.2F %.2F Td [',
-                    ($this->currentXPosition + $dx) * $k,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k
+                    ($this->currentXPosition + $dx) * $scaleFactor,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $scaleFactor
                 );
                 $t = explode(' ', $txt);
                 $numt = count($t);
@@ -633,8 +633,8 @@ final class Pdf
                 }
                 $s .= sprintf(
                     'BT %.2F %.2F Td %s Tj ET',
-                    ($this->currentXPosition + $dx) * $k,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $k,
+                    ($this->currentXPosition + $dx) * $scaleFactor,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $scaleFactor,
                     $txt2
                 );
             }
