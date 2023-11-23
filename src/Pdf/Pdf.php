@@ -542,7 +542,6 @@ final class Pdf
             && $this->automaticPageBreaking
             && $this->currentYPosition !== $this->topMargin
         ) {
-            // Automatic page break
             $x = $this->currentXPosition;
             $ws = $this->wordSpacing;
             if ($ws > 0) {
