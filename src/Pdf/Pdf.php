@@ -575,16 +575,40 @@ final class Pdf
             $x = $this->currentXPosition;
             $y = $this->currentYPosition;
             if (strpos($border, 'L') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor, $x * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor);
+                $s .= sprintf(
+                    '%.2F %.2F m %.2F %.2F l S ',
+                    $x * $scaleFactor,
+                    ($this->pageHeight - $y) * $scaleFactor,
+                    $x * $scaleFactor,
+                    ($this->pageHeight - ($y + $h)) * $scaleFactor
+                );
             }
             if (strpos($border, 'T') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor, ($x + $w) * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor);
+                $s .= sprintf(
+                    '%.2F %.2F m %.2F %.2F l S ',
+                    $x * $scaleFactor,
+                    ($this->pageHeight - $y) * $scaleFactor,
+                    ($x + $w) * $scaleFactor,
+                    ($this->pageHeight - $y) * $scaleFactor
+                );
             }
             if (strpos($border, 'R') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', ($x + $w) * $scaleFactor, ($this->pageHeight - $y) * $scaleFactor, ($x + $w) * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor);
+                $s .= sprintf(
+                    '%.2F %.2F m %.2F %.2F l S ',
+                    ($x + $w) * $scaleFactor,
+                    ($this->pageHeight - $y) * $scaleFactor,
+                    ($x + $w) * $scaleFactor,
+                    ($this->pageHeight - ($y + $h)) * $scaleFactor
+                );
             }
             if (strpos($border, 'B') !== false) {
-                $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor, ($x + $w) * $scaleFactor, ($this->pageHeight - ($y + $h)) * $scaleFactor);
+                $s .= sprintf(
+                    '%.2F %.2F m %.2F %.2F l S ',
+                    $x * $scaleFactor,
+                    ($this->pageHeight - ($y + $h)) * $scaleFactor,
+                    ($x + $w) * $scaleFactor,
+                    ($this->pageHeight - ($y + $h)) * $scaleFactor
+                );
             }
         }
         if ($txt !== '') {
@@ -638,7 +662,11 @@ final class Pdf
                 );
             }
             if ($this->isUnderline) {
-                $s .= ' ' . $this->_dounderline($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize, $txt);
+                $s .= ' ' . $this->_dounderline(
+                    $this->currentXPosition + $dx,
+                    $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize,
+                    $txt,
+                );
             }
             if ($this->fillAndTextColorDiffer) {
                 $s .= ' Q';
