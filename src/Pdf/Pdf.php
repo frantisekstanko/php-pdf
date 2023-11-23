@@ -536,8 +536,6 @@ final class Pdf
         bool $fill = false,
         mixed $link = '',
     ): void {
-        // Output a cell
-        $txt = (string) $txt;
         $k = $this->scaleFactor;
         if (
             $this->currentYPosition + $h > $this->pageBreakThreshold
