@@ -526,7 +526,7 @@ final class Pdf
         $this->_out($s);
     }
 
-    public function Cell(
+    public function drawCell(
         float $w,
         float $h = 0,
         string $txt = '',
@@ -721,7 +721,7 @@ final class Pdf
                     $this->wordSpacing = 0;
                     $this->_out('0 Tw');
                 }
-                $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -752,13 +752,13 @@ final class Pdf
                         $this->wordSpacing = 0;
                         $this->_out('0 Tw');
                     }
-                    $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
                         $this->wordSpacing = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
                         $this->_out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
                     }
-                    $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->drawCell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -781,7 +781,7 @@ final class Pdf
         if ($border && strpos((string) $border, 'B') !== false) {
             $b .= 'B';
         }
-        $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+        $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
         $this->currentXPosition = $this->leftMargin;
     }
 
@@ -810,7 +810,7 @@ final class Pdf
             $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
-                $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -847,9 +847,9 @@ final class Pdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    $this->Cell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 } else {
-                    $this->Cell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $this->drawCell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -867,7 +867,7 @@ final class Pdf
         }
         // Last chunk
         if ($i != $j) {
-            $this->Cell($l, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
+            $this->drawCell($l, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
         }
     }
 

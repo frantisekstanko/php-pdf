@@ -25,7 +25,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         self::assertEqualsWithDelta(10, $pdf->GetY(), 0.002);
 
         for ($i = 1; $i <= 100; ++$i) {
-            $pdf->Cell(10, 100, 'cell ' . $i, 0, 2);
+            $pdf->drawCell(10, 100, 'cell ' . $i, 0, 2);
         }
 
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
@@ -44,7 +44,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
         self::assertEqualsWithDelta(10, $pdf->GetY(), 0.002);
 
-        $pdf->Cell(10, 206, 'cell ending 1 point before the break margin', 0, 2);
+        $pdf->drawCell(10, 206, 'cell ending 1 point before the break margin', 0, 2);
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
@@ -61,13 +61,13 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
         self::assertEqualsWithDelta(10, $pdf->GetY(), 0.002);
 
-        $pdf->Cell(10, 207, 'cell ending exactly at the break margin', 0, 2);
+        $pdf->drawCell(10, 207, 'cell ending exactly at the break margin', 0, 2);
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
         self::assertEqualsWithDelta(217, $pdf->GetY(), 0.002);
 
-        $pdf->Cell(10, 10, 'cell ending 1 point after the break margin', 0, 2);
+        $pdf->drawCell(10, 10, 'cell ending 1 point after the break margin', 0, 2);
 
         self::assertEquals(2, $pdf->getCurrentPageNumber());
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
