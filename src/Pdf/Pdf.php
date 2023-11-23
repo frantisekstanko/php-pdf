@@ -647,7 +647,13 @@ final class Pdf
                 $s .= ' Q';
             }
             if ($link) {
-                $this->Link($this->currentXPosition + $dx, $this->currentYPosition + .5 * $h - .5 * $this->currentFontSize, $this->getStringWidth($txt), $this->currentFontSize, $link);
+                $this->Link(
+                    $this->currentXPosition + $dx,
+                    $this->currentYPosition + .5 * $h - .5 * $this->currentFontSize,
+                    $this->getStringWidth($txt),
+                    $this->currentFontSize,
+                    $link,
+                );
             }
         }
         if ($s) {
