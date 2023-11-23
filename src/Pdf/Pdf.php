@@ -548,7 +548,14 @@ final class Pdf
             } else {
                 $op = 'S';
             }
-            $s = sprintf('%.2F %.2F %.2F %.2F re %s ', $this->currentXPosition * $scaleFactor, ($this->pageHeight - $this->currentYPosition) * $scaleFactor, $w * $scaleFactor, -$h * $scaleFactor, $op);
+            $s = sprintf(
+                '%.2F %.2F %.2F %.2F re %s ',
+                $this->currentXPosition * $scaleFactor,
+                ($this->pageHeight - $this->currentYPosition) * $scaleFactor,
+                $w * $scaleFactor,
+                -$h * $scaleFactor,
+                $op,
+            );
         }
         if (is_string($border)) {
             $x = $this->currentXPosition;
