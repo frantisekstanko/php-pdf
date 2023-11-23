@@ -11,7 +11,9 @@ use Stanko\Pdf\Exception\ContentBufferException;
 use Stanko\Pdf\Exception\FontNotFoundException;
 use Stanko\Pdf\Exception\IncorrectFontDefinitionException;
 use Stanko\Pdf\Exception\IncorrectPageLinksException;
+use Stanko\Pdf\Exception\InvalidHeightException;
 use Stanko\Pdf\Exception\InvalidLayoutModeException;
+use Stanko\Pdf\Exception\InvalidWidthException;
 use Stanko\Pdf\Exception\NoFontHasBeenSetException;
 use Stanko\Pdf\Exception\NoPageHasBeenAddedException;
 use Stanko\Pdf\Exception\TheDocumentIsClosedException;
@@ -58,7 +60,7 @@ final class Pdf
     private float $interiorCellMargin;
     private float $currentXPosition;
     private float $currentYPosition;
-    private float $lastPrintedCellHeight = 0;
+    private ?float $lastPrintedCellHeight;
     private float $lineWidth;
 
     /** @var array<string, array{
@@ -118,6 +120,9 @@ final class Pdf
     private Metadata $metadata;
     private string $pdfVersion = '1.3';
 
+    private ?float $withWidth;
+    private ?float $withHeight;
+
     public function __construct(
         PageOrientation $pageOrientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
@@ -143,6 +148,50 @@ final class Pdf
         $this->lineWidth = .567 / $this->scaleFactor;
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
+    }
+
+    public function withAutomaticWidth(): self
+    {
+        $pdf = clone $this;
+
+        $pdf->withWidth = null;
+
+        return $pdf;
+    }
+
+    public function withAutomaticHeight(): self
+    {
+        $pdf = clone $this;
+
+        $pdf->withHeight = null;
+
+        return $pdf;
+    }
+
+    public function withWidth(float $width): self
+    {
+        if ($width <= 0) {
+            throw new InvalidWidthException();
+        }
+
+        $pdf = clone $this;
+
+        $pdf->withWidth = $width;
+
+        return $pdf;
+    }
+
+    public function withHeight(float $height): self
+    {
+        if ($height <= 0) {
+            throw new InvalidHeightException();
+        }
+
+        $pdf = clone $this;
+
+        $pdf->withHeight = $height;
+
+        return $pdf;
     }
 
     public function withPageSize(PageSize $pageSize): self
@@ -527,8 +576,6 @@ final class Pdf
     }
 
     public function drawCell(
-        float $w,
-        float $h = 0,
         string $txt = '',
         mixed $border = 0,
         int $ln = 0,
@@ -537,8 +584,9 @@ final class Pdf
         mixed $link = '',
     ): void {
         $scaleFactor = $this->scaleFactor;
-        $this->automaticPageBreak($h);
-        if ($w == 0) {
+        $this->automaticPageBreak();
+        $w = $this->withWidth;
+        if ($w === null) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $s = '';
@@ -553,7 +601,7 @@ final class Pdf
                 $this->currentXPosition * $scaleFactor,
                 ($this->pageHeight - $this->currentYPosition) * $scaleFactor,
                 $w * $scaleFactor,
-                -$h * $scaleFactor,
+                -$this->withHeight * $scaleFactor,
                 $op,
             );
         }
@@ -566,7 +614,7 @@ final class Pdf
                     $x * $scaleFactor,
                     ($this->pageHeight - $y) * $scaleFactor,
                     $x * $scaleFactor,
-                    ($this->pageHeight - ($y + $h)) * $scaleFactor
+                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor
                 );
             }
             if (strpos($border, 'T') !== false) {
@@ -584,16 +632,16 @@ final class Pdf
                     ($x + $w) * $scaleFactor,
                     ($this->pageHeight - $y) * $scaleFactor,
                     ($x + $w) * $scaleFactor,
-                    ($this->pageHeight - ($y + $h)) * $scaleFactor
+                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor
                 );
             }
             if (strpos($border, 'B') !== false) {
                 $s .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
                     $x * $scaleFactor,
-                    ($this->pageHeight - ($y + $h)) * $scaleFactor,
+                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor,
                     ($x + $w) * $scaleFactor,
-                    ($this->pageHeight - ($y + $h)) * $scaleFactor
+                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor
                 );
             }
         }
@@ -620,7 +668,7 @@ final class Pdf
                 $s .= sprintf(
                     'BT 0 Tw %.2F %.2F Td [',
                     ($this->currentXPosition + $dx) * $scaleFactor,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $scaleFactor
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $scaleFactor
                 );
                 $t = explode(' ', $txt);
                 $numt = count($t);
@@ -643,14 +691,14 @@ final class Pdf
                 $s .= sprintf(
                     'BT %.2F %.2F Td %s Tj ET',
                     ($this->currentXPosition + $dx) * $scaleFactor,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $h + .3 * $this->currentFontSize)) * $scaleFactor,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $scaleFactor,
                     $txt2
                 );
             }
             if ($this->isUnderline) {
                 $s .= ' ' . $this->_dounderline(
                     $this->currentXPosition + $dx,
-                    $this->currentYPosition + .5 * $h + .3 * $this->currentFontSize,
+                    $this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize,
                     $txt,
                 );
             }
@@ -660,7 +708,7 @@ final class Pdf
             if ($link) {
                 $this->Link(
                     $this->currentXPosition + $dx,
-                    $this->currentYPosition + .5 * $h - .5 * $this->currentFontSize,
+                    $this->currentYPosition + .5 * $this->withHeight - .5 * $this->currentFontSize,
                     $this->getStringWidth($txt),
                     $this->currentFontSize,
                     $link,
@@ -670,10 +718,10 @@ final class Pdf
         if ($s) {
             $this->_out($s);
         }
-        $this->lastPrintedCellHeight = $h;
+        $this->lastPrintedCellHeight = $this->withHeight;
         if ($ln > 0) {
             // Go to next line
-            $this->currentYPosition += $h;
+            $this->currentYPosition += $this->withHeight;
             if ($ln == 1) {
                 $this->currentXPosition = $this->leftMargin;
             }
@@ -738,7 +786,10 @@ final class Pdf
                     $this->wordSpacing = 0;
                     $this->_out('0 Tw');
                 }
-                $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                $this->withWidth = $w;
+                $this->withHeight = $h;
+
+                $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -769,13 +820,18 @@ final class Pdf
                         $this->wordSpacing = 0;
                         $this->_out('0 Tw');
                     }
-                    $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->withWidth = $w;
+                    $this->withHeight = $h;
+                    $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
                         $this->wordSpacing = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
                         $this->_out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
                     }
-                    $this->drawCell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->withWidth = $w;
+                    $this->withHeight = $h;
+
+                    $this->drawCell(mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -798,7 +854,9 @@ final class Pdf
         if ($border && strpos((string) $border, 'B') !== false) {
             $b .= 'B';
         }
-        $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+        $this->withWidth = $w;
+        $this->withHeight = $h;
+        $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
         $this->currentXPosition = $this->leftMargin;
     }
 
@@ -827,7 +885,9 @@ final class Pdf
             $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
-                $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                $this->withWidth = $w;
+                $this->withHeight = $h;
+                $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -864,9 +924,11 @@ final class Pdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    $this->drawCell($w, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $this->withWidth = $w;
+                    $this->withHeight = $h;
+                    $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 } else {
-                    $this->drawCell($w, $h, mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $this->drawCell(mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -884,7 +946,10 @@ final class Pdf
         }
         // Last chunk
         if ($i != $j) {
-            $this->drawCell($l, $h, mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
+            $this->withWidth = $l;
+            $this->withHeight = $h;
+
+            $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
         }
     }
 
@@ -893,7 +958,7 @@ final class Pdf
         $pdf = clone $this;
 
         $pdf->currentXPosition = $pdf->leftMargin;
-        $pdf->currentYPosition += $pdf->lastPrintedCellHeight;
+        $pdf->currentYPosition += $pdf->lastPrintedCellHeight ?? 0;
 
         return $pdf;
     }
@@ -1991,10 +2056,10 @@ final class Pdf
         $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
     }
 
-    private function automaticPageBreak(float $addedHeight): void
+    private function automaticPageBreak(): void
     {
         if (
-            $this->currentYPosition + $addedHeight > $this->pageBreakThreshold
+            $this->currentYPosition + $this->withHeight > $this->pageBreakThreshold
             && $this->automaticPageBreaking
             && $this->currentYPosition !== $this->topMargin
         ) {
