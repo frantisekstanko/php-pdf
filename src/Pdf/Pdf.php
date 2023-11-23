@@ -537,28 +537,7 @@ final class Pdf
         mixed $link = '',
     ): void {
         $scaleFactor = $this->scaleFactor;
-        if (
-            $this->currentYPosition + $h > $this->pageBreakThreshold
-            && $this->automaticPageBreaking
-            && $this->currentYPosition !== $this->topMargin
-        ) {
-            $x = $this->currentXPosition;
-            $ws = $this->wordSpacing;
-            if ($ws > 0) {
-                $this->wordSpacing = 0;
-                $this->_out('0 Tw');
-            }
-            $this->addPage(
-                $this->currentOrientation,
-                $this->currentPageSize,
-                $this->currentPageRotation
-            );
-            $this->currentXPosition = $x;
-            if ($ws > 0) {
-                $this->wordSpacing = $ws;
-                $this->_out(sprintf('%.3F Tw', $ws * $scaleFactor));
-            }
-        }
+        $this->automaticPageBreak($h);
         if ($w == 0) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
@@ -2003,5 +1982,31 @@ final class Pdf
     private function recalculatePageBreakThreshold(): void
     {
         $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
+    }
+
+    private function automaticPageBreak(float $addedHeight): void
+    {
+        if (
+            $this->currentYPosition + $addedHeight > $this->pageBreakThreshold
+            && $this->automaticPageBreaking
+            && $this->currentYPosition !== $this->topMargin
+        ) {
+            $x = $this->currentXPosition;
+            $ws = $this->wordSpacing;
+            if ($ws > 0) {
+                $this->wordSpacing = 0;
+                $this->_out('0 Tw');
+            }
+            $this->addPage(
+                $this->currentOrientation,
+                $this->currentPageSize,
+                $this->currentPageRotation
+            );
+            $this->currentXPosition = $x;
+            if ($ws > 0) {
+                $this->wordSpacing = $ws;
+                $this->_out(sprintf('%.3F Tw', $ws * $this->scaleFactor));
+            }
+        }
     }
 }
