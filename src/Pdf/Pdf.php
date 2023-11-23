@@ -534,7 +534,7 @@ final class Pdf
         int $ln = 0,
         string $align = '',
         bool $fill = false,
-        string $link = '',
+        mixed $link = '',
     ): void {
         // Output a cell
         $txt = (string) $txt;
