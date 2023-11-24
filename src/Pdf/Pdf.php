@@ -1252,7 +1252,16 @@ final class Pdf
         }
 
         $this->endPage();
-        $this->closeDocument();
+
+        $this->appendHeaderIntoBuffer();
+        $this->appendPagesIntoBuffer();
+        $this->appendResourcesIntoBuffer();
+        $this->appendMetadataIntoBuffer();
+        $this->appendCatalogIntoBuffer();
+        $offsetAtXRef = $this->currentBufferLength();
+        $this->appendXRefIntoBuffer();
+        $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
+        $this->currentDocumentState = DocumentState::CLOSED;
     }
 
     private function getStringWidth(string $s): float
@@ -1961,19 +1970,6 @@ final class Pdf
         $this->appendIntoBuffer('startxref');
         $this->appendIntoBuffer($offsetAtXRef);
         $this->appendIntoBuffer('%%EOF');
-    }
-
-    private function closeDocument(): void
-    {
-        $this->appendHeaderIntoBuffer();
-        $this->appendPagesIntoBuffer();
-        $this->appendResourcesIntoBuffer();
-        $this->appendMetadataIntoBuffer();
-        $this->appendCatalogIntoBuffer();
-        $offsetAtXRef = $this->currentBufferLength();
-        $this->appendXRefIntoBuffer();
-        $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
-        $this->currentDocumentState = DocumentState::CLOSED;
     }
 
     private function appendHeaderIntoBuffer(): void
