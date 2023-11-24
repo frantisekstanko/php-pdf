@@ -2020,12 +2020,12 @@ final class Pdf
     {
         $out = [];
         $stringLength = strlen($string);
-        for ($i = 0; $i < $stringLength; ++$i) {
-            $asciiAsInteger = ord($string[$i]);
+        for ($characterPosition = 0; $characterPosition < $stringLength; ++$characterPosition) {
+            $asciiAsInteger = ord($string[$characterPosition]);
 
             $unicode = $this->getUnicode(
                 $string,
-                $i,
+                $characterPosition,
                 $stringLength,
                 $asciiAsInteger,
             );
@@ -2042,7 +2042,7 @@ final class Pdf
 
     private function getUnicode(
         string $string,
-        int $i,
+        int $characterPosition,
         int $stringLength,
         int $asciiAsInteger,
     ): ?int {
@@ -2054,21 +2054,21 @@ final class Pdf
             return null;
         }
 
-        if (($asciiAsInteger <= 0xDF) && ($i < $stringLength - 1)) {
-            return ($asciiAsInteger & 0x1F) << 6 | (ord($string[++$i]) & 0x3F);
+        if (($asciiAsInteger <= 0xDF) && ($characterPosition < $stringLength - 1)) {
+            return ($asciiAsInteger & 0x1F) << 6 | (ord($string[++$characterPosition]) & 0x3F);
         }
 
-        if (($asciiAsInteger <= 0xEF) && ($i < $stringLength - 2)) {
+        if (($asciiAsInteger <= 0xEF) && ($characterPosition < $stringLength - 2)) {
             return ($asciiAsInteger & 0x0F) << 12
-                | (ord($string[++$i]) & 0x3F) << 6
-                | (ord($string[++$i]) & 0x3F);
+                | (ord($string[++$characterPosition]) & 0x3F) << 6
+                | (ord($string[++$characterPosition]) & 0x3F);
         }
 
-        if (($asciiAsInteger <= 0xF4) && ($i < $stringLength - 3)) {
+        if (($asciiAsInteger <= 0xF4) && ($characterPosition < $stringLength - 3)) {
             return ($asciiAsInteger & 0x0F) << 18
-                | (ord($string[++$i]) & 0x3F) << 12
-                | (ord($string[++$i]) & 0x3F) << 6
-                | (ord($string[++$i]) & 0x3F);
+                | (ord($string[++$characterPosition]) & 0x3F) << 12
+                | (ord($string[++$characterPosition]) & 0x3F) << 6
+                | (ord($string[++$characterPosition]) & 0x3F);
         }
 
         return null;
