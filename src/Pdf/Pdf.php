@@ -1960,7 +1960,7 @@ final class Pdf
         }
     }
 
-    private function _putheader(): void
+    private function appendHeaderIntoBuffer(): void
     {
         $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
     }
@@ -1980,7 +1980,7 @@ final class Pdf
 
     private function closeDocument(): void
     {
-        $this->_putheader();
+        $this->appendHeaderIntoBuffer();
         $this->_putpages();
         $this->_putresources();
         // Info
