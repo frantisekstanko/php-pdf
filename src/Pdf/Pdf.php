@@ -595,9 +595,9 @@ final class Pdf
             $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $appendToPdfBuffer = '';
-        if ($fill || $border == 1) {
+        if ($fill || $border === 1) {
             if ($fill) {
-                $op = ($border == 1) ? 'B' : 'f';
+                $op = ($border === 1) ? 'B' : 'f';
             } else {
                 $op = 'S';
             }
