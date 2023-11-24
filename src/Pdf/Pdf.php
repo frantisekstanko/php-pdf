@@ -1937,7 +1937,7 @@ final class Pdf
         $this->appendIntoBuffer('endobj');
     }
 
-    private function _putinfo(): void
+    private function appendMetadataIntoBuffer(): void
     {
         $metadataAsArray = $this->metadata->toArray();
 
@@ -1999,7 +1999,7 @@ final class Pdf
     {
         $this->newObject();
         $this->appendIntoBuffer('<<');
-        $this->_putinfo();
+        $this->appendMetadataIntoBuffer();
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
