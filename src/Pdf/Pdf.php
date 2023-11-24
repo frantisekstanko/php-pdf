@@ -1965,7 +1965,7 @@ final class Pdf
         $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
     }
 
-    private function _puttrailer(string $offsetAtXRef): void
+    private function appendTrailerIntoBuffer(string $offsetAtXRef): void
     {
         $this->appendIntoBuffer('trailer');
         $this->appendIntoBuffer('<<');
@@ -2003,7 +2003,7 @@ final class Pdf
         for ($i = 1; $i <= $this->currentObjectNumber; ++$i) {
             $this->appendIntoBuffer(sprintf('%010d 00000 n ', $this->objectOffsets[$i]));
         }
-        $this->_puttrailer((string) $offsetAtXRef);
+        $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
         $this->currentDocumentState = DocumentState::CLOSED;
     }
 
