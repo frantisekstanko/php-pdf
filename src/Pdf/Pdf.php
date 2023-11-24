@@ -1978,12 +1978,7 @@ final class Pdf
         $this->appendHeaderIntoBuffer();
         $this->appendPagesIntoBuffer();
         $this->appendResourcesIntoBuffer();
-        // Info
-        $this->_newobj();
-        $this->appendIntoBuffer('<<');
-        $this->_putinfo();
-        $this->appendIntoBuffer('>>');
-        $this->appendIntoBuffer('endobj');
+        $this->appendInfoIntoBuffer();
         // Catalog
         $this->_newobj();
         $this->appendIntoBuffer('<<');
@@ -1999,6 +1994,15 @@ final class Pdf
     private function appendHeaderIntoBuffer(): void
     {
         $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
+    }
+
+    private function appendInfoIntoBuffer(): void
+    {
+        $this->_newobj();
+        $this->appendIntoBuffer('<<');
+        $this->_putinfo();
+        $this->appendIntoBuffer('>>');
+        $this->appendIntoBuffer('endobj');
     }
 
     private function appendXRefIntoBuffer(): void
