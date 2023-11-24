@@ -1995,16 +1995,20 @@ final class Pdf
         $this->_putcatalog();
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
-        // Cross-ref
         $offsetAtXRef = $this->_getoffset();
+        $this->appendXRefIntoBuffer();
+        $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
+        $this->currentDocumentState = DocumentState::CLOSED;
+    }
+
+    private function appendXRefIntoBuffer(): void
+    {
         $this->appendIntoBuffer('xref');
         $this->appendIntoBuffer('0 ' . ($this->currentObjectNumber + 1));
         $this->appendIntoBuffer('0000000000 65535 f ');
         for ($i = 1; $i <= $this->currentObjectNumber; ++$i) {
             $this->appendIntoBuffer(sprintf('%010d 00000 n ', $this->objectOffsets[$i]));
         }
-        $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
-        $this->currentDocumentState = DocumentState::CLOSED;
     }
 
     private function utf8ToUtf16Be(string $str): string
