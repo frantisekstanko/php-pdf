@@ -9,6 +9,7 @@ use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\ContentBufferException;
 use Stanko\Pdf\Exception\FontNotFoundException;
+use Stanko\Pdf\Exception\HeadersAlreadySentException;
 use Stanko\Pdf\Exception\IncorrectFontDefinitionException;
 use Stanko\Pdf\Exception\IncorrectPageLinksException;
 use Stanko\Pdf\Exception\InvalidHeightException;
@@ -1269,11 +1270,16 @@ final class Pdf
 
     private function checkOutput(): void
     {
-        if (PHP_SAPI != 'cli') {
-            if (headers_sent($file, $line)) {
-                $this->Error("Some data has already been output, can't send PDF file (output started at {$file}:{$line})");
-            }
+        if (PHP_SAPI === 'cli') {
+            return;
         }
+
+        if (headers_sent($file, $line)) {
+            throw new HeadersAlreadySentException(
+                'Headers already sent at ' . $file . ':' . $line
+            );
+        }
+
         if (ob_get_length()) {
             // The output buffer is not empty
             $outputBufferContent = ob_get_contents();
