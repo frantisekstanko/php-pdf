@@ -589,7 +589,6 @@ final class Pdf
         bool $fill = false,
         mixed $link = '',
     ): void {
-        $scaleFactor = $this->scaleFactor;
         $this->automaticPageBreak();
         $w = $this->withWidth;
         if ($w === null) {
@@ -604,10 +603,10 @@ final class Pdf
             }
             $s = sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
-                $this->currentXPosition * $scaleFactor,
-                ($this->pageHeight - $this->currentYPosition) * $scaleFactor,
-                $w * $scaleFactor,
-                -$this->withHeight * $scaleFactor,
+                $this->currentXPosition * $this->scaleFactor,
+                ($this->pageHeight - $this->currentYPosition) * $this->scaleFactor,
+                $w * $this->scaleFactor,
+                -$this->withHeight * $this->scaleFactor,
                 $op,
             );
         }
@@ -617,37 +616,37 @@ final class Pdf
             if (strpos($border, 'L') !== false) {
                 $s .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $scaleFactor,
-                    ($this->pageHeight - $y) * $scaleFactor,
-                    $x * $scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor
+                    $x * $this->scaleFactor,
+                    ($this->pageHeight - $y) * $this->scaleFactor,
+                    $x * $this->scaleFactor,
+                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
                 );
             }
             if (strpos($border, 'T') !== false) {
                 $s .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $scaleFactor,
-                    ($this->pageHeight - $y) * $scaleFactor,
-                    ($x + $w) * $scaleFactor,
-                    ($this->pageHeight - $y) * $scaleFactor
+                    $x * $this->scaleFactor,
+                    ($this->pageHeight - $y) * $this->scaleFactor,
+                    ($x + $w) * $this->scaleFactor,
+                    ($this->pageHeight - $y) * $this->scaleFactor
                 );
             }
             if (strpos($border, 'R') !== false) {
                 $s .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    ($x + $w) * $scaleFactor,
-                    ($this->pageHeight - $y) * $scaleFactor,
-                    ($x + $w) * $scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor
+                    ($x + $w) * $this->scaleFactor,
+                    ($this->pageHeight - $y) * $this->scaleFactor,
+                    ($x + $w) * $this->scaleFactor,
+                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
                 );
             }
             if (strpos($border, 'B') !== false) {
                 $s .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor,
-                    ($x + $w) * $scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $scaleFactor
+                    $x * $this->scaleFactor,
+                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor,
+                    ($x + $w) * $this->scaleFactor,
+                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
                 );
             }
         }
@@ -673,8 +672,8 @@ final class Pdf
                 $space = $this->escapeSpecialCharacters($this->UTF8ToUTF16BE(' '));
                 $s .= sprintf(
                     'BT 0 Tw %.2F %.2F Td [',
-                    ($this->currentXPosition + $dx) * $scaleFactor,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $scaleFactor
+                    ($this->currentXPosition + $dx) * $this->scaleFactor,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $this->scaleFactor
                 );
                 $t = explode(' ', $txt);
                 $numt = count($t);
@@ -696,8 +695,8 @@ final class Pdf
                 }
                 $s .= sprintf(
                     'BT %.2F %.2F Td %s Tj ET',
-                    ($this->currentXPosition + $dx) * $scaleFactor,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $scaleFactor,
+                    ($this->currentXPosition + $dx) * $this->scaleFactor,
+                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $this->scaleFactor,
                     $txt2
                 );
             }
