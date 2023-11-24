@@ -1466,7 +1466,7 @@ final class Pdf
         $this->pdfFileBuffer .= $s . "\n";
     }
 
-    private function _getoffset(): int
+    private function currentBufferLength(): int
     {
         return strlen($this->pdfFileBuffer);
     }
@@ -1477,7 +1477,7 @@ final class Pdf
         if ($n === null) {
             $n = ++$this->currentObjectNumber;
         }
-        $this->objectOffsets[$n] = $this->_getoffset();
+        $this->objectOffsets[$n] = $this->currentBufferLength();
         $this->appendIntoBuffer($n . ' 0 obj');
     }
 
@@ -1995,7 +1995,7 @@ final class Pdf
         $this->_putcatalog();
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
-        $offsetAtXRef = $this->_getoffset();
+        $offsetAtXRef = $this->currentBufferLength();
         $this->appendXRefIntoBuffer();
         $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
         $this->currentDocumentState = DocumentState::CLOSED;
