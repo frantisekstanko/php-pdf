@@ -1960,11 +1960,6 @@ final class Pdf
         }
     }
 
-    private function appendHeaderIntoBuffer(): void
-    {
-        $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
-    }
-
     private function appendTrailerIntoBuffer(string $offsetAtXRef): void
     {
         $this->appendIntoBuffer('trailer');
@@ -1999,6 +1994,11 @@ final class Pdf
         $this->appendXRefIntoBuffer();
         $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
         $this->currentDocumentState = DocumentState::CLOSED;
+    }
+
+    private function appendHeaderIntoBuffer(): void
+    {
+        $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
     }
 
     private function appendXRefIntoBuffer(): void
