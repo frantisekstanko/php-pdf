@@ -137,7 +137,7 @@ final class Pdf
         $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
 
-        $this->enableAutomaticPageBreaking(2 * $margin);
+        $this->withAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
     }
 
@@ -240,10 +240,10 @@ final class Pdf
         $this->rightMargin = $margin;
     }
 
-    public function enableAutomaticPageBreaking(float $breakMargin = 0): void
+    public function withAutomaticPageBreaking(float $threshold = 0): void
     {
         $this->automaticPageBreaking = true;
-        $this->pageBreakMargin = $breakMargin;
+        $this->pageBreakMargin = $threshold;
         $this->recalculatePageBreakThreshold();
     }
 
