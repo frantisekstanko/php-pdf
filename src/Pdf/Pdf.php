@@ -1290,18 +1290,24 @@ final class Pdf
             return;
         }
 
+        if ($this->outputBufferCanBeCleaned()) {
+            ob_clean();
+
+            return;
+        }
+
+        throw new ContentBufferException('Some data has already been output');
+    }
+
+    private function outputBufferCanBeCleaned(): bool
+    {
         $outputBufferContent = ob_get_contents();
 
         if ($outputBufferContent === false) {
             throw new ContentBufferException('ob_get_contents() returned false');
         }
 
-        if (preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent)) {
-            // It contains only a UTF-8 BOM and/or whitespace, let's clean it
-            ob_clean();
-        } else {
-            $this->Error("Some data has already been output, can't send PDF file");
-        }
+        return (bool) preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent);
     }
 
     private function startPage(
