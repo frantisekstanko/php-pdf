@@ -1119,7 +1119,7 @@ final class Pdf
         string $name = '',
     ): string {
         // Output PDF to some destination
-        $this->Close();
+        $this->closeDocument();
         if (strlen($name) == 1 && strlen($dest) != 1) {
             // Fix parameter order
             $tmp = $dest;
@@ -1241,7 +1241,7 @@ final class Pdf
         throw new Exception('tFPDF error: ' . $msg);
     }
 
-    private function Close(): void
+    private function closeDocument(): void
     {
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             return;
