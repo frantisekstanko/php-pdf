@@ -1969,12 +1969,7 @@ final class Pdf
         $this->appendPagesIntoBuffer();
         $this->appendResourcesIntoBuffer();
         $this->appendMetadataIntoBuffer();
-        // Catalog
-        $this->newObject();
-        $this->appendIntoBuffer('<<');
-        $this->_putcatalog();
-        $this->appendIntoBuffer('>>');
-        $this->appendIntoBuffer('endobj');
+        $this->appendCatalogIntoBuffer();
         $offsetAtXRef = $this->currentBufferLength();
         $this->appendXRefIntoBuffer();
         $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
@@ -1997,6 +1992,15 @@ final class Pdf
             $this->appendIntoBuffer('/' . $key . ' ' . $this->_textstring($value));
         }
 
+        $this->appendIntoBuffer('>>');
+        $this->appendIntoBuffer('endobj');
+    }
+
+    private function appendCatalogIntoBuffer(): void
+    {
+        $this->newObject();
+        $this->appendIntoBuffer('<<');
+        $this->_putcatalog();
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
