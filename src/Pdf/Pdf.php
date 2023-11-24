@@ -1471,9 +1471,8 @@ final class Pdf
         return strlen($this->pdfFileBuffer);
     }
 
-    private function _newobj(?int $n = null): void
+    private function newObject(?int $n = null): void
     {
-        // Begin a new object
         if ($n === null) {
             $n = ++$this->currentObjectNumber;
         }
@@ -1499,7 +1498,7 @@ final class Pdf
 
         $entries .= '/Length ' . strlen($data);
 
-        $this->_newobj();
+        $this->newObject();
         $this->appendIntoBuffer('<<' . $entries . '>>');
         $this->_putstream($data);
         $this->appendIntoBuffer('endobj');
@@ -1518,7 +1517,7 @@ final class Pdf
     private function _putlinks(int $n): void
     {
         foreach ($this->pageLinks[$n] as $pl) {
-            $this->_newobj();
+            $this->newObject();
             $rect = sprintf('%.2F %.2F %.2F %.2F', $pl[0], $pl[1], $pl[0] + $pl[2], $pl[1] - $pl[3]);
             $s = '<</Type /Annot /Subtype /Link /Rect [' . $rect . '] /Border [0 0 0] ';
             if (is_string($pl[4])) {
@@ -1541,7 +1540,7 @@ final class Pdf
 
     private function _putpage(int $n): void
     {
-        $this->_newobj();
+        $this->newObject();
         $this->appendIntoBuffer('<</Type /Page');
         $this->appendIntoBuffer('/Parent 1 0 R');
         if (isset($this->pageInfo[$n]['size'])) {
@@ -1593,7 +1592,7 @@ final class Pdf
             $this->_putpage($i);
         }
         // Pages root
-        $this->_newobj(1);
+        $this->newObject(1);
         $this->appendIntoBuffer('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $nb; ++$i) {
@@ -1634,7 +1633,7 @@ final class Pdf
 
             // Type0 Font
             // A composite font - a font composed of other fonts, organized hierarchically
-            $this->_newobj();
+            $this->newObject();
             $this->appendIntoBuffer('<</Type /Font');
             $this->appendIntoBuffer('/Subtype /Type0');
             $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
@@ -1646,7 +1645,7 @@ final class Pdf
 
             // CIDFontType2
             // A CIDFont whose glyph descriptions are based on TrueType font technology
-            $this->_newobj();
+            $this->newObject();
             $this->appendIntoBuffer('<</Type /Font');
             $this->appendIntoBuffer('/Subtype /CIDFontType2');
             $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
@@ -1661,7 +1660,7 @@ final class Pdf
             $this->appendIntoBuffer('endobj');
 
             // ToUnicode
-            $this->_newobj();
+            $this->newObject();
             $toUni = "/CIDInit /ProcSet findresource begin\n";
             $toUni .= "12 dict begin\n";
             $toUni .= "begincmap\n";
@@ -1687,7 +1686,7 @@ final class Pdf
             $this->appendIntoBuffer('endobj');
 
             // CIDSystemInfo dictionary
-            $this->_newobj();
+            $this->newObject();
             $this->appendIntoBuffer('<</Registry (Adobe)');
             $this->appendIntoBuffer('/Ordering (UCS)');
             $this->appendIntoBuffer('/Supplement 0');
@@ -1695,7 +1694,7 @@ final class Pdf
             $this->appendIntoBuffer('endobj');
 
             // Font descriptor
-            $this->_newobj();
+            $this->newObject();
             $this->appendIntoBuffer('<</Type /FontDescriptor');
             $this->appendIntoBuffer('/FontName /' . $fontname);
             foreach ($font['attributes']->toArray() as $kd => $v) {
@@ -1721,7 +1720,7 @@ final class Pdf
             if ($cidtogidmap === false) {
                 throw new CompressionException('gzcompress() returned false');
             }
-            $this->_newobj();
+            $this->newObject();
             $this->appendIntoBuffer('<</Length ' . strlen($cidtogidmap) . '');
             $this->appendIntoBuffer('/Filter /FlateDecode');
             $this->appendIntoBuffer('>>');
@@ -1729,7 +1728,7 @@ final class Pdf
             $this->appendIntoBuffer('endobj');
 
             // Font file
-            $this->_newobj();
+            $this->newObject();
             $this->appendIntoBuffer('<</Length ' . strlen($fontstream));
             $this->appendIntoBuffer('/Filter /FlateDecode');
             $this->appendIntoBuffer('/Length1 ' . $ttfontsize);
@@ -1860,7 +1859,7 @@ final class Pdf
     /** @param array<mixed> $info */
     private function _putimage(&$info): void
     {
-        $this->_newobj();
+        $this->newObject();
         $info['n'] = $this->currentObjectNumber;
         $this->appendIntoBuffer('<</Type /XObject');
         $this->appendIntoBuffer('/Subtype /Image');
@@ -1931,7 +1930,7 @@ final class Pdf
         $this->_putfonts();
         $this->_putimages();
         // Resource dictionary
-        $this->_newobj(2);
+        $this->newObject(2);
         $this->appendIntoBuffer('<<');
         $this->_putresourcedict();
         $this->appendIntoBuffer('>>');
@@ -1980,7 +1979,7 @@ final class Pdf
         $this->appendResourcesIntoBuffer();
         $this->appendInfoIntoBuffer();
         // Catalog
-        $this->_newobj();
+        $this->newObject();
         $this->appendIntoBuffer('<<');
         $this->_putcatalog();
         $this->appendIntoBuffer('>>');
@@ -1998,7 +1997,7 @@ final class Pdf
 
     private function appendInfoIntoBuffer(): void
     {
-        $this->_newobj();
+        $this->newObject();
         $this->appendIntoBuffer('<<');
         $this->_putinfo();
         $this->appendIntoBuffer('>>');
