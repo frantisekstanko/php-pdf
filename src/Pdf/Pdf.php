@@ -1379,8 +1379,11 @@ final class Pdf
         return true;
     }
 
-    private function _httpencode(string $param, string $value, bool $isUTF8): string
-    {
+    private function _httpencode(
+        string $param,
+        string $value,
+        bool $isUTF8,
+    ): string {
         // Encode HTTP header field parameter
         if ($this->isAscii($value)) {
             return $param . '="' . $value . '"';
