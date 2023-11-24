@@ -2040,31 +2040,31 @@ final class Pdf
         return $out;
     }
 
-    private function getUnicode(string $str, int $i, int $len, int $h): ?int
+    private function getUnicode(string $string, int $i, int $stringLength, int $asciiAsInteger): ?int
     {
-        if ($h <= 0x7F) {
-            return $h;
+        if ($asciiAsInteger <= 0x7F) {
+            return $asciiAsInteger;
         }
 
-        if ($h < 0xC2) {
+        if ($asciiAsInteger < 0xC2) {
             return null;
         }
 
-        if (($h <= 0xDF) && ($i < $len - 1)) {
-            return ($h & 0x1F) << 6 | (ord($str[++$i]) & 0x3F);
+        if (($asciiAsInteger <= 0xDF) && ($i < $stringLength - 1)) {
+            return ($asciiAsInteger & 0x1F) << 6 | (ord($string[++$i]) & 0x3F);
         }
 
-        if (($h <= 0xEF) && ($i < $len - 2)) {
-            return ($h & 0x0F) << 12
-                | (ord($str[++$i]) & 0x3F) << 6
-                | (ord($str[++$i]) & 0x3F);
+        if (($asciiAsInteger <= 0xEF) && ($i < $stringLength - 2)) {
+            return ($asciiAsInteger & 0x0F) << 12
+                | (ord($string[++$i]) & 0x3F) << 6
+                | (ord($string[++$i]) & 0x3F);
         }
 
-        if (($h <= 0xF4) && ($i < $len - 3)) {
-            return ($h & 0x0F) << 18
-                | (ord($str[++$i]) & 0x3F) << 12
-                | (ord($str[++$i]) & 0x3F) << 6
-                | (ord($str[++$i]) & 0x3F);
+        if (($asciiAsInteger <= 0xF4) && ($i < $stringLength - 3)) {
+            return ($asciiAsInteger & 0x0F) << 18
+                | (ord($string[++$i]) & 0x3F) << 12
+                | (ord($string[++$i]) & 0x3F) << 6
+                | (ord($string[++$i]) & 0x3F);
         }
 
         return null;
