@@ -847,7 +847,7 @@ class TtfParser
         $cmap[] = 0xFFFF;    // startCode of last Segment
         // idDelta(s)
         foreach ($range as $start => $subrange) {
-            $idDelta = -($start - $subrange[0]);
+            $idDelta = - ($start - $subrange[0]);
             $n += count($subrange);
             $cmap[] = $idDelta;    // idDelta(s)
         }
