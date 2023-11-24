@@ -565,7 +565,12 @@ final class Pdf
         foreach ($this->UTF8StringToArray($txt) as $uni) {
             $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
         }
-        $s = sprintf('BT %.2F %.2F Td %s Tj ET', $x * $this->scaleFactor, ($this->pageHeight - $y) * $this->scaleFactor, $txt2);
+        $s = sprintf(
+            'BT %.2F %.2F Td %s Tj ET',
+            $x * $this->scaleFactor,
+            ($this->pageHeight - $y) * $this->scaleFactor,
+            $txt2,
+        );
         if ($this->isUnderline && $txt != '') {
             $s .= ' ' . $this->_dounderline($x, $y, $txt);
         }
