@@ -1243,11 +1243,11 @@ final class Pdf
 
     private function Close(): void
     {
-        if ($this->currentDocumentState == DocumentState::CLOSED) {
+        if ($this->currentDocumentState === DocumentState::CLOSED) {
             return;
         }
 
-        if ($this->currentPageNumber == 0) {
+        if ($this->currentPageNumber === 0) {
             $this->addPage();
         }
 
