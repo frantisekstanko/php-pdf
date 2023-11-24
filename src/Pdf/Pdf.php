@@ -67,16 +67,7 @@ final class Pdf
      * i: int,
      * type: string,
      * name: string,
-     * attributes: array{
-     *  Ascent: int,
-     *  Descent: int,
-     *  CapHeight: int,
-     *  Flags: int,
-     *  FontBBox: string,
-     *  ItalicAngle: int,
-     *  StemV: int,
-     *  MissingWidth: int,
-     * },
+     * attributes: FontAttributes,
      * up: float,
      * ut: float,
      * cw: string,
@@ -454,16 +445,16 @@ final class Pdf
         $charWidths = $ttfParser->charWidths;
         $name = (string) preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
-        $attributes = [
-            'Ascent' => (int) round($ttfParser->ascent),
-            'Descent' => (int) round($ttfParser->descent),
-            'CapHeight' => (int) round($ttfParser->capHeight),
-            'Flags' => $ttfParser->flags,
-            'FontBBox' => '[' . round($ttfParser->bbox[0]) . ' ' . round($ttfParser->bbox[1]) . ' ' . round($ttfParser->bbox[2]) . ' ' . round($ttfParser->bbox[3]) . ']',
-            'ItalicAngle' => $ttfParser->italicAngle,
-            'StemV' => (int) round($ttfParser->stemV),
-            'MissingWidth' => (int) round($ttfParser->defaultWidth),
-        ];
+        $attributes = new FontAttributes(
+            ascent: $ttfParser->ascent,
+            descent: $ttfParser->descent,
+            capHeight: $ttfParser->capHeight,
+            flags: $ttfParser->flags,
+            boundingBox: $ttfParser->bbox,
+            italicAngle: $ttfParser->italicAngle,
+            stemV: $ttfParser->stemV,
+            missingWidth: $ttfParser->defaultWidth,
+        );
 
         $sbarr = range(0, 32);
 
@@ -1250,8 +1241,8 @@ final class Pdf
         foreach ($unicode as $char) {
             if (isset($characterWidths[2 * $char])) {
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
-            } elseif (isset($this->usedFonts[$this->currentFont::class]['attributes']['MissingWidth'])) {
-                $stringWidth += $this->usedFonts[$this->currentFont::class]['attributes']['MissingWidth'];
+            } elseif ($this->usedFonts[$this->currentFont::class]['attributes']->getMissingWidth()) {
+                $stringWidth += $this->usedFonts[$this->currentFont::class]['attributes']->getMissingWidth();
             } else {
                 $stringWidth += 500;
             }
@@ -1643,7 +1634,7 @@ final class Pdf
             $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
             $this->appendIntoBuffer('/CIDSystemInfo ' . ($this->currentObjectNumber + 2) . ' 0 R');
             $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 3) . ' 0 R');
-            $this->_out('/DW ' . $font['attributes']['MissingWidth'] . '');
+            $this->_out('/DW ' . $font['attributes']->getMissingWidth() . '');
 
             $this->_putTTfontwidths($font, $ttf->maxUni);
 
@@ -1689,7 +1680,7 @@ final class Pdf
             $this->_newobj();
             $this->appendIntoBuffer('<</Type /FontDescriptor');
             $this->appendIntoBuffer('/FontName /' . $fontname);
-            foreach ($font['attributes'] as $kd => $v) {
+            foreach ($font['attributes']->toArray() as $kd => $v) {
                 if ($kd == 'Flags') {
                     $v = $v | 4;
                     $v = $v & ~32;

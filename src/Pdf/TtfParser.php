@@ -92,7 +92,14 @@ class TtfParser
     public string $uniqueFontID;
     public float $unitsPerEm;
 
-    /** @var array<float> */
+    /**
+     * @var array{
+     *   0: float,
+     *   1: float,
+     *   2: float,
+     *   3: float
+     * }
+     */
     public array $bbox;
     public float $capHeight;
     public int $stemV;
