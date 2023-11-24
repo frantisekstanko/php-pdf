@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
-use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
 use Stanko\Pdf\Units;
@@ -24,7 +23,6 @@ final class LayoutTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = (new Pdf(
-            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         ))->createdAt(new DateTimeImmutable('1999-12-26'));
 

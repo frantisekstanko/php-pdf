@@ -6,7 +6,6 @@ namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
 use RuntimeException;
-use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\PageSize;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
@@ -27,7 +26,6 @@ final class PageSizeTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = (new Pdf(
-            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         ))->withPageSize($this->pageSizeFromString($pageSize))
             ->createdAt(new DateTimeImmutable('1999-12-26'))

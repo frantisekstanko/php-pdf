@@ -23,9 +23,12 @@ final class PageOrientationTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = (new Pdf(
-            $this->pageOrientationFromString($orientation),
             Units::MILLIMETERS,
-        ))->createdAt(new DateTimeImmutable('2023-12-26'));
+        ))->createdAt(new DateTimeImmutable('2023-12-26'))
+            ->withPageOrientation(
+                $this->pageOrientationFromString($orientation)
+            )
+        ;
 
         $pdf->addPage();
         $pdf->addPage();

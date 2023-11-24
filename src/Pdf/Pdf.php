@@ -115,7 +115,6 @@ final class Pdf
     private ?float $withHeight;
 
     public function __construct(
-        PageOrientation $pageOrientation = PageOrientation::PORTRAIT,
         Units $units = Units::MILLIMETERS,
     ) {
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
@@ -124,8 +123,8 @@ final class Pdf
 
         $this->scaleFactor = $units->getScaleFactor();
 
-        $this->defaultOrientation = $pageOrientation;
-        $this->currentOrientation = $pageOrientation;
+        $this->defaultOrientation = PageOrientation::PORTRAIT;
+        $this->currentOrientation = PageOrientation::PORTRAIT;
 
         $this->setPageSize(PageSize::a4());
 
@@ -139,6 +138,17 @@ final class Pdf
         $this->lineWidth = .567 / $this->scaleFactor;
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
+    }
+
+    public function withPageOrientation(
+        PageOrientation $pageOrientation,
+    ): self {
+        $pdf = clone $this;
+
+        $pdf->defaultOrientation = $pageOrientation;
+        $pdf->currentOrientation = $pageOrientation;
+
+        return $pdf;
     }
 
     public function withAutomaticWidth(): self

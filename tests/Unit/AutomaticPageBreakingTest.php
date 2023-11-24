@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stanko\Pdf\Tests\Unit;
 
 use Stanko\Pdf\Fonts\OpenSansRegular;
-use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
 use Stanko\Pdf\Units;
@@ -85,7 +84,6 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     private function createPdf(): Pdf
     {
         return (new Pdf(
-            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         ))->loadFont(OpenSansRegular::points(12))
             ->withFont(OpenSansRegular::points(12))

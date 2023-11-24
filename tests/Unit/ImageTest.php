@@ -6,7 +6,6 @@ namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
 use Stanko\Pdf\Color;
-use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\RectangleStyle;
 use Stanko\Pdf\Tests\PdfTestCase;
@@ -30,7 +29,6 @@ final class ImageTest extends PdfTestCase
         string $expectedHash,
     ): void {
         $pdf = (new Pdf(
-            PageOrientation::PORTRAIT,
             Units::MILLIMETERS,
         ))->createdAt(new DateTimeImmutable('1999-12-26'));
 
