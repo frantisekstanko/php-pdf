@@ -1110,7 +1110,6 @@ final class Pdf
 
     public function SetXY(float $x, float $y): void
     {
-        // Set x and y positions
         $this->SetX($x);
         $this->SetY($y, false);
     }
