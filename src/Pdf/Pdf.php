@@ -1937,15 +1937,6 @@ final class Pdf
         $this->appendIntoBuffer('endobj');
     }
 
-    private function appendMetadataIntoBuffer(): void
-    {
-        $metadataAsArray = $this->metadata->toArray();
-
-        foreach ($metadataAsArray as $key => $value) {
-            $this->appendIntoBuffer('/' . $key . ' ' . $this->_textstring($value));
-        }
-    }
-
     private function _putcatalog(): void
     {
         $this->appendIntoBuffer('/Type /Catalog');
@@ -1999,7 +1990,13 @@ final class Pdf
     {
         $this->newObject();
         $this->appendIntoBuffer('<<');
-        $this->appendMetadataIntoBuffer();
+
+        $metadataAsArray = $this->metadata->toArray();
+
+        foreach ($metadataAsArray as $key => $value) {
+            $this->appendIntoBuffer('/' . $key . ' ' . $this->_textstring($value));
+        }
+
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
