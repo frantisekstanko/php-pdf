@@ -1926,7 +1926,7 @@ final class Pdf
         $this->appendIntoBuffer('>>');
     }
 
-    private function _putresources(): void
+    private function appendResourcesIntoBuffer(): void
     {
         $this->_putfonts();
         $this->_putimages();
@@ -1977,7 +1977,7 @@ final class Pdf
     {
         $this->appendHeaderIntoBuffer();
         $this->appendPagesIntoBuffer();
-        $this->_putresources();
+        $this->appendResourcesIntoBuffer();
         // Info
         $this->_newobj();
         $this->appendIntoBuffer('<<');
