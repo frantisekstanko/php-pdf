@@ -2016,14 +2016,14 @@ final class Pdf
     /**
      * @return array<int>
      */
-    private function utf8StringToArray(string $str): array
+    private function utf8StringToArray(string $string): array
     {
         $out = [];
-        $len = strlen($str);
+        $len = strlen($string);
         for ($i = 0; $i < $len; ++$i) {
-            $h = ord($str[$i]);
+            $h = ord($string[$i]);
 
-            $unicode = $this->getUnicode($str, $i, $len, $h);
+            $unicode = $this->getUnicode($string, $i, $len, $h);
 
             if ($unicode === null) {
                 continue;
