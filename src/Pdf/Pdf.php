@@ -2019,11 +2019,11 @@ final class Pdf
     private function utf8StringToArray(string $string): array
     {
         $out = [];
-        $len = strlen($string);
-        for ($i = 0; $i < $len; ++$i) {
+        $stringLength = strlen($string);
+        for ($i = 0; $i < $stringLength; ++$i) {
             $h = ord($string[$i]);
 
-            $unicode = $this->getUnicode($string, $i, $len, $h);
+            $unicode = $this->getUnicode($string, $i, $stringLength, $h);
 
             if ($unicode === null) {
                 continue;
