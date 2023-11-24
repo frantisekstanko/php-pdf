@@ -1577,7 +1577,7 @@ final class Pdf
         $this->_putlinks($n);
     }
 
-    private function _putpages(): void
+    private function appendPagesIntoBuffer(): void
     {
         $nb = $this->currentPageNumber;
         $n = $this->currentObjectNumber;
@@ -1976,7 +1976,7 @@ final class Pdf
     private function closeDocument(): void
     {
         $this->appendHeaderIntoBuffer();
-        $this->_putpages();
+        $this->appendPagesIntoBuffer();
         $this->_putresources();
         // Info
         $this->_newobj();
