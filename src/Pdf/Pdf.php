@@ -1117,7 +1117,6 @@ final class Pdf
     public function Output(
         string $dest = '',
         string $name = '',
-        bool $isUTF8 = false,
     ): string {
         // Output PDF to some destination
         $this->Close();
@@ -1141,7 +1140,7 @@ final class Pdf
                 if (PHP_SAPI != 'cli') {
                     // We send to a browser
                     header('Content-Type: application/pdf');
-                    header('Content-Disposition: inline; ' . $this->_httpencode('filename', $name, $isUTF8));
+                    header('Content-Disposition: inline; ' . $this->_httpencode('filename', $name));
                     header('Cache-Control: private, max-age=0, must-revalidate');
                     header('Pragma: public');
                 }
@@ -1153,7 +1152,7 @@ final class Pdf
                 // Download file
                 $this->_checkoutput();
                 header('Content-Type: application/pdf');
-                header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $name, $isUTF8));
+                header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $name));
                 header('Cache-Control: private, max-age=0, must-revalidate');
                 header('Pragma: public');
                 echo $this->pdfFileBuffer;
@@ -1382,23 +1381,13 @@ final class Pdf
     private function _httpencode(
         string $param,
         string $value,
-        bool $isUTF8,
     ): string {
         // Encode HTTP header field parameter
         if ($this->isAscii($value)) {
             return $param . '="' . $value . '"';
         }
-        if (!$isUTF8) {
-            $value = $this->_UTF8encode($value);
-        }
 
         return $param . "*=UTF-8''" . rawurlencode($value);
-    }
-
-    private function _UTF8encode(string $s): string
-    {
-        // Convert ISO-8859-1 to UTF-8
-        return mb_convert_encoding($s, 'UTF-8', 'ISO-8859-1');
     }
 
     private function _UTF8toUTF16(string $s): string
