@@ -1280,18 +1280,27 @@ final class Pdf
             );
         }
 
-        if (ob_get_length()) {
-            // The output buffer is not empty
-            $outputBufferContent = ob_get_contents();
-            if ($outputBufferContent === false) {
-                throw new ContentBufferException('ob_get_contents() returned false');
-            }
-            if (preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent)) {
-                // It contains only a UTF-8 BOM and/or whitespace, let's clean it
-                ob_clean();
-            } else {
-                $this->Error("Some data has already been output, can't send PDF file");
-            }
+        $outputBufferLength = ob_get_length();
+
+        if ($outputBufferLength === false) {
+            throw new ContentBufferException('ob_get_length() returned false');
+        }
+
+        if ($outputBufferLength === 0) {
+            return;
+        }
+
+        $outputBufferContent = ob_get_contents();
+
+        if ($outputBufferContent === false) {
+            throw new ContentBufferException('ob_get_contents() returned false');
+        }
+
+        if (preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent)) {
+            // It contains only a UTF-8 BOM and/or whitespace, let's clean it
+            ob_clean();
+        } else {
+            $this->Error("Some data has already been output, can't send PDF file");
         }
     }
 
