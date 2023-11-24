@@ -1968,7 +1968,7 @@ final class Pdf
         $this->appendHeaderIntoBuffer();
         $this->appendPagesIntoBuffer();
         $this->appendResourcesIntoBuffer();
-        $this->appendInfoIntoBuffer();
+        $this->appendMetadataIntoBuffer();
         // Catalog
         $this->newObject();
         $this->appendIntoBuffer('<<');
@@ -1986,7 +1986,7 @@ final class Pdf
         $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
     }
 
-    private function appendInfoIntoBuffer(): void
+    private function appendMetadataIntoBuffer(): void
     {
         $this->newObject();
         $this->appendIntoBuffer('<<');
