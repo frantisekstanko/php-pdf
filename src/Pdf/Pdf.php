@@ -596,18 +596,13 @@ final class Pdf
         }
         $appendToPdfBuffer = '';
         if ($fill || $border === 1) {
-            if ($fill) {
-                $op = ($border === 1) ? 'B' : 'f';
-            } else {
-                $op = 'S';
-            }
             $appendToPdfBuffer = sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
                 $this->currentXPosition * $this->scaleFactor,
                 ($this->pageHeight - $this->currentYPosition) * $this->scaleFactor,
                 $cellWidth * $this->scaleFactor,
                 -$this->withHeight * $this->scaleFactor,
-                $op,
+                $this->getRectangleAttribute($fill, $border),
             );
         }
         if (is_string($border)) {
@@ -2090,5 +2085,14 @@ final class Pdf
                 $this->_out(sprintf('%.3F Tw', $ws * $this->scaleFactor));
             }
         }
+    }
+
+    private function getRectangleAttribute(bool $fill, mixed $border): string
+    {
+        if ($fill) {
+            return ($border === 1) ? 'B' : 'f';
+        }
+
+        return 'S';
     }
 }
