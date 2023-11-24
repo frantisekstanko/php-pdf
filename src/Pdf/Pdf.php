@@ -1117,7 +1117,7 @@ final class Pdf
     public function downloadFile(string $fileName): void
     {
         $this->closeDocument();
-        $this->_checkoutput();
+        $this->checkOutput();
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $fileName));
         header('Cache-Control: private, max-age=0, must-revalidate');
@@ -1141,7 +1141,7 @@ final class Pdf
     public function toStandardOutput(string $fileName): void
     {
         $this->closeDocument();
-        $this->_checkoutput();
+        $this->checkOutput();
         if (PHP_SAPI != 'cli') {
             // We send to a browser
             header('Content-Type: application/pdf');
@@ -1267,7 +1267,7 @@ final class Pdf
         }
     }
 
-    private function _checkoutput(): void
+    private function checkOutput(): void
     {
         if (PHP_SAPI != 'cli') {
             if (headers_sent($file, $line)) {
