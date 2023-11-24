@@ -1367,9 +1367,8 @@ final class Pdf
         $this->currentDocumentState = DocumentState::PAGE_ENDED;
     }
 
-    private function _isascii(string $s): bool
+    private function isAscii(string $s): bool
     {
-        // Test if string is ASCII
         $nb = strlen($s);
         for ($i = 0; $i < $nb; ++$i) {
             if (ord($s[$i]) > 127) {
@@ -1383,7 +1382,7 @@ final class Pdf
     private function _httpencode(string $param, string $value, bool $isUTF8): string
     {
         // Encode HTTP header field parameter
-        if ($this->_isascii($value)) {
+        if ($this->isAscii($value)) {
             return $param . '="' . $value . '"';
         }
         if (!$isUTF8) {
@@ -1426,7 +1425,7 @@ final class Pdf
     private function _textstring(string $s): string
     {
         // Format a text string
-        if (!$this->_isascii($s)) {
+        if (!$this->isAscii($s)) {
             $s = $this->_UTF8toUTF16($s);
         }
 
