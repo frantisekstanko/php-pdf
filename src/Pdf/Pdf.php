@@ -590,9 +590,9 @@ final class Pdf
         mixed $link = '',
     ): void {
         $this->automaticPageBreak();
-        $w = $this->withWidth;
-        if ($w === null) {
-            $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
+        $cellWidth = $this->withWidth;
+        if ($this->withWidth === null) {
+            $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $s = '';
         if ($fill || $border == 1) {
@@ -605,7 +605,7 @@ final class Pdf
                 '%.2F %.2F %.2F %.2F re %s ',
                 $this->currentXPosition * $this->scaleFactor,
                 ($this->pageHeight - $this->currentYPosition) * $this->scaleFactor,
-                $w * $this->scaleFactor,
+                $cellWidth * $this->scaleFactor,
                 -$this->withHeight * $this->scaleFactor,
                 $op,
             );
@@ -627,16 +627,16 @@ final class Pdf
                     '%.2F %.2F m %.2F %.2F l S ',
                     $x * $this->scaleFactor,
                     ($this->pageHeight - $y) * $this->scaleFactor,
-                    ($x + $w) * $this->scaleFactor,
+                    ($x + $cellWidth) * $this->scaleFactor,
                     ($this->pageHeight - $y) * $this->scaleFactor
                 );
             }
             if (strpos($border, 'R') !== false) {
                 $s .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    ($x + $w) * $this->scaleFactor,
+                    ($x + $cellWidth) * $this->scaleFactor,
                     ($this->pageHeight - $y) * $this->scaleFactor,
-                    ($x + $w) * $this->scaleFactor,
+                    ($x + $cellWidth) * $this->scaleFactor,
                     ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
                 );
             }
@@ -645,7 +645,7 @@ final class Pdf
                     '%.2F %.2F m %.2F %.2F l S ',
                     $x * $this->scaleFactor,
                     ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor,
-                    ($x + $w) * $this->scaleFactor,
+                    ($x + $cellWidth) * $this->scaleFactor,
                     ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
                 );
             }
@@ -655,9 +655,9 @@ final class Pdf
                 $this->Error('No font has been set');
             }
             if ($align == 'R') {
-                $dx = $w - $this->interiorCellMargin - $this->getStringWidth($txt);
+                $dx = $cellWidth - $this->interiorCellMargin - $this->getStringWidth($txt);
             } elseif ($align == 'C') {
-                $dx = ($w - $this->getStringWidth($txt)) / 2;
+                $dx = ($cellWidth - $this->getStringWidth($txt)) / 2;
             } else {
                 $dx = $this->interiorCellMargin;
             }
@@ -731,7 +731,7 @@ final class Pdf
                 $this->currentXPosition = $this->leftMargin;
             }
         } else {
-            $this->currentXPosition += $w;
+            $this->currentXPosition += $cellWidth;
         }
     }
 
