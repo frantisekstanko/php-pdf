@@ -9,7 +9,6 @@ use Stanko\Pdf\Color;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\RectangleStyle;
 use Stanko\Pdf\Tests\PdfTestCase;
-use Stanko\Pdf\Units;
 
 final class ImageTest extends PdfTestCase
 {
@@ -28,9 +27,7 @@ final class ImageTest extends PdfTestCase
         float $height,
         string $expectedHash,
     ): void {
-        $pdf = (new Pdf(
-            Units::MILLIMETERS,
-        ))->createdAt(new DateTimeImmutable('1999-12-26'));
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
 
         $pdf->addPage();
 

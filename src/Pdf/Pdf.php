@@ -114,14 +114,13 @@ final class Pdf
     private ?float $withWidth;
     private ?float $withHeight;
 
-    public function __construct(
-        Units $units = Units::MILLIMETERS,
-    ) {
+    public function __construct()
+    {
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
 
         $this->metadata = Metadata::empty();
 
-        $this->scaleFactor = $units->getScaleFactor();
+        $this->scaleFactor = Units::MILLIMETERS->getScaleFactor();
 
         $this->defaultOrientation = PageOrientation::PORTRAIT;
         $this->currentOrientation = PageOrientation::PORTRAIT;
@@ -131,13 +130,32 @@ final class Pdf
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
         $this->currentPageRotation = PageRotation::NONE;
+
         $margin = 28.35 / $this->scaleFactor;
         $this->setLeftMargin($margin);
         $this->setTopMargin($margin);
         $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
+
         $this->enableAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
+    }
+
+    public function inUnits(Units $units): self
+    {
+        $pdf = clone $this;
+
+        $pdf->scaleFactor = $units->getScaleFactor();
+
+        $pdf->recalculatePageDimensions();
+
+        $margin = 28.35 / $pdf->scaleFactor;
+        $pdf->setLeftMargin($margin);
+        $pdf->setTopMargin($margin);
+        $pdf->interiorCellMargin = $margin / 10;
+        $pdf->lineWidth = .567 / $pdf->scaleFactor;
+
+        return $pdf;
     }
 
     public function withPageOrientation(

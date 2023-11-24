@@ -24,9 +24,9 @@ final class UnitsTest extends PdfTestCase
         string $units,
         string $expectedHash,
     ): void {
-        $pdf = (new Pdf(
-            $this->getUnitsFromString($units),
-        ))->createdAt(new DateTimeImmutable('2023-11-24'));
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-24'))
+            ->inUnits($this->getUnitsFromString($units))
+        ;
 
         $pdf->addPage();
 

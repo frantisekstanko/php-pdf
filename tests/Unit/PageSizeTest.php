@@ -9,7 +9,6 @@ use RuntimeException;
 use Stanko\Pdf\PageSize;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
-use Stanko\Pdf\Units;
 
 final class PageSizeTest extends PdfTestCase
 {
@@ -25,9 +24,7 @@ final class PageSizeTest extends PdfTestCase
         string $pageSize,
         string $expectedHash,
     ): void {
-        $pdf = (new Pdf(
-            Units::MILLIMETERS,
-        ))->withPageSize($this->pageSizeFromString($pageSize))
+        $pdf = (new Pdf())->withPageSize($this->pageSizeFromString($pageSize))
             ->createdAt(new DateTimeImmutable('1999-12-26'))
         ;
 

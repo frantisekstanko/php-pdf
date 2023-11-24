@@ -9,7 +9,6 @@ use RuntimeException;
 use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
-use Stanko\Pdf\Units;
 
 final class PageOrientationTest extends PdfTestCase
 {
@@ -22,9 +21,7 @@ final class PageOrientationTest extends PdfTestCase
         string $orientation,
         string $expectedHash,
     ): void {
-        $pdf = (new Pdf(
-            Units::MILLIMETERS,
-        ))->createdAt(new DateTimeImmutable('2023-12-26'))
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-12-26'))
             ->withPageOrientation(
                 $this->pageOrientationFromString($orientation)
             )

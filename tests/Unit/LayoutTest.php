@@ -7,7 +7,6 @@ namespace Stanko\Pdf\Tests\Unit;
 use DateTimeImmutable;
 use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
-use Stanko\Pdf\Units;
 
 final class LayoutTest extends PdfTestCase
 {
@@ -22,9 +21,7 @@ final class LayoutTest extends PdfTestCase
         string $layout,
         string $expectedHash,
     ): void {
-        $pdf = (new Pdf(
-            Units::MILLIMETERS,
-        ))->createdAt(new DateTimeImmutable('1999-12-26'));
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
 
         $pdf->setLayout($layout);
 
