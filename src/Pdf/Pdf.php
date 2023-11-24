@@ -2023,7 +2023,12 @@ final class Pdf
         for ($i = 0; $i < $stringLength; ++$i) {
             $asciiAsInteger = ord($string[$i]);
 
-            $unicode = $this->getUnicode($string, $i, $stringLength, $asciiAsInteger);
+            $unicode = $this->getUnicode(
+                $string,
+                $i,
+                $stringLength,
+                $asciiAsInteger,
+            );
 
             if ($unicode === null) {
                 continue;
