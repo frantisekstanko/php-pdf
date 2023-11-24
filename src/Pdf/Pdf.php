@@ -581,7 +581,7 @@ final class Pdf
             $this->UTF8ToUTF16BE($txt)
         ) . ')';
 
-        foreach ($this->UTF8StringToArray($txt) as $uni) {
+        foreach ($this->utf8StringToArray($txt) as $uni) {
             $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
         }
         $s = sprintf(
@@ -679,7 +679,7 @@ final class Pdf
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
             if ($this->wordSpacing) {
-                foreach ($this->UTF8StringToArray($txt) as $uni) {
+                foreach ($this->utf8StringToArray($txt) as $uni) {
                     $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $space = $this->escapeSpecialCharacters($this->UTF8ToUTF16BE(' '));
@@ -703,7 +703,7 @@ final class Pdf
                 $appendToPdfBuffer .= ' ET';
             } else {
                 $txt2 = '(' . $this->escapeSpecialCharacters($this->UTF8ToUTF16BE($txt)) . ')';
-                foreach ($this->UTF8StringToArray($txt) as $uni) {
+                foreach ($this->utf8StringToArray($txt) as $uni) {
                     $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $appendToPdfBuffer .= sprintf(
@@ -1263,7 +1263,7 @@ final class Pdf
 
         $characterWidths = $this->usedFonts[$this->currentFont::class]['cw'];
         $stringWidth = 0;
-        $unicode = $this->UTF8StringToArray($s);
+        $unicode = $this->utf8StringToArray($s);
         foreach ($unicode as $char) {
             if (isset($characterWidths[2 * $char])) {
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
@@ -2016,7 +2016,7 @@ final class Pdf
     /**
      * @return array<int>
      */
-    private function UTF8StringToArray(string $str): array
+    private function utf8StringToArray(string $str): array
     {
         $out = [];
         $len = strlen($str);
