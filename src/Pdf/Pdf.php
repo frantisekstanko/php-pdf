@@ -1209,14 +1209,19 @@ final class Pdf
         $this->defaultPageSize = $pageSize;
         $this->currentPageSize = $pageSize;
 
+        $this->recalculatePageDimensions();
+    }
+
+    private function recalculatePageDimensions(): void
+    {
         if ($this->currentOrientation == PageOrientation::PORTRAIT) {
-            $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
-            $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
+            $this->pageWidth = $this->currentPageSize->getWidth($this->scaleFactor);
+            $this->pageHeight = $this->currentPageSize->getHeight($this->scaleFactor);
         }
 
         if ($this->currentOrientation == PageOrientation::LANDSCAPE) {
-            $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
-            $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
+            $this->pageWidth = $this->currentPageSize->getHeight($this->scaleFactor);
+            $this->pageHeight = $this->currentPageSize->getWidth($this->scaleFactor);
         }
     }
 
