@@ -2040,8 +2040,12 @@ final class Pdf
         return $out;
     }
 
-    private function getUnicode(string $string, int $i, int $stringLength, int $asciiAsInteger): ?int
-    {
+    private function getUnicode(
+        string $string,
+        int $i,
+        int $stringLength,
+        int $asciiAsInteger,
+    ): ?int {
         if ($asciiAsInteger <= 0x7F) {
             return $asciiAsInteger;
         }
