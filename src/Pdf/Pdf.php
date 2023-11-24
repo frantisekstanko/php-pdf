@@ -1118,7 +1118,6 @@ final class Pdf
         string $dest = '',
         string $name = '',
     ): string {
-        // Output PDF to some destination
         $this->closeDocument();
         if (strlen($name) == 1 && strlen($dest) != 1) {
             // Fix parameter order
