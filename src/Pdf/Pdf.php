@@ -1965,11 +1965,17 @@ final class Pdf
         $this->appendIntoBuffer('%PDF-' . $this->pdfVersion);
     }
 
-    private function _puttrailer(): void
+    private function _puttrailer(string $offsetAtXRef): void
     {
+        $this->appendIntoBuffer('trailer');
+        $this->appendIntoBuffer('<<');
         $this->appendIntoBuffer('/Size ' . ($this->currentObjectNumber + 1));
         $this->appendIntoBuffer('/Root ' . $this->currentObjectNumber . ' 0 R');
         $this->appendIntoBuffer('/Info ' . ($this->currentObjectNumber - 1) . ' 0 R');
+        $this->appendIntoBuffer('>>');
+        $this->appendIntoBuffer('startxref');
+        $this->appendIntoBuffer($offsetAtXRef);
+        $this->appendIntoBuffer('%%EOF');
     }
 
     private function closeDocument(): void
@@ -1990,21 +1996,14 @@ final class Pdf
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
         // Cross-ref
-        $offset = $this->_getoffset();
+        $offsetAtXRef = $this->_getoffset();
         $this->appendIntoBuffer('xref');
         $this->appendIntoBuffer('0 ' . ($this->currentObjectNumber + 1));
         $this->appendIntoBuffer('0000000000 65535 f ');
         for ($i = 1; $i <= $this->currentObjectNumber; ++$i) {
             $this->appendIntoBuffer(sprintf('%010d 00000 n ', $this->objectOffsets[$i]));
         }
-        // Trailer
-        $this->appendIntoBuffer('trailer');
-        $this->appendIntoBuffer('<<');
-        $this->_puttrailer();
-        $this->appendIntoBuffer('>>');
-        $this->appendIntoBuffer('startxref');
-        $this->appendIntoBuffer((string) $offset);
-        $this->appendIntoBuffer('%%EOF');
+        $this->_puttrailer((string) $offsetAtXRef);
         $this->currentDocumentState = DocumentState::CLOSED;
     }
 
