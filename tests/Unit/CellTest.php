@@ -74,7 +74,7 @@ final class CellTest extends PdfTestCase
             $link,
         );
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }

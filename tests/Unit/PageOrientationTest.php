@@ -31,7 +31,7 @@ final class PageOrientationTest extends PdfTestCase
         $pdf->addPage();
         $pdf->addPage();
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }

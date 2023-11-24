@@ -18,7 +18,7 @@ final class CompressionTest extends PdfTestCase
 
         $pdf->enableCompression();
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }
@@ -31,7 +31,7 @@ final class CompressionTest extends PdfTestCase
 
         $pdf->disableCompression();
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }

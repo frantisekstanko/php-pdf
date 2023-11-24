@@ -43,7 +43,7 @@ final class ImageTest extends PdfTestCase
             $height,
         );
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }

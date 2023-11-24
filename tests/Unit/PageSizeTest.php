@@ -28,7 +28,7 @@ final class PageSizeTest extends PdfTestCase
             ->createdAt(new DateTimeImmutable('1999-12-26'))
         ;
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }

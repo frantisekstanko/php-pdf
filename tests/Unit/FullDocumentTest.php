@@ -135,7 +135,7 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals(
             '0162a629cdb01c4865aa6d3d1328f2a99b2019f1',

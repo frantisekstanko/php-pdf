@@ -1114,67 +1114,42 @@ final class Pdf
         $this->SetY($y, false);
     }
 
-    public function Output(
-        string $dest = '',
-        string $name = '',
-    ): string {
+    public function downloadFile(string $fileName): void
+    {
         $this->closeDocument();
-        if (strlen($name) == 1 && strlen($dest) != 1) {
-            // Fix parameter order
-            $tmp = $dest;
-            $dest = $name;
-            $name = $tmp;
+        $this->_checkoutput();
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $fileName));
+        header('Cache-Control: private, max-age=0, must-revalidate');
+        header('Pragma: public');
+        echo $this->pdfFileBuffer;
+    }
+
+    public function saveAsFile(string $fileName): void
+    {
+        $this->closeDocument();
+        file_put_contents($fileName, $this->pdfFileBuffer);
+    }
+
+    public function toString(): string
+    {
+        $this->closeDocument();
+
+        return $this->pdfFileBuffer;
+    }
+
+    public function toStandardOutput(string $fileName): void
+    {
+        $this->closeDocument();
+        $this->_checkoutput();
+        if (PHP_SAPI != 'cli') {
+            // We send to a browser
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; ' . $this->_httpencode('filename', $fileName));
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
         }
-        if ($dest == '') {
-            $dest = 'I';
-        }
-        if ($name == '') {
-            $name = 'doc.pdf';
-        }
-
-        switch (strtoupper($dest)) {
-            case 'I':
-                // Send to standard output
-                $this->_checkoutput();
-                if (PHP_SAPI != 'cli') {
-                    // We send to a browser
-                    header('Content-Type: application/pdf');
-                    header('Content-Disposition: inline; ' . $this->_httpencode('filename', $name));
-                    header('Cache-Control: private, max-age=0, must-revalidate');
-                    header('Pragma: public');
-                }
-                echo $this->pdfFileBuffer;
-
-                break;
-
-            case 'D':
-                // Download file
-                $this->_checkoutput();
-                header('Content-Type: application/pdf');
-                header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $name));
-                header('Cache-Control: private, max-age=0, must-revalidate');
-                header('Pragma: public');
-                echo $this->pdfFileBuffer;
-
-                break;
-
-            case 'F':
-                // Save to local file
-                if (!file_put_contents($name, $this->pdfFileBuffer)) {
-                    $this->Error('Unable to create output file: ' . $name);
-                }
-
-                break;
-
-            case 'S':
-                // Return as a string
-                return $this->pdfFileBuffer;
-
-            default:
-                $this->Error('Incorrect output destination: ' . $dest);
-        }
-
-        return '';
+        echo $this->pdfFileBuffer;
     }
 
     public function createdAt(DateTimeImmutable $createdAt): self

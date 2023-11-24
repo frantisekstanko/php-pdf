@@ -32,7 +32,7 @@ final class UnitsTest extends PdfTestCase
 
         $pdf->drawRectangle(0, 0, 7, 7, RectangleStyle::FILLED);
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }

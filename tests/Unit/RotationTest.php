@@ -46,7 +46,7 @@ final class RotationTest extends PdfTestCase
         );
         $pdf->drawCell('page rotated anticlockwise 90 degrees');
 
-        $renderedPdf = $pdf->Output('S');
+        $renderedPdf = $pdf->toString();
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }
