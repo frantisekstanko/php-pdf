@@ -793,7 +793,7 @@ final class Pdf
         while ($i < $nb) {
             // Get next character
             $c = mb_substr($string, $i, 1, 'UTF-8');
-            if ($c == "\n") {
+            if ($c === "\n") {
                 // Explicit line break
                 if ($this->wordSpacing > 0) {
                     $this->wordSpacing = 0;
