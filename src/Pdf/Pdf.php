@@ -1108,12 +1108,6 @@ final class Pdf
         }
     }
 
-    public function SetXY(float $x, float $y): void
-    {
-        $this->SetX($x);
-        $this->SetY($y, false);
-    }
-
     public function downloadFile(string $fileName): void
     {
         $this->closeDocument();
