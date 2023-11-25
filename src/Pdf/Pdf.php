@@ -1138,9 +1138,11 @@ final class Pdf
 
     public function toString(): string
     {
-        $this->closeDocument();
+        $pdf = clone $this;
 
-        return $this->pdfFileBuffer;
+        $pdf->closeDocument();
+
+        return $pdf->pdfFileBuffer;
     }
 
     public function toStandardOutput(string $fileName): void
