@@ -39,26 +39,38 @@ final class MultiCellTest extends PdfTestCase
 
         $pdf = $pdf->withFillColor(Color::fromRgb(120, 30, 200));
 
-        $pdf->drawMultiCell(0, 10, self::TEXT_LONG_LINE, 0, 'C', false);
-        $pdf->drawMultiCell(20, 0, self::TEXT_LONG_LINE, 1, 'C', false);
-        $pdf->drawMultiCell(20, 10, self::TEXT_LONG_LINE, 'T', 'C', true);
-        $pdf->drawMultiCell(0, 10, self::TEXT_WITH_NEWLINES, 'R', 'C', true);
-        $pdf->drawMultiCell(20, 0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'L', 'C', true);
-        $pdf->drawMultiCell(0, 10, self::TEXT_LONG_LINE, 0, 'L', false);
-        $pdf->drawMultiCell(20, 0, self::TEXT_LONG_LINE, 1, 'C', false);
-        $pdf->drawMultiCell(20, 10, self::TEXT_LONG_LINE, 'T', 'R', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_LONG_LINE, 'T', 'J', true);
-        $pdf->drawMultiCell(0, 10, self::TEXT_WITH_NEWLINES, 'R', 'L', true);
-        $pdf->drawMultiCell(20, 0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'L', 'R', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'J', 'R', true);
+        $pdf = $pdf->withAutomaticWidth();
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 0, 'C', false);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(0, self::TEXT_LONG_LINE, 1, 'C', false);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 'T', 'C', true);
+        $pdf = $pdf->withAutomaticWidth();
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'C', true);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'L', 'C', true);
+        $pdf = $pdf->withAutomaticWidth();
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 0, 'L', false);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(0, self::TEXT_LONG_LINE, 1, 'C', false);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 'T', 'R', true);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 'T', 'J', true);
+        $pdf = $pdf->withAutomaticWidth();
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'L', true);
+        $pdf = $pdf->withWidth(20);
+        $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'L', 'R', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'R', true);
 
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'J', 'TR', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'J', 'LR', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'J', 'BR', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'J', 'TL', true);
-        $pdf->drawMultiCell(20, 10, self::TEXT_WITH_NEWLINES, 'J', 'BL', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'TR', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'LR', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'BR', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'TL', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'BL', true);
 
         $renderedPdf = $pdf->toString();
 
