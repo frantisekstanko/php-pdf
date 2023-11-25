@@ -803,11 +803,11 @@ final class Pdf
                 $this->withHeight = $h;
 
                 $this->drawCell(
-                    mb_substr($string, $j, $i - $j, 'UTF-8'),
-                    $b,
-                    2,
-                    $align,
-                    $fill,
+                    txt: mb_substr($string, $j, $i - $j, 'UTF-8'),
+                    border: $b,
+                    ln: 2,
+                    align: $align,
+                    fill: $fill,
                 );
                 ++$i;
                 $sep = -1;
