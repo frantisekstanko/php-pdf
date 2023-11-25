@@ -326,17 +326,17 @@ final class Pdf
         }
         $this->startPage($pageOrientation, $pageSize, $pageRotation);
         // Set line cap style to square
-        $this->_out('2 J');
+        $this->out('2 J');
         // Set line width
-        $this->_out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
+        $this->out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
         if ($font) {
             $this->setFont($font);
         }
         if ($this->drawColor != '0 G') {
-            $this->_out($this->drawColor);
+            $this->out($this->drawColor);
         }
         if ($this->fillColor != '0 g') {
-            $this->_out($this->fillColor);
+            $this->out($this->fillColor);
         }
         if ($font) {
             $this->setFont($font);
@@ -364,7 +364,7 @@ final class Pdf
         );
 
         if ($this->currentPageNumber > 0) {
-            $this->_out($this->drawColor);
+            $this->out($this->drawColor);
         }
     }
 
@@ -387,7 +387,7 @@ final class Pdf
 
         $pdf->fillAndTextColorDiffer = ($pdf->fillColor !== $pdf->textColor);
         if ($pdf->currentPageNumber > 0) {
-            $pdf->_out($pdf->fillColor);
+            $pdf->out($pdf->fillColor);
         }
 
         return $pdf;
@@ -415,7 +415,7 @@ final class Pdf
         $this->lineWidth = $width;
 
         if ($this->currentPageNumber > 0) {
-            $this->_out(sprintf('%.2F w', $width * $this->scaleFactor));
+            $this->out(sprintf('%.2F w', $width * $this->scaleFactor));
         }
     }
 
@@ -425,7 +425,7 @@ final class Pdf
         float $toX,
         float $toY,
     ): void {
-        $this->_out(
+        $this->out(
             sprintf(
                 '%.2F %.2F m %.2F %.2F l S',
                 $fromX * $this->scaleFactor,
@@ -443,7 +443,7 @@ final class Pdf
         float $height,
         RectangleStyle $style,
     ): void {
-        $this->_out(
+        $this->out(
             sprintf(
                 '%.2F %.2F %.2F %.2F re %s',
                 $xPosition * $this->scaleFactor,
@@ -596,7 +596,7 @@ final class Pdf
         if ($this->fillAndTextColorDiffer) {
             $s = 'q ' . $this->textColor . ' ' . $s . ' Q';
         }
-        $this->_out($s);
+        $this->out($s);
     }
 
     public function drawCell(
@@ -734,7 +734,7 @@ final class Pdf
             }
         }
         if ($appendToPdfBuffer) {
-            $this->_out($appendToPdfBuffer);
+            $this->out($appendToPdfBuffer);
         }
         $this->lastPrintedCellHeight = $this->withHeight;
         if ($ln > 0) {
@@ -797,7 +797,7 @@ final class Pdf
                 // Explicit line break
                 if ($this->wordSpacing > 0) {
                     $this->wordSpacing = 0;
-                    $this->_out('0 Tw');
+                    $this->out('0 Tw');
                 }
                 $this->withWidth = $cellWidth;
                 $this->withHeight = $h;
@@ -831,7 +831,7 @@ final class Pdf
                     }
                     if ($this->wordSpacing > 0) {
                         $this->wordSpacing = 0;
-                        $this->_out('0 Tw');
+                        $this->out('0 Tw');
                     }
                     $this->withWidth = $cellWidth;
                     $this->withHeight = $h;
@@ -839,7 +839,7 @@ final class Pdf
                 } else {
                     if ($align == 'J') {
                         $this->wordSpacing = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
-                        $this->_out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
+                        $this->out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
                     }
                     $this->withWidth = $cellWidth;
                     $this->withHeight = $h;
@@ -862,7 +862,7 @@ final class Pdf
         // Last chunk
         if ($this->wordSpacing > 0) {
             $this->wordSpacing = 0;
-            $this->_out('0 Tw');
+            $this->out('0 Tw');
         }
         if ($border && strpos((string) $border, 'B') !== false) {
             $b .= 'B';
@@ -1052,7 +1052,7 @@ final class Pdf
         if ($xPosition === null) {
             $xPosition = $pdf->currentXPosition;
         }
-        $pdf->_out(sprintf(
+        $pdf->out(sprintf(
             'q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q',
             $imageWidth * $pdf->scaleFactor,
             $imageHeight * $pdf->scaleFactor,
@@ -1174,7 +1174,7 @@ final class Pdf
     private function writeFontInformationToDocument(
         FontInterface $font,
     ): void {
-        $this->_out(
+        $this->out(
             sprintf(
                 'BT /F%d %.2F Tf ET',
                 $this->usedFonts[$font::class]['i'],
@@ -1430,7 +1430,7 @@ final class Pdf
         return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
 
-    private function _out(string $s): void
+    private function out(string $s): void
     {
         if ($this->currentDocumentState === DocumentState::PAGE_STARTED) {
             $this->rawPageData[$this->currentPageNumber] .= $s . "\n";
@@ -1643,7 +1643,7 @@ final class Pdf
             $this->appendIntoBuffer('/BaseFont /' . $fontname . '');
             $this->appendIntoBuffer('/CIDSystemInfo ' . ($this->currentObjectNumber + 2) . ' 0 R');
             $this->appendIntoBuffer('/FontDescriptor ' . ($this->currentObjectNumber + 3) . ' 0 R');
-            $this->_out('/DW ' . $font['attributes']->getMissingWidth() . '');
+            $this->out('/DW ' . $font['attributes']->getMissingWidth() . '');
 
             $this->_putTTfontwidths($font, $ttf->maxUni);
 
@@ -1694,7 +1694,7 @@ final class Pdf
                     $v = $v | 4;
                     $v = $v & ~32;
                 }    // SYMBOLIC font flag
-                $this->_out(' /' . $kd . ' ' . $v);
+                $this->out(' /' . $kd . ' ' . $v);
             }
             $this->appendIntoBuffer('/FontFile2 ' . ($this->currentObjectNumber + 2) . ' 0 R');
             $this->appendIntoBuffer('>>');
@@ -1837,7 +1837,7 @@ final class Pdf
                 $w .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";
             }
         }
-        $this->_out('/W [' . $w . ' ]');
+        $this->out('/W [' . $w . ' ]');
     }
 
     private function appendImagesIntoBuffer(): void
@@ -2065,7 +2065,7 @@ final class Pdf
             $ws = $this->wordSpacing;
             if ($ws > 0) {
                 $this->wordSpacing = 0;
-                $this->_out('0 Tw');
+                $this->out('0 Tw');
             }
             $this->addPage(
                 $this->currentOrientation,
@@ -2075,7 +2075,7 @@ final class Pdf
             $this->currentXPosition = $x;
             if ($ws > 0) {
                 $this->wordSpacing = $ws;
-                $this->_out(sprintf('%.3F Tw', $ws * $this->scaleFactor));
+                $this->out(sprintf('%.3F Tw', $ws * $this->scaleFactor));
             }
         }
     }
