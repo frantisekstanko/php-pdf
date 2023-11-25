@@ -1142,7 +1142,7 @@ final class Pdf
     {
         $this->closeDocument();
         $this->checkOutput();
-        if (PHP_SAPI != 'cli') {
+        if (PHP_SAPI !== 'cli') {
             // We send to a browser
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; ' . $this->_httpencode('filename', $fileName));
