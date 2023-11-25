@@ -60,7 +60,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->disableUnderline();
         $pdf = $pdf->withFont(OpenSansBold::points(12));
 
-        $pdf->MultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
+        $pdf->drawMultiCell(100, 10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
 
         self::assertEquals(2, $pdf->getCurrentPageNumber());
 

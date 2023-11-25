@@ -748,7 +748,7 @@ final class Pdf
         }
     }
 
-    public function MultiCell(
+    public function drawMultiCell(
         float $w,
         float $h,
         string $txt,
