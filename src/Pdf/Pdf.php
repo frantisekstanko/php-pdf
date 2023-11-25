@@ -1915,8 +1915,17 @@ final class Pdf
         }
     }
 
-    private function _putresourcedict(): void
+    private function appendResourcesIntoBuffer(): void
     {
+        $this->appendFontsIntoBuffer();
+        $this->appendImagesIntoBuffer();
+        $this->appendResourceDictionaryIntoBuffer();
+    }
+
+    private function appendResourceDictionaryIntoBuffer(): void
+    {
+        $this->newObject(2);
+        $this->appendIntoBuffer('<<');
         $this->appendIntoBuffer('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->appendIntoBuffer('/Font <<');
         foreach ($this->usedFonts as $font) {
@@ -1926,16 +1935,6 @@ final class Pdf
         $this->appendIntoBuffer('/XObject <<');
         $this->_putxobjectdict();
         $this->appendIntoBuffer('>>');
-    }
-
-    private function appendResourcesIntoBuffer(): void
-    {
-        $this->appendFontsIntoBuffer();
-        $this->appendImagesIntoBuffer();
-        // Resource dictionary
-        $this->newObject(2);
-        $this->appendIntoBuffer('<<');
-        $this->_putresourcedict();
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
