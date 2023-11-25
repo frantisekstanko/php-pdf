@@ -1934,19 +1934,6 @@ final class Pdf
         $this->appendIntoBuffer('endobj');
     }
 
-    private function _putcatalog(): void
-    {
-        $this->appendIntoBuffer('/Type /Catalog');
-        $this->appendIntoBuffer('/Pages 1 0 R');
-        if ($this->layoutMode == 'single') {
-            $this->appendIntoBuffer('/PageLayout /SinglePage');
-        } elseif ($this->layoutMode == 'continuous') {
-            $this->appendIntoBuffer('/PageLayout /OneColumn');
-        } elseif ($this->layoutMode == 'two') {
-            $this->appendIntoBuffer('/PageLayout /TwoColumnLeft');
-        }
-    }
-
     private function appendTrailerIntoBuffer(string $offsetAtXRef): void
     {
         $this->appendIntoBuffer('trailer');
@@ -1984,7 +1971,15 @@ final class Pdf
     {
         $this->newObject();
         $this->appendIntoBuffer('<<');
-        $this->_putcatalog();
+        $this->appendIntoBuffer('/Type /Catalog');
+        $this->appendIntoBuffer('/Pages 1 0 R');
+        if ($this->layoutMode == 'single') {
+            $this->appendIntoBuffer('/PageLayout /SinglePage');
+        } elseif ($this->layoutMode == 'continuous') {
+            $this->appendIntoBuffer('/PageLayout /OneColumn');
+        } elseif ($this->layoutMode == 'two') {
+            $this->appendIntoBuffer('/PageLayout /TwoColumnLeft');
+        }
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
