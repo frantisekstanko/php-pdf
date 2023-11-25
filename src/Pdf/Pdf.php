@@ -802,7 +802,13 @@ final class Pdf
                 $this->withWidth = $cellWidth;
                 $this->withHeight = $h;
 
-                $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                $this->drawCell(
+                    mb_substr($string, $j, $i - $j, 'UTF-8'),
+                    $b,
+                    2,
+                    $align,
+                    $fill,
+                );
                 ++$i;
                 $sep = -1;
                 $j = $i;
