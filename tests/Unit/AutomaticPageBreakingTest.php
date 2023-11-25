@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Stanko\Pdf\Tests\Unit;
 
-use Stanko\Pdf\Fonts\OpenSansRegular;
-use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
 
 final class AutomaticPageBreakingTest extends PdfTestCase
@@ -36,7 +34,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
 
     public function testNoNewPageIsCreatedWhenMarginIsNotReached(): void
     {
-        $pdf = $this->createPdf();
+        $pdf = $this->createTestPdf();
         $pdf->addPage();
         $pdf->withAutomaticPageBreaking(80);
 
@@ -55,7 +53,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
 
     public function testAPageIsCreatedWhenMarginIsReachedByDrawingACell(): void
     {
-        $pdf = $this->createPdf();
+        $pdf = $this->createTestPdf();
         $pdf->addPage();
         $pdf->withAutomaticPageBreaking(80);
 
@@ -78,12 +76,5 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         self::assertEquals(2, $pdf->getCurrentPageNumber());
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
         self::assertEqualsWithDelta(20, $pdf->GetY(), 0.002);
-    }
-
-    private function createPdf(): Pdf
-    {
-        return (new Pdf())->loadFont(OpenSansRegular::points(12))
-            ->withFont(OpenSansRegular::points(12))
-        ;
     }
 }
