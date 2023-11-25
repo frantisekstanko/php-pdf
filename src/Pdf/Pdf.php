@@ -751,7 +751,7 @@ final class Pdf
     public function drawMultiCell(
         float $h,
         string $txt,
-        int|string $border = 0,
+        int|string $cellBorder = 0,
         string $align = 'J',
         bool $fill = false,
     ): void {
@@ -767,20 +767,20 @@ final class Pdf
         $nb = mb_strlen($string, 'utf-8');
         $border1 = 0;
         $border2 = '';
-        if ($border) {
-            if ($border == 1) {
-                $border = 'LTRB';
+        if ($cellBorder) {
+            if ($cellBorder == 1) {
+                $cellBorder = 'LTRB';
                 $border1 = 'LRT';
                 $border2 = 'LR';
             } else {
                 $border2 = '';
-                if (strpos((string) $border, 'L') !== false) {
+                if (strpos((string) $cellBorder, 'L') !== false) {
                     $border2 .= 'L';
                 }
-                if (strpos((string) $border, 'R') !== false) {
+                if (strpos((string) $cellBorder, 'R') !== false) {
                     $border2 .= 'R';
                 }
-                $border1 = (strpos((string) $border, 'T') !== false) ? $border2 . 'T' : $border2;
+                $border1 = (strpos((string) $cellBorder, 'T') !== false) ? $border2 . 'T' : $border2;
             }
         }
         $sep = -1;
@@ -815,7 +815,7 @@ final class Pdf
                 $stringWidth = 0;
                 $ns = 0;
                 ++$nl;
-                if ($border && $nl == 2) {
+                if ($cellBorder && $nl == 2) {
                     $border1 = $border2;
                 }
 
@@ -858,7 +858,7 @@ final class Pdf
                 $stringWidth = 0;
                 $ns = 0;
                 ++$nl;
-                if ($border && $nl == 2) {
+                if ($cellBorder && $nl == 2) {
                     $border1 = $border2;
                 }
             } else {
@@ -870,7 +870,7 @@ final class Pdf
             $this->wordSpacing = 0;
             $this->out('0 Tw');
         }
-        if ($border && strpos((string) $border, 'B') !== false) {
+        if ($cellBorder && strpos((string) $cellBorder, 'B') !== false) {
             $border1 .= 'B';
         }
         $this->withWidth = $cellWidth;
