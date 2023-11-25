@@ -765,22 +765,22 @@ final class Pdf
         $maximumWidth = ($cellWidth - 2 * $this->interiorCellMargin);
         $string = str_replace("\r", '', $txt);
         $nb = mb_strlen($string, 'utf-8');
-        $b = 0;
-        $b2 = '';
+        $border1 = 0;
+        $border2 = '';
         if ($border) {
             if ($border == 1) {
                 $border = 'LTRB';
-                $b = 'LRT';
-                $b2 = 'LR';
+                $border1 = 'LRT';
+                $border2 = 'LR';
             } else {
-                $b2 = '';
+                $border2 = '';
                 if (strpos((string) $border, 'L') !== false) {
-                    $b2 .= 'L';
+                    $border2 .= 'L';
                 }
                 if (strpos((string) $border, 'R') !== false) {
-                    $b2 .= 'R';
+                    $border2 .= 'R';
                 }
-                $b = (strpos((string) $border, 'T') !== false) ? $b2 . 'T' : $b2;
+                $border1 = (strpos((string) $border, 'T') !== false) ? $border2 . 'T' : $border2;
             }
         }
         $sep = -1;
@@ -804,7 +804,7 @@ final class Pdf
 
                 $this->drawCell(
                     txt: mb_substr($string, $j, $i - $j, 'UTF-8'),
-                    border: $b,
+                    border: $border1,
                     ln: 2,
                     align: $align,
                     fill: $fill,
@@ -816,7 +816,7 @@ final class Pdf
                 $ns = 0;
                 ++$nl;
                 if ($border && $nl == 2) {
-                    $b = $b2;
+                    $border1 = $border2;
                 }
 
                 continue;
@@ -841,7 +841,7 @@ final class Pdf
                     }
                     $this->withWidth = $cellWidth;
                     $this->withHeight = $h;
-                    $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $border1, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
                         $this->wordSpacing = ($ns > 1) ? ($maximumWidth - $ls) / ($ns - 1) : 0;
@@ -850,7 +850,7 @@ final class Pdf
                     $this->withWidth = $cellWidth;
                     $this->withHeight = $h;
 
-                    $this->drawCell(mb_substr($string, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->drawCell(mb_substr($string, $j, $sep - $j, 'UTF-8'), $border1, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -859,7 +859,7 @@ final class Pdf
                 $ns = 0;
                 ++$nl;
                 if ($border && $nl == 2) {
-                    $b = $b2;
+                    $border1 = $border2;
                 }
             } else {
                 ++$i;
@@ -871,11 +871,11 @@ final class Pdf
             $this->out('0 Tw');
         }
         if ($border && strpos((string) $border, 'B') !== false) {
-            $b .= 'B';
+            $border1 .= 'B';
         }
         $this->withWidth = $cellWidth;
         $this->withHeight = $h;
-        $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+        $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $border1, 2, $align, $fill);
         $this->currentXPosition = $this->leftMargin;
     }
 
