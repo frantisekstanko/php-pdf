@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
+use Stanko\Pdf\CellBorder;
 use Stanko\Pdf\Color;
 use Stanko\Pdf\Fonts\OpenSansBold;
 use Stanko\Pdf\Fonts\OpenSansRegular;
@@ -61,7 +62,13 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf->withFont(OpenSansBold::points(12));
 
         $pdf = $pdf->withWidth(100);
-        $pdf->drawMultiCell(10, "MultiCell test !@#* ÁČŠĎ\nNEW LINE", 1, 'L', true);
+        $pdf->drawMultiCell(
+            10,
+            "MultiCell test !@#* ÁČŠĎ\nNEW LINE",
+            CellBorder::withAllSides(),
+            'L',
+            true
+        );
 
         self::assertEquals(2, $pdf->getCurrentPageNumber());
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stanko\Pdf\Tests\Unit;
 
+use Stanko\Pdf\CellBorder;
 use Stanko\Pdf\Color;
 use Stanko\Pdf\PageOrientation;
 use Stanko\Pdf\PageRotation;
@@ -50,45 +51,45 @@ final class MultiCellTest extends PdfTestCase
         $pdf = $pdf->withFillColor(Color::fromRgb(120, 30, 200));
 
         $pdf = $pdf->withAutomaticWidth();
-        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 0, 'C', false);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, CellBorder::none(), 'C', false);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(0, self::TEXT_LONG_LINE, 1, 'C', false);
+        $pdf->drawMultiCell(0, self::TEXT_LONG_LINE, CellBorder::withAllSides(), 'C', false);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 'T', 'C', true);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, CellBorder::top(), 'C', true);
         $pdf = $pdf->withAutomaticWidth();
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'C', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, CellBorder::right(), 'C', true);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
+        $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, CellBorder::bottom(), 'C', true);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'L', 'C', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, CellBorder::left(), 'C', true);
         $pdf = $pdf->withAutomaticWidth();
-        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 0, 'L', false);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, CellBorder::none(), 'L', false);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(0, self::TEXT_LONG_LINE, 1, 'C', false);
+        $pdf->drawMultiCell(0, self::TEXT_LONG_LINE, CellBorder::withAllSides(), 'C', false);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 'T', 'R', true);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, CellBorder::top(), 'R', true);
         $pdf = $pdf->withWidth(20);
-        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, 'T', 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_LONG_LINE, CellBorder::top(), 'J', true);
         $pdf = $pdf->withAutomaticWidth();
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'L', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, CellBorder::right(), 'L', true);
         $pdf = $pdf->withWidth(20);
 
         $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 255));
 
-        $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'L', 'R', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'J', true);
+        $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, CellBorder::bottom(), 'C', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, CellBorder::left(), 'R', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, CellBorder::right(), 'J', true);
 
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'TR', 'J', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'LR', 'J', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 'BR', 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, new CellBorder(true, true, false, false), 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, new CellBorder(false, true, false, true), 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, new CellBorder(false, true, true, false), 'J', true);
 
         $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 100));
-        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 1, 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, CellBorder::withAllSides(), 'J', true);
 
         $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 255));
-        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 'TL', 'J', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 'BL', 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, new CellBorder(true, false, false, true), 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, new CellBorder(false, false, true, true), 'J', true);
 
         $renderedPdf = $pdf->toString();
 

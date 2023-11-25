@@ -751,13 +751,18 @@ final class Pdf
     public function drawMultiCell(
         float $h,
         string $txt,
-        int|string $cellBorder = 0,
+        ?CellBorder $cellBorder = null,
         string $align = 'J',
         bool $fill = false,
     ): void {
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
+
+        if ($cellBorder === null) {
+            $cellBorder = CellBorder::none();
+        }
+
         $cellWidth = $this->withWidth;
         if ($cellWidth == 0) {
             $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
@@ -767,20 +772,19 @@ final class Pdf
         $nb = mb_strlen($string, 'utf-8');
         $border1 = 0;
         $border2 = '';
-        if ($cellBorder) {
-            if ($cellBorder == 1) {
-                $cellBorder = 'LTRB';
+        if ($cellBorder->hasAnySide()) {
+            if ($cellBorder->hasAllSides()) {
                 $border1 = 'LRT';
                 $border2 = 'LR';
             } else {
                 $border2 = '';
-                if (strpos((string) $cellBorder, 'L') !== false) {
+                if ($cellBorder->hasLeft()) {
                     $border2 .= 'L';
                 }
-                if (strpos((string) $cellBorder, 'R') !== false) {
+                if ($cellBorder->hasRight()) {
                     $border2 .= 'R';
                 }
-                $border1 = (strpos((string) $cellBorder, 'T') !== false) ? $border2 . 'T' : $border2;
+                $border1 = ($cellBorder->hasTop()) ? $border2 . 'T' : $border2;
             }
         }
         $sep = -1;
@@ -815,7 +819,7 @@ final class Pdf
                 $stringWidth = 0;
                 $ns = 0;
                 ++$nl;
-                if ($cellBorder && $nl == 2) {
+                if ($cellBorder->hasAnySide() && $nl == 2) {
                     $border1 = $border2;
                 }
 
@@ -858,7 +862,7 @@ final class Pdf
                 $stringWidth = 0;
                 $ns = 0;
                 ++$nl;
-                if ($cellBorder && $nl == 2) {
+                if ($cellBorder->hasAnySide() && $nl == 2) {
                     $border1 = $border2;
                 }
             } else {
@@ -870,7 +874,7 @@ final class Pdf
             $this->wordSpacing = 0;
             $this->out('0 Tw');
         }
-        if ($cellBorder && strpos((string) $cellBorder, 'B') !== false) {
+        if ($cellBorder->hasBottom()) {
             $border1 .= 'B';
         }
         $this->withWidth = $cellWidth;
