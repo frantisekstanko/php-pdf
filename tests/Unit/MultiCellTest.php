@@ -22,9 +22,19 @@ final class MultiCellTest extends PdfTestCase
         newlines
         EOF;
 
+    private const TEXT_WITH_MORE_NEWLINES = <<<'EOF'
+
+
+        this is a text
+        with
+        even MORE newlines
+
+
+        EOF;
+
     public function testMultiCells(): void
     {
-        $expectedHash = 'dfe67a6cd6210d4b49ec0ef1298eaac4493d311d';
+        $expectedHash = 'dde1c360d57e0a3e9a0b1659ade7dea9abb423f8';
 
         $pdf = $this->createTestPdf();
 
@@ -62,18 +72,27 @@ final class MultiCellTest extends PdfTestCase
         $pdf = $pdf->withAutomaticWidth();
         $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'L', true);
         $pdf = $pdf->withWidth(20);
+
+        $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 255));
+
         $pdf->drawMultiCell(0, self::TEXT_WITH_NEWLINES, 'B', 'C', true);
         $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'L', 'R', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'R', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'R', 'J', true);
 
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'TR', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'LR', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'BR', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'TL', true);
-        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'J', 'BL', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'TR', 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_NEWLINES, 'LR', 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 'BR', 'J', true);
+
+        $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 100));
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 1, 'J', true);
+
+        $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 255));
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 'TL', 'J', true);
+        $pdf->drawMultiCell(10, self::TEXT_WITH_MORE_NEWLINES, 'BL', 'J', true);
 
         $renderedPdf = $pdf->toString();
 
+        self::assertEquals(5, $pdf->getCurrentPageNumber());
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }
 }
