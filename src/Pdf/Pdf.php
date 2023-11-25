@@ -1233,7 +1233,7 @@ final class Pdf
         $this->currentDocumentState = DocumentState::CLOSED;
     }
 
-    private function getStringWidth(string $s): float
+    private function getStringWidth(string $string): float
     {
         if ($this->currentFont === null) {
             throw new IncorrectFontDefinitionException();
@@ -1241,7 +1241,7 @@ final class Pdf
 
         $characterWidths = $this->usedFonts[$this->currentFont::class]['cw'];
         $stringWidth = 0;
-        $unicode = $this->utf8StringToArray($s);
+        $unicode = $this->utf8StringToArray($string);
         foreach ($unicode as $char) {
             if (isset($characterWidths[2 * $char])) {
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
