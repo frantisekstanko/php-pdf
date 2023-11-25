@@ -1616,7 +1616,7 @@ final class Pdf
         $this->appendIntoBuffer('endobj');
     }
 
-    private function _putfonts(): void
+    private function appendFontsIntoBuffer(): void
     {
         foreach ($this->usedFonts as $k => $font) {
             $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
@@ -1930,7 +1930,7 @@ final class Pdf
 
     private function appendResourcesIntoBuffer(): void
     {
-        $this->_putfonts();
+        $this->appendFontsIntoBuffer();
         $this->_putimages();
         // Resource dictionary
         $this->newObject(2);
