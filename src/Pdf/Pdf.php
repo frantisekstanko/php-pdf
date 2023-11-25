@@ -3,7 +3,6 @@
 namespace Stanko\Pdf;
 
 use DateTimeImmutable;
-use Exception;
 use Stanko\Pdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
@@ -1208,11 +1207,6 @@ final class Pdf
             $this->pageWidth = $this->currentPageSize->getHeight($this->scaleFactor);
             $this->pageHeight = $this->currentPageSize->getWidth($this->scaleFactor);
         }
-    }
-
-    private function Error(string $msg): never
-    {
-        throw new Exception('tFPDF error: ' . $msg);
     }
 
     private function closeDocument(): void
