@@ -763,9 +763,9 @@ final class Pdf
             $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $wmax = ($cellWidth - 2 * $this->interiorCellMargin);
-        $s = str_replace("\r", '', $txt);
-        $nb = mb_strlen($s, 'utf-8');
-        while ($nb > 0 && mb_substr($s, $nb - 1, 1, 'utf-8') == "\n") {
+        $string = str_replace("\r", '', $txt);
+        $nb = mb_strlen($string, 'utf-8');
+        while ($nb > 0 && mb_substr($string, $nb - 1, 1, 'utf-8') == "\n") {
             --$nb;
         }
         $b = 0;
@@ -795,7 +795,7 @@ final class Pdf
         $ls = 0;
         while ($i < $nb) {
             // Get next character
-            $c = mb_substr($s, $i, 1, 'UTF-8');
+            $c = mb_substr($string, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
                 if ($this->wordSpacing > 0) {
@@ -805,7 +805,7 @@ final class Pdf
                 $this->withWidth = $cellWidth;
                 $this->withHeight = $h;
 
-                $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -838,7 +838,7 @@ final class Pdf
                     }
                     $this->withWidth = $cellWidth;
                     $this->withHeight = $h;
-                    $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
                         $this->wordSpacing = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
@@ -847,7 +847,7 @@ final class Pdf
                     $this->withWidth = $cellWidth;
                     $this->withHeight = $h;
 
-                    $this->drawCell(mb_substr($s, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
+                    $this->drawCell(mb_substr($string, $j, $sep - $j, 'UTF-8'), $b, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -872,7 +872,7 @@ final class Pdf
         }
         $this->withWidth = $cellWidth;
         $this->withHeight = $h;
-        $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
+        $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
         $this->currentXPosition = $this->leftMargin;
     }
 
