@@ -1058,7 +1058,14 @@ final class Pdf
         if ($xPosition === null) {
             $xPosition = $pdf->currentXPosition;
         }
-        $pdf->_out(sprintf('q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q', $imageWidth * $pdf->scaleFactor, $imageHeight * $pdf->scaleFactor, $xPosition * $pdf->scaleFactor, ($pdf->pageHeight - ($yPosition + $imageHeight)) * $pdf->scaleFactor, $info['i']));
+        $pdf->_out(sprintf(
+            'q %.2F 0 0 %.2F %.2F %.2F cm /I%d Do Q',
+            $imageWidth * $pdf->scaleFactor,
+            $imageHeight * $pdf->scaleFactor,
+            $xPosition * $pdf->scaleFactor,
+            ($pdf->pageHeight - ($yPosition + $imageHeight)) * $pdf->scaleFactor,
+            $info['i'],
+        ));
         if ($link) {
             $pdf->Link($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
         }
