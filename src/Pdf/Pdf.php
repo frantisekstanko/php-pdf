@@ -786,7 +786,7 @@ final class Pdf
         $sep = -1;
         $i = 0;
         $j = 0;
-        $l = 0;
+        $stringWidth = 0;
         $ns = 0;
         $nl = 1;
         $ls = 0;
@@ -812,7 +812,7 @@ final class Pdf
                 ++$i;
                 $sep = -1;
                 $j = $i;
-                $l = 0;
+                $stringWidth = 0;
                 $ns = 0;
                 ++$nl;
                 if ($border && $nl == 2) {
@@ -823,13 +823,13 @@ final class Pdf
             }
             if ($c == ' ') {
                 $sep = $i;
-                $ls = $l;
+                $ls = $stringWidth;
                 ++$ns;
             }
 
-            $l += $this->getStringWidth($c);
+            $stringWidth += $this->getStringWidth($c);
 
-            if ($l > $wmax) {
+            if ($stringWidth > $wmax) {
                 // Automatic line break
                 if ($sep == -1) {
                     if ($i == $j) {
@@ -855,7 +855,7 @@ final class Pdf
                 }
                 $sep = -1;
                 $j = $i;
-                $l = 0;
+                $stringWidth = 0;
                 $ns = 0;
                 ++$nl;
                 if ($border && $nl == 2) {
