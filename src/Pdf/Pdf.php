@@ -762,7 +762,7 @@ final class Pdf
         if ($cellWidth == 0) {
             $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
-        $wmax = ($cellWidth - 2 * $this->interiorCellMargin);
+        $maximumWidth = ($cellWidth - 2 * $this->interiorCellMargin);
         $string = str_replace("\r", '', $txt);
         $nb = mb_strlen($string, 'utf-8');
         $b = 0;
@@ -829,7 +829,7 @@ final class Pdf
 
             $stringWidth += $this->getStringWidth($c);
 
-            if ($stringWidth > $wmax) {
+            if ($stringWidth > $maximumWidth) {
                 // Automatic line break
                 if ($sep == -1) {
                     if ($i == $j) {
@@ -844,7 +844,7 @@ final class Pdf
                     $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
-                        $this->wordSpacing = ($ns > 1) ? ($wmax - $ls) / ($ns - 1) : 0;
+                        $this->wordSpacing = ($ns > 1) ? ($maximumWidth - $ls) / ($ns - 1) : 0;
                         $this->out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
                     }
                     $this->withWidth = $cellWidth;
