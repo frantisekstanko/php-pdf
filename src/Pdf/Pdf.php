@@ -763,7 +763,6 @@ final class Pdf
             $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         }
         $wmax = ($cellWidth - 2 * $this->interiorCellMargin);
-        // $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'utf-8');
         while ($nb > 0 && mb_substr($s, $nb - 1, 1, 'utf-8') == "\n") {
