@@ -1851,7 +1851,7 @@ final class Pdf
         $this->_out('/W [' . $w . ' ]');
     }
 
-    private function _putimages(): void
+    private function appendImagesIntoBuffer(): void
     {
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
@@ -1931,7 +1931,7 @@ final class Pdf
     private function appendResourcesIntoBuffer(): void
     {
         $this->appendFontsIntoBuffer();
-        $this->_putimages();
+        $this->appendImagesIntoBuffer();
         // Resource dictionary
         $this->newObject(2);
         $this->appendIntoBuffer('<<');
