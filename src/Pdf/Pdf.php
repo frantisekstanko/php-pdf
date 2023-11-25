@@ -756,7 +756,6 @@ final class Pdf
         string $align = 'J',
         bool $fill = false,
     ): void {
-        // Output text with automatic or explicit line breaks
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
