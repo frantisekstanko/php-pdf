@@ -666,7 +666,7 @@ final class Pdf
         }
         if ($txt !== '') {
             if ($this->currentFont === null) {
-                $this->Error('No font has been set');
+                throw new NoFontHasBeenSetException();
             }
             if ($align == 'R') {
                 $dx = $cellWidth - $this->interiorCellMargin - $this->getStringWidth($txt);
@@ -759,7 +759,7 @@ final class Pdf
     ): void {
         // Output text with automatic or explicit line breaks
         if ($this->currentFont === null) {
-            $this->Error('No font has been set');
+            throw new NoFontHasBeenSetException();
         }
         if ($w == 0) {
             $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
@@ -883,7 +883,7 @@ final class Pdf
     {
         // Output text in flowing mode
         if ($this->currentFont === null) {
-            $this->Error('No font has been set');
+            throw new NoFontHasBeenSetException();
         }
         $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
         $wmax = ($w - 2 * $this->interiorCellMargin);
