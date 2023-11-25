@@ -34,7 +34,7 @@ final class MultiCellTest extends PdfTestCase
 
     public function testMultiCells(): void
     {
-        $expectedHash = 'dde1c360d57e0a3e9a0b1659ade7dea9abb423f8';
+        $expectedHash = '58c4877f44f9aa0d0b94cc4e7cddfd88edc505ce';
 
         $pdf = $this->createTestPdf();
 
