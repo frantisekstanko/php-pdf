@@ -752,7 +752,7 @@ final class Pdf
         float $w,
         float $h,
         string $txt,
-        int $border = 0,
+        int|string $border = 0,
         string $align = 'J',
         bool $fill = false,
     ): void {
