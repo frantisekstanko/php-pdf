@@ -1908,13 +1908,6 @@ final class Pdf
         }
     }
 
-    private function _putxobjectdict(): void
-    {
-        foreach ($this->usedImages as $image) {
-            $this->appendIntoBuffer('/I' . $image['i'] . ' ' . $image['n'] . ' 0 R');
-        }
-    }
-
     private function appendResourcesIntoBuffer(): void
     {
         $this->appendFontsIntoBuffer();
@@ -1933,7 +1926,9 @@ final class Pdf
         }
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('/XObject <<');
-        $this->_putxobjectdict();
+        foreach ($this->usedImages as $image) {
+            $this->appendIntoBuffer('/I' . $image['i'] . ' ' . $image['n'] . ' 0 R');
+        }
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
