@@ -17,7 +17,11 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'))
+        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'));
+
+        $pdf->setAliasForTotalNumberOfPages('{pagesTotalTest}');
+
+        $pdf = $pdf
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
             ->withFont(OpenSansRegular::points(12))
@@ -39,8 +43,6 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->enableUnderline();
         $pdf->drawCell('Top border, underlined text', 'T', 2, 'R');
         $pdf->drawCell('With fill', 'B', 0, 'L', true);
-
-        $pdf->setAliasForTotalNumberOfPages('{pagesTotalTest}');
 
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
@@ -143,10 +145,12 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
 
+        $pdf->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L');
+
         $renderedPdf = $pdf->toString();
 
         self::assertEquals(
-            '0162a629cdb01c4865aa6d3d1328f2a99b2019f1',
+            '097c908397ba8274f5319c9233e5a92f8fa23db1',
             sha1($renderedPdf)
         );
     }
