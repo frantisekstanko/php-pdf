@@ -324,14 +324,13 @@ final class Pdf
         if ($this->currentPageNumber > 0) {
             $this->endPage();
         }
-        $font = $this->currentFont;
         $this->startPage($pageOrientation, $pageSize, $pageRotation);
         // Set line cap style to square
         $this->out('2 J');
         // Set line width
         $this->out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
-        if ($font) {
-            $this->setFont($font);
+        if ($this->currentFont) {
+            $this->writeFontInformationToDocument($this->currentFont);
         }
         if ($this->drawColor != '0 G') {
             $this->out($this->drawColor);
@@ -1319,7 +1318,6 @@ final class Pdf
         $this->currentDocumentState = DocumentState::PAGE_STARTED;
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
-        $this->currentFont = null;
 
         if ($pageOrientation === null) {
             $pageOrientation = $this->defaultOrientation;
