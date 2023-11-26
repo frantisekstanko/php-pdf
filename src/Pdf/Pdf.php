@@ -339,9 +339,6 @@ final class Pdf
         if ($this->fillColor != '0 g') {
             $this->out($this->fillColor);
         }
-        if ($font) {
-            $this->setFont($font);
-        }
     }
 
     public function getCurrentPageNumber(): int
