@@ -320,6 +320,7 @@ final class Pdf
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
         }
+
         $font = $this->currentFont;
         if ($this->currentPageNumber > 0) {
             $this->endPage();
