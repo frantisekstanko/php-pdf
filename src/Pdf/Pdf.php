@@ -321,10 +321,10 @@ final class Pdf
             throw new CannotAddPageToClosedDocumentException();
         }
 
-        $font = $this->currentFont;
         if ($this->currentPageNumber > 0) {
             $this->endPage();
         }
+        $font = $this->currentFont;
         $this->startPage($pageOrientation, $pageSize, $pageRotation);
         // Set line cap style to square
         $this->out('2 J');
