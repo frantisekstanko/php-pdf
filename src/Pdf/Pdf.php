@@ -326,8 +326,7 @@ final class Pdf
         }
         $this->startPage($pageOrientation, $pageSize, $pageRotation);
         $this->setLineCapStyleToSquare();
-        // Set line width
-        $this->out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
+        $this->appendLineWidthToPdfBuffer();
         if ($this->currentFont) {
             $this->writeFontInformationToDocument($this->currentFont);
         }
@@ -411,7 +410,7 @@ final class Pdf
         $this->lineWidth = $width;
 
         if ($this->currentPageNumber > 0) {
-            $this->out(sprintf('%.2F w', $width * $this->scaleFactor));
+            $this->appendLineWidthToPdfBuffer();
         }
     }
 
@@ -1161,6 +1160,11 @@ final class Pdf
         $pdf->metadata = $pdf->metadata->createdAt($createdAt);
 
         return $pdf;
+    }
+
+    private function appendLineWidthToPdfBuffer(): void
+    {
+        $this->out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
     }
 
     private function setLineCapStyleToSquare(): void
