@@ -158,17 +158,6 @@ final class Pdf
         return $pdf;
     }
 
-    public function withPageOrientation(
-        PageOrientation $pageOrientation,
-    ): self {
-        $pdf = clone $this;
-
-        $pdf->defaultOrientation = $pageOrientation;
-        $pdf->currentOrientation = $pageOrientation;
-
-        return $pdf;
-    }
-
     public function withAutomaticWidth(): self
     {
         $pdf = clone $this;
