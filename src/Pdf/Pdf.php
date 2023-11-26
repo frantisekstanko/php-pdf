@@ -325,8 +325,7 @@ final class Pdf
             $this->endPage();
         }
         $this->startPage($pageOrientation, $pageSize, $pageRotation);
-        // Set line cap style to square
-        $this->out('2 J');
+        $this->setLineCapStyleToSquare();
         // Set line width
         $this->out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
         if ($this->currentFont) {
@@ -1162,6 +1161,11 @@ final class Pdf
         $pdf->metadata = $pdf->metadata->createdAt($createdAt);
 
         return $pdf;
+    }
+
+    private function setLineCapStyleToSquare(): void
+    {
+        $this->out('2 J');
     }
 
     private function setFont(
