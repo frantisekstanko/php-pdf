@@ -213,15 +213,6 @@ final class Pdf
         return $pdf;
     }
 
-    public function withPageSize(PageSize $pageSize): self
-    {
-        $pdf = clone $this;
-
-        $pdf->setPageSize($pageSize);
-
-        return $pdf;
-    }
-
     public function setLeftMargin(float $margin): void
     {
         $this->leftMargin = $margin;
