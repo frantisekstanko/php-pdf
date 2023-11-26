@@ -1555,9 +1555,17 @@ final class Pdf
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $alias = $this->utf8ToUtf16Be($this->aliasForTotalNumberOfPages);
             $r = $this->utf8ToUtf16Be((string) $this->currentPageNumber);
-            $this->rawPageData[$n] = str_replace($alias, $r, $this->rawPageData[$n]);
+            $this->rawPageData[$n] = str_replace(
+                $alias,
+                $r,
+                $this->rawPageData[$n]
+            );
             // Now repeat for no pages in non-subset fonts
-            $this->rawPageData[$n] = str_replace($this->aliasForTotalNumberOfPages, (string) $this->currentPageNumber, $this->rawPageData[$n]);
+            $this->rawPageData[$n] = str_replace(
+                $this->aliasForTotalNumberOfPages,
+                (string) $this->currentPageNumber,
+                $this->rawPageData[$n]
+            );
         }
         $this->_putstreamobject($this->rawPageData[$n]);
         // Link annotations
