@@ -1551,7 +1551,6 @@ final class Pdf
         }
         $this->appendIntoBuffer('/Contents ' . ($this->currentObjectNumber + 1) . ' 0 R>>');
         $this->appendIntoBuffer('endobj');
-        // Page content
         if (!empty($this->aliasForTotalNumberOfPages)) {
             $alias = $this->utf8ToUtf16Be($this->aliasForTotalNumberOfPages);
             $r = $this->utf8ToUtf16Be((string) $this->currentPageNumber);
@@ -1562,7 +1561,6 @@ final class Pdf
             );
         }
         $this->_putstreamobject($this->rawPageData[$n]);
-        // Link annotations
         $this->_putlinks($n);
     }
 
