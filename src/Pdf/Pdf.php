@@ -324,7 +324,7 @@ final class Pdf
         if ($this->currentPageNumber > 0) {
             $this->endPage();
         }
-        $this->startPage($pageOrientation, $pageSize, $pageRotation);
+        $this->startNewPage($pageOrientation, $pageSize, $pageRotation);
         $this->setLineCapStyleToSquare();
         $this->appendLineWidthToPdfBuffer();
         if ($this->currentFont) {
@@ -1315,7 +1315,7 @@ final class Pdf
         return (bool) preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent);
     }
 
-    private function startPage(
+    private function startNewPage(
         ?PageOrientation $pageOrientation,
         ?PageSize $pageSize,
         ?PageRotation $pageRotation,
