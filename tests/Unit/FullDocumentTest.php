@@ -66,7 +66,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf->withFont(OpenSansBold::points(12));
 
         $pdf = $pdf->withWidth(100);
-        $pdf->drawMultiCell(
+        $pdf = $pdf->drawMultiCell(
             10,
             "MultiCell test !@#* ÁČŠĎ\nNEW LINE",
             CellBorder::withAllSides(),

@@ -736,20 +736,22 @@ final class Pdf
         ?CellBorder $cellBorder = null,
         string $align = 'J',
         bool $fill = false,
-    ): void {
+    ): self {
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
+
+        $pdf = clone $this;
 
         if ($cellBorder === null) {
             $cellBorder = CellBorder::none();
         }
 
-        $cellWidth = $this->withWidth;
+        $cellWidth = $pdf->withWidth;
         if ($cellWidth == 0) {
-            $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
+            $cellWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
         }
-        $maximumWidth = ($cellWidth - 2 * $this->interiorCellMargin);
+        $maximumWidth = ($cellWidth - 2 * $pdf->interiorCellMargin);
         $string = str_replace("\r", '', $txt);
         $nb = mb_strlen($string, 'utf-8');
         $border1 = 0;
@@ -781,14 +783,14 @@ final class Pdf
             $c = mb_substr($string, $i, 1, 'UTF-8');
             if ($c === "\n") {
                 // Explicit line break
-                if ($this->wordSpacing > 0) {
-                    $this->wordSpacing = 0;
-                    $this->out('0 Tw');
+                if ($pdf->wordSpacing > 0) {
+                    $pdf->wordSpacing = 0;
+                    $pdf->out('0 Tw');
                 }
-                $this->withWidth = $cellWidth;
-                $this->withHeight = $h;
+                $pdf->withWidth = $cellWidth;
+                $pdf->withHeight = $h;
 
-                $this->drawCell(
+                $pdf = $pdf->drawCell(
                     txt: mb_substr($string, $j, $i - $j, 'UTF-8'),
                     border: $border1,
                     ln: 2,
@@ -813,7 +815,7 @@ final class Pdf
                 ++$ns;
             }
 
-            $stringWidth += $this->getStringWidth($c);
+            $stringWidth += $pdf->getStringWidth($c);
 
             if ($stringWidth > $maximumWidth) {
                 // Automatic line break
@@ -821,22 +823,22 @@ final class Pdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    if ($this->wordSpacing > 0) {
-                        $this->wordSpacing = 0;
-                        $this->out('0 Tw');
+                    if ($pdf->wordSpacing > 0) {
+                        $pdf->wordSpacing = 0;
+                        $pdf->out('0 Tw');
                     }
-                    $this->withWidth = $cellWidth;
-                    $this->withHeight = $h;
-                    $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $border1, 2, $align, $fill);
+                    $pdf->withWidth = $cellWidth;
+                    $pdf->withHeight = $h;
+                    $pdf = $pdf->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $border1, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
-                        $this->wordSpacing = ($ns > 1) ? ($maximumWidth - $ls) / ($ns - 1) : 0;
-                        $this->out(sprintf('%.3F Tw', $this->wordSpacing * $this->scaleFactor));
+                        $pdf->wordSpacing = ($ns > 1) ? ($maximumWidth - $ls) / ($ns - 1) : 0;
+                        $pdf->out(sprintf('%.3F Tw', $pdf->wordSpacing * $pdf->scaleFactor));
                     }
-                    $this->withWidth = $cellWidth;
-                    $this->withHeight = $h;
+                    $pdf->withWidth = $cellWidth;
+                    $pdf->withHeight = $h;
 
-                    $this->drawCell(mb_substr($string, $j, $sep - $j, 'UTF-8'), $border1, 2, $align, $fill);
+                    $pdf = $pdf->drawCell(mb_substr($string, $j, $sep - $j, 'UTF-8'), $border1, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -852,17 +854,19 @@ final class Pdf
             }
         }
         // Last chunk
-        if ($this->wordSpacing > 0) {
-            $this->wordSpacing = 0;
-            $this->out('0 Tw');
+        if ($pdf->wordSpacing > 0) {
+            $pdf->wordSpacing = 0;
+            $pdf->out('0 Tw');
         }
         if ($cellBorder->hasBottom()) {
             $border1 .= 'B';
         }
-        $this->withWidth = $cellWidth;
-        $this->withHeight = $h;
-        $this->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $border1, 2, $align, $fill);
-        $this->currentXPosition = $this->leftMargin;
+        $pdf->withWidth = $cellWidth;
+        $pdf->withHeight = $h;
+        $pdf = $pdf->drawCell(mb_substr($string, $j, $i - $j, 'UTF-8'), $border1, 2, $align, $fill);
+        $pdf->currentXPosition = $pdf->leftMargin;
+
+        return $pdf;
     }
 
     public function Write(float $h, string $txt, string $link = ''): void
