@@ -230,7 +230,7 @@ final class Pdf
         $this->automaticPageBreaking = false;
     }
 
-    public function setLayout(string $layout = 'default'): void
+    public function withLayout(string $layout = 'default'): self
     {
         if (
             $layout == 'single'
@@ -238,9 +238,11 @@ final class Pdf
             || $layout == 'two'
             || $layout == 'default'
         ) {
-            $this->layoutMode = $layout;
+            $pdf = clone $this;
 
-            return;
+            $pdf->layoutMode = $layout;
+
+            return $pdf;
         }
 
         throw new InvalidLayoutModeException();
@@ -265,9 +267,13 @@ final class Pdf
         $this->metadata = $this->metadata->withTitle($title);
     }
 
-    public function setAuthor(string $author): void
+    public function byAuthor(string $author): self
     {
-        $this->metadata = $this->metadata->withAuthor($author);
+        $pdf = clone $this;
+
+        $pdf->metadata = $pdf->metadata->withAuthor($author);
+
+        return $pdf;
     }
 
     public function setSubject(string $subject): void
@@ -280,9 +286,13 @@ final class Pdf
         $this->metadata = $this->metadata->withKeywords($keywords);
     }
 
-    public function setCreator(string $creator): void
+    public function createdBy(string $creator): self
     {
-        $this->metadata = $this->metadata->createdBy($creator);
+        $pdf = clone $this;
+
+        $pdf->metadata = $pdf->metadata->createdBy($creator);
+
+        return $pdf;
     }
 
     public function withAliasForTotalNumberOfPages(string $alias = '{nb}'): self

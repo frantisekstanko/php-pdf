@@ -21,14 +21,15 @@ final class LayoutTest extends PdfTestCase
         string $layout,
         string $expectedHash,
     ): void {
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
-
-        $pdf->setLayout($layout);
-
-        $renderedPdf = $pdf->toString();
+        $pdf = (new Pdf())
+            ->createdAt(new DateTimeImmutable('1999-12-26'))
+            ->withLayout($layout)
+        ;
 
         $this->storeResult($pdf);
 
-        self::assertEquals($expectedHash, sha1($renderedPdf));
+        $actualHash = sha1($pdf->toString());
+
+        self::assertEquals($expectedHash, $actualHash);
     }
 }

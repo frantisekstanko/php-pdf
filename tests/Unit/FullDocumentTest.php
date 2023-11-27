@@ -89,11 +89,10 @@ final class FullDocumentTest extends PdfTestCase
             ->drawRectangle(90, 90, 100, 100, RectangleStyle::FILLED)
             ->withDrawColor(Color::fromRgb(0, 0, 255))
             ->drawRectangle(120, 120, 100, 100, RectangleStyle::FILLED_AND_BORDERED)
+            ->byAuthor('Author is the unit test <3')
+            ->createdBy('Nobody')
+            ->withLayout('single')
         ;
-
-        $pdf->setAuthor('Author is the unit test <3');
-        $pdf->setCreator('Nobody');
-        $pdf->setLayout('single');
 
         $pdf = $pdf->withFont(OpenSansBold::points(17));
 
