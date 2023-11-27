@@ -2034,26 +2034,30 @@ final class Pdf
         $this->pageBreakThreshold = $this->pageHeight - $this->pageBreakMargin;
     }
 
-    private function automaticPageBreak(): void
+    private function automaticPageBreak(): self
     {
+        $pdf = clone $this;
+
         if (
-            $this->currentYPosition + $this->withHeight > $this->pageBreakThreshold
-            && $this->automaticPageBreaking
-            && $this->currentYPosition !== $this->topMargin
+            $pdf->currentYPosition + $pdf->withHeight > $pdf->pageBreakThreshold
+            && $pdf->automaticPageBreaking
+            && $pdf->currentYPosition !== $pdf->topMargin
         ) {
-            $x = $this->currentXPosition;
-            $ws = $this->wordSpacing;
+            $x = $pdf->currentXPosition;
+            $ws = $pdf->wordSpacing;
             if ($ws > 0) {
-                $this->wordSpacing = 0;
-                $this->out('0 Tw');
+                $pdf->wordSpacing = 0;
+                $pdf->out('0 Tw');
             }
-            $this->addPage();
-            $this->currentXPosition = $x;
+            $pdf = $pdf->addPage();
+            $pdf->currentXPosition = $x;
             if ($ws > 0) {
-                $this->wordSpacing = $ws;
-                $this->out(sprintf('%.3F Tw', $ws * $this->scaleFactor));
+                $pdf->wordSpacing = $ws;
+                $pdf->out(sprintf('%.3F Tw', $ws * $this->scaleFactor));
             }
         }
+
+        return $pdf;
     }
 
     private function getRectangleAttribute(bool $fill, mixed $border): string
