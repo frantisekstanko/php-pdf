@@ -19,19 +19,18 @@ final class FullDocumentTest extends PdfTestCase
     {
         $expectedHash = 'a9bef3692b62b1d3f1cb7cbe2d272a78387d2814';
 
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'));
-
-        $pdf = $pdf->setAliasForTotalNumberOfPages('{pagesTotalTest}');
-
-        $pdf = $pdf
+        $pdf = (new Pdf())
+            ->createdAt(new DateTimeImmutable('2023-11-20'))
+            ->setAliasForTotalNumberOfPages('{pagesTotalTest}')
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
             ->withFont(OpenSansRegular::points(12))
             ->withFillColor(Color::fromRgb(50, 10, 5))
+            ->addPage()
         ;
 
-        $pdf = $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
+
         $pdf = $pdf->createdAt(new DateTimeImmutable('1999-12-26'));
         $pdf = $pdf->withWidth(100)->withHeight(30);
         $pdf = $pdf->drawCell('Cell test !@#* ÁČŠĎ');
