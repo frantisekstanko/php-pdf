@@ -130,7 +130,7 @@ final class Pdf
 
         $margin = 28.35 / $this->scaleFactor;
         $this->leftMargin = $margin;
-        $this->setTopMargin($margin);
+        $this->topMargin = $margin;
         $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
 
@@ -149,7 +149,7 @@ final class Pdf
 
         $margin = 28.35 / $pdf->scaleFactor;
         $pdf = $pdf->withLeftMargin($margin);
-        $pdf->setTopMargin($margin);
+        $pdf = $pdf->withTopMargin($margin);
         $pdf->interiorCellMargin = $margin / 10;
         $pdf->lineWidth = .567 / $pdf->scaleFactor;
 
@@ -213,9 +213,13 @@ final class Pdf
         return $pdf;
     }
 
-    public function setTopMargin(float $margin): void
+    public function withTopMargin(float $margin): self
     {
-        $this->topMargin = $margin;
+        $pdf = clone $this;
+
+        $pdf->topMargin = $margin;
+
+        return $pdf;
     }
 
     public function withRightMargin(float $margin): self
