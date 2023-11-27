@@ -218,9 +218,13 @@ final class Pdf
         $this->topMargin = $margin;
     }
 
-    public function setRightMargin(float $margin): void
+    public function withRightMargin(float $margin): self
     {
-        $this->rightMargin = $margin;
+        $pdf = clone $this;
+
+        $pdf->rightMargin = $margin;
+
+        return $pdf;
     }
 
     public function withAutomaticPageBreaking(float $threshold = 0): void

@@ -99,8 +99,8 @@ final class FullDocumentTest extends PdfTestCase
             ->withKeywords('test, unit, pdf')
             ->addPage()
             ->withLeftMargin(50)
+            ->withRightMargin(90)
         ;
-        $pdf->setRightMargin(90);
         $pdf->setTopMargin(44);
         $pdf->setSubject('What is this? I hope this is not Chris.');
         $pdf->setTextColor(Color::fromRgb(0, 255, 100));

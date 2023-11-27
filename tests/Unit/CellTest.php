@@ -16,7 +16,7 @@ final class CellTest extends PdfTestCase
         $pdf = $this->createTestPdf();
 
         $pdf = $pdf->addPage();
-        $pdf->setRightMargin(10);
+        $pdf = $pdf->withRightMargin(10);
         $pdf = $pdf->withAutomaticWidth()->withAutomaticHeight();
         $pdf = $pdf->drawCell('cell without border, auto size', 1, 1);
         $pdf = $pdf->withAutomaticWidth()->withHeight(40);
