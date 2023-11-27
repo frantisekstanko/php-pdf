@@ -131,26 +131,30 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
-        $pdf->disableAutomaticPageBreaking();
-
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf
+            ->withoutAutomaticPageBreaking()
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+        ;
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
-        $pdf = $pdf->addPage();
-
-        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test.jpg');
-        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test.gif', 100, 100);
+        $pdf = $pdf
+            ->addPage()
+            ->insertImage(__DIR__ . '/../../images/test.jpg')
+            ->insertImage(__DIR__ . '/../../images/test.gif', 100, 100)
+        ;
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
 
-        $pdf = $pdf->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L');
+        $pdf = $pdf
+            ->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L')
+        ;
 
         $renderedPdf = $pdf->toString();
 

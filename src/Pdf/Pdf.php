@@ -238,9 +238,13 @@ final class Pdf
         $this->recalculatePageBreakThreshold();
     }
 
-    public function disableAutomaticPageBreaking(): void
+    public function withoutAutomaticPageBreaking(): self
     {
-        $this->automaticPageBreaking = false;
+        $pdf = clone $this;
+
+        $pdf->automaticPageBreaking = false;
+
+        return $pdf;
     }
 
     public function withLayout(string $layout = 'default'): self

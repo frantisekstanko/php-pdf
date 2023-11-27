@@ -15,7 +15,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
         $pdf = $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
 
-        $pdf->disableAutomaticPageBreaking();
+        $pdf = $pdf->withoutAutomaticPageBreaking();
 
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
         self::assertEqualsWithDelta(10, $pdf->GetY(), 0.002);
