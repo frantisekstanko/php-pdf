@@ -18,34 +18,34 @@ final class CellTest extends PdfTestCase
         $pdf = $pdf->addPage();
         $pdf->setRightMargin(10);
         $pdf = $pdf->withAutomaticWidth()->withAutomaticHeight();
-        $pdf->drawCell('cell without border, auto size', 1, 1);
+        $pdf = $pdf->drawCell('cell without border, auto size', 1, 1);
         $pdf = $pdf->withAutomaticWidth()->withHeight(40);
-        $pdf->drawCell('cell without border, auto width', 1, 2);
+        $pdf = $pdf->drawCell('cell without border, auto width', 1, 2);
         $pdf = $pdf->withWidth(40)->withAutomaticHeight();
-        $pdf->drawCell('cell without border, auto height', 1, 2);
+        $pdf = $pdf->drawCell('cell without border, auto height', 1, 2);
         $pdf = $pdf->withWidth(40)->withHeight(100);
-        $pdf->drawCell('cell with border', 1, 1);
+        $pdf = $pdf->drawCell('cell with border', 1, 1);
         $pdf = $pdf->withWidth(50)->withHeight(10);
-        $pdf->drawCell('cell with left border', 'L');
+        $pdf = $pdf->drawCell('cell with left border', 'L');
         $pdf = $pdf->withWidth(100)->withHeight(10);
-        $pdf->drawCell('cell with right border', 'R', 0);
-        $pdf->drawCell('cell with bottom border', 'B', 1);
-        $pdf->drawCell('dividing cell', 0, 2);
-        $pdf->drawCell('cell with top border, right aligned text', 'T', 2, 'R');
-        $pdf->drawCell('dividing cell', 0, 2);
-        $pdf->drawCell('cell with top and right border, centered text', 'TR', 2, 'C');
-        $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with right border', 'R', 0);
+        $pdf = $pdf->drawCell('cell with bottom border', 'B', 1);
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with top border, right aligned text', 'T', 2, 'R');
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with top and right border, centered text', 'TR', 2, 'C');
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
         $pdf = $pdf->withFillColor(Color::fromRgb(100, 50, 80));
-        $pdf->drawCell('cell with left and right border, filled', 'LR', 2, 'L', true);
-        $pdf->drawCell('dividing cell', 0, 2);
-        $pdf->drawCell('cell with top and bottom border', 'TB', 2);
-        $pdf->drawCell('dividing cell', 0, 2);
-        $pdf->drawCell('cell with left and bottom border', 'LB', 2);
-        $pdf->drawCell('dividing cell', 0, 2);
-        $pdf->drawCell('cell with left, right, bottom border', 'LRB', 2);
-        $pdf->drawCell('dividing cell', 0, 2);
-        $pdf->drawCell('cell with right, top, left border', 'RTL', 2);
-        $pdf->drawCell(
+        $pdf = $pdf->drawCell('cell with left and right border, filled', 'LR', 2, 'L', true);
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with top and bottom border', 'TB', 2);
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with left and bottom border', 'LB', 2);
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with left, right, bottom border', 'LRB', 2);
+        $pdf = $pdf->drawCell('dividing cell', 0, 2);
+        $pdf = $pdf->drawCell('cell with right, top, left border', 'RTL', 2);
+        $pdf = $pdf->drawCell(
             'cell with an external link',
             'RTL',
             2,
@@ -58,7 +58,7 @@ final class CellTest extends PdfTestCase
 
         $pdf->SetLink($link, 50, 1);
 
-        $pdf->drawCell(
+        $pdf = $pdf->drawCell(
             'cell with an internal link',
             'RTL',
             2,
