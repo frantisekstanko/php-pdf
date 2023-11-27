@@ -392,13 +392,17 @@ final class Pdf
         $this->fillAndTextColorDiffer = ($this->fillColor != $this->textColor);
     }
 
-    public function setLineWidth(float $width): void
+    public function withLineWidth(float $width): self
     {
-        $this->lineWidth = $width;
+        $pdf = clone $this;
 
-        if ($this->currentPageNumber > 0) {
-            $this->appendLineWidthToPdfBuffer();
+        $pdf->lineWidth = $width;
+
+        if ($pdf->currentPageNumber > 0) {
+            $pdf->appendLineWidthToPdfBuffer();
         }
+
+        return $pdf;
     }
 
     public function drawLine(

@@ -80,7 +80,9 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(2, $pdf->getCurrentPageNumber());
 
-        $pdf->setLineWidth(3);
+        $pdf = $pdf
+            ->withLineWidth(3)
+        ;
         $pdf->setDrawColor(Color::fromRgb(255, 0, 0));
         $pdf = $pdf->withFillColor(Color::fromRgb(255, 255, 0));
         $pdf = $pdf->drawRectangle(66, 77, 100, 100, RectangleStyle::BORDERED);
