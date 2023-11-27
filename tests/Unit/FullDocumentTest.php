@@ -24,9 +24,9 @@ final class FullDocumentTest extends PdfTestCase
             ->withAliasForTotalNumberOfPages('{pagesTotalTest}')
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
+            ->addPage()
             ->withFont(OpenSansRegular::points(12))
             ->withFillColor(Color::fromRgb(50, 10, 5))
-            ->addPage()
         ;
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
