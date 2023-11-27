@@ -58,14 +58,15 @@ final class FullDocumentTest extends PdfTestCase
             ->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150)
             ->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10)
             ->drawLine(10, 10, 90, 90)
+            ->addLink(50, 50, 100, 100, 'https://nothing.io/')
         ;
-
-        $pdf = $pdf->addLink(50, 50, 100, 100, 'https://nothing.io/');
 
         self::assertEquals(54.00125, $pdf->GetX());
         self::assertEqualsWithDelta(178.3762, $pdf->GetY(), 0.0001);
 
-        $pdf = $pdf->addPage();
+        $pdf = $pdf
+            ->addPage()
+        ;
 
         $pdf->disableUnderline();
         $pdf = $pdf->withFont(OpenSansBold::points(12));
