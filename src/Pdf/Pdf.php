@@ -129,7 +129,7 @@ final class Pdf
         $this->currentPageRotation = PageRotation::NONE;
 
         $margin = 28.35 / $this->scaleFactor;
-        $this->setLeftMargin($margin);
+        $this->leftMargin = $margin;
         $this->setTopMargin($margin);
         $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
@@ -148,7 +148,7 @@ final class Pdf
         $pdf->recalculatePageDimensions();
 
         $margin = 28.35 / $pdf->scaleFactor;
-        $pdf->setLeftMargin($margin);
+        $pdf = $pdf->withLeftMargin($margin);
         $pdf->setTopMargin($margin);
         $pdf->interiorCellMargin = $margin / 10;
         $pdf->lineWidth = .567 / $pdf->scaleFactor;
@@ -200,12 +200,17 @@ final class Pdf
         return $pdf;
     }
 
-    public function setLeftMargin(float $margin): void
+    public function withLeftMargin(float $margin): self
     {
-        $this->leftMargin = $margin;
-        if ($this->currentPageNumber > 0 && $this->currentXPosition < $margin) {
-            $this->currentXPosition = $margin;
+        $pdf = clone $this;
+
+        $pdf->leftMargin = $margin;
+
+        if ($pdf->currentPageNumber > 0 && $pdf->currentXPosition < $margin) {
+            $pdf->currentXPosition = $margin;
         }
+
+        return $pdf;
     }
 
     public function setTopMargin(float $margin): void
