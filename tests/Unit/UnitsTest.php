@@ -26,9 +26,8 @@ final class UnitsTest extends PdfTestCase
     ): void {
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-24'))
             ->inUnits($this->getUnitsFromString($units))
+            ->addPage()
         ;
-
-        $pdf = $pdf->addPage();
 
         $pdf->drawRectangle(0, 0, 7, 7, RectangleStyle::FILLED);
 
