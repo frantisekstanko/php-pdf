@@ -555,14 +555,17 @@ final class Pdf
         float $w,
         float $h,
         mixed $link,
-    ): void {
-        // Put a link on the page
-        $this->pageLinks[$this->currentPageNumber][] = [
-            $x * $this->scaleFactor,
-            $this->pageHeightInPoints() - $y * $this->scaleFactor,
-            $w * $this->scaleFactor,
-            $h * $this->scaleFactor, $link,
+    ): self {
+        $pdf = clone $this;
+
+        $pdf->pageLinks[$pdf->currentPageNumber][] = [
+            $x * $pdf->scaleFactor,
+            $pdf->pageHeightInPoints() - $y * $pdf->scaleFactor,
+            $w * $pdf->scaleFactor,
+            $h * $pdf->scaleFactor, $link,
         ];
+
+        return $pdf;
     }
 
     public function writeText(float $x, float $y, string $txt): void
@@ -720,7 +723,7 @@ final class Pdf
                 $appendToPdfBuffer .= ' Q';
             }
             if ($link) {
-                $pdf->addLink(
+                $pdf = $pdf->addLink(
                     $pdf->currentXPosition + $dx,
                     $pdf->currentYPosition + .5 * $pdf->withHeight - .5 * $pdf->currentFontSize,
                     $pdf->getStringWidth($txt),
@@ -1074,7 +1077,7 @@ final class Pdf
             $info['i'],
         ));
         if ($link) {
-            $pdf->addLink($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
+            $pdf = $pdf->addLink($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
         }
 
         return $pdf;

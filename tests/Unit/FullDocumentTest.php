@@ -60,7 +60,7 @@ final class FullDocumentTest extends PdfTestCase
             ->drawLine(10, 10, 90, 90)
         ;
 
-        $pdf->addLink(50, 50, 100, 100, 'https://nothing.io/');
+        $pdf = $pdf->addLink(50, 50, 100, 100, 'https://nothing.io/');
 
         self::assertEquals(54.00125, $pdf->GetX());
         self::assertEqualsWithDelta(178.3762, $pdf->GetY(), 0.0001);
