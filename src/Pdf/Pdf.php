@@ -265,18 +265,26 @@ final class Pdf
         throw new InvalidLayoutModeException();
     }
 
-    public function enableCompression(): void
+    public function withCompression(): self
     {
-        $this->enableCompressionIfAvailable();
+        $pdf = clone $this;
 
-        if ($this->compressionEnabled === false) {
+        $pdf->enableCompressionIfAvailable();
+
+        if ($pdf->compressionEnabled === false) {
             throw new CompressionException('gzcompress() is not available');
         }
+
+        return $pdf;
     }
 
-    public function disableCompression(): void
+    public function withoutCompression(): self
     {
-        $this->compressionEnabled = false;
+        $pdf = clone $this;
+
+        $pdf->compressionEnabled = false;
+
+        return $pdf;
     }
 
     public function withTitle(string $title): self

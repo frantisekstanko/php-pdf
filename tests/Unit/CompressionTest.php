@@ -14,9 +14,10 @@ final class CompressionTest extends PdfTestCase
     {
         $expectedHash = '51845de2df27c8eaec2d75682834c4fa1b65be70';
 
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
-
-        $pdf->enableCompression();
+        $pdf = (new Pdf())
+            ->createdAt(new DateTimeImmutable('1999-12-26'))
+            ->withCompression()
+        ;
 
         $renderedPdf = $pdf->toString();
 
@@ -29,9 +30,10 @@ final class CompressionTest extends PdfTestCase
     {
         $expectedHash = 'cf66b8590b2b18c26cdd33b29c20d5c38e047a97';
 
-        $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
-
-        $pdf->disableCompression();
+        $pdf = (new Pdf())
+            ->createdAt(new DateTimeImmutable('1999-12-26'))
+            ->withoutCompression()
+        ;
 
         $renderedPdf = $pdf->toString();
 
