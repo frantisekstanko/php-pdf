@@ -1204,6 +1204,9 @@ final class Pdf
             $this->pageWidth = $this->currentPageSize->getHeight($this->scaleFactor);
             $this->pageHeight = $this->currentPageSize->getWidth($this->scaleFactor);
         }
+
+        $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
+        $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
     }
 
     private function closeDocument(): void
@@ -1342,13 +1345,9 @@ final class Pdf
             $this->currentOrientation = $pageOrientation;
             $this->currentPageSize = $pageSize;
         }
-        if (
-            $pageOrientation != $this->defaultOrientation
-            || $pageSize->getWidth($this->scaleFactor) != $this->defaultPageSize->getWidth($this->scaleFactor)
-            || $pageSize->getHeight($this->scaleFactor) != $this->defaultPageSize->getHeight($this->scaleFactor)
-        ) {
-            $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
-        }
+
+        $this->recalculatePageDimensions();
+        $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
 
         $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
         $this->currentPageRotation = $pageRotation;
@@ -1517,13 +1516,7 @@ final class Pdf
                 $s .= '/A <</S /URI /URI ' . $this->_textstring($pl[4]) . '>>>>';
             } else {
                 $l = $this->internalLinks[$pl[4]];
-                if (isset($this->pageInfo[$l[0]]['size'])) {
-                    $h = $this->pageInfo[$l[0]]['size'][1];
-                } else {
-                    $h = ($this->defaultOrientation === PageOrientation::PORTRAIT) ?
-                        $this->defaultPageSize->getHeight($this->scaleFactor) * $this->scaleFactor :
-                        $this->defaultPageSize->getWidth($this->scaleFactor) * $this->scaleFactor;
-                }
+                $h = $this->pageInfo[$l[0]]['size'][1];
                 $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->pageInfo[$l[0]]['n'], $h - $l[1] * $this->scaleFactor);
             }
             $this->appendIntoBuffer($s);
@@ -1536,9 +1529,7 @@ final class Pdf
         $this->newObject();
         $this->appendIntoBuffer('<</Type /Page');
         $this->appendIntoBuffer('/Parent 1 0 R');
-        if (isset($this->pageInfo[$n]['size'])) {
-            $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfo[$n]['size'][0], $this->pageInfo[$n]['size'][1]));
-        }
+        $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfo[$n]['size'][0], $this->pageInfo[$n]['size'][1]));
         if ($this->pageInfo[$n]['rotation'] !== PageRotation::NONE) {
             $this->appendIntoBuffer('/Rotate ' . $this->pageInfo[$n]['rotation']->toInteger());
         }

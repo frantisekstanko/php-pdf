@@ -13,7 +13,7 @@ final class PageOrientationTest extends PdfTestCase
 {
     public function testOrientation(): void
     {
-        $expectedHash = '271a10c731cbb927c4fdf729a85430b63ece35c4';
+        $expectedHash = 'fc351f90edd41a4c8446c5bb8ec682328427b2f9';
 
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-12-26'));
 

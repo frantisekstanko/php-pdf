@@ -14,10 +14,10 @@ final class ImageTest extends PdfTestCase
 {
     /**
      * @testWith
-     * ["test.jpg", 15, 20, 55, 65, "c2a91f65ef6af29dda7f32f70e1bfbf5dee6718b"]
-     * ["test_solid.png", 18, 25, 84, 12, "f92c82c3e8d8e61ff58169a496bb275f717297f3"]
-     * ["test_transparent.png", 40, 40, 99, 110, "9c47036546205d8b1456917dac6bfa42c657fe1a"]
-     * ["test.gif", 123, 3, 251, 213, "0b82023c0f796b4156803be84f8c4e558f690fdd"]
+     * ["test.jpg", 15, 20, 55, 65, "c7ce9da7dae2da60b02151f7f2723bd12b8f657b"]
+     * ["test_solid.png", 18, 25, 84, 12, "bcd9962c9d62b4ce4893b562a9e3b7896775be90"]
+     * ["test_transparent.png", 40, 40, 99, 110, "a977580cb0a571ccb2d72ff8711fbaab32328164"]
+     * ["test.gif", 123, 3, 251, 213, "385104f3adabd7cb9f1fff75f00669c3c06e7207"]
      */
     public function testImage(
         string $testImage,

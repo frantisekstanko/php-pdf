@@ -12,7 +12,7 @@ final class CompressionTest extends PdfTestCase
 {
     public function testEnabledCompression(): void
     {
-        $expectedHash = 'd22a77735a2152f2aa795ceb450a42bfdc34e470';
+        $expectedHash = '51845de2df27c8eaec2d75682834c4fa1b65be70';
 
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
 
@@ -25,7 +25,7 @@ final class CompressionTest extends PdfTestCase
 
     public function testDisabledCompression(): void
     {
-        $expectedHash = 'd55fe06bed5c73c1b104094e12c66f6e2b7653df';
+        $expectedHash = 'cf66b8590b2b18c26cdd33b29c20d5c38e047a97';
 
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
 

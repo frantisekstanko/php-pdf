@@ -14,7 +14,7 @@ final class CellTest extends PdfTestCase
 {
     public function testCells(): void
     {
-        $expectedHash = '17b0ebb9945c8a97325b5e963f200920a092a3d3';
+        $expectedHash = '617529418a3a44c3c0448daf1cce7021c7c003ff';
 
         $pdf = $this->createTestPdf();
 

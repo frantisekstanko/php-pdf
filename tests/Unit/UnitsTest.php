@@ -15,10 +15,10 @@ final class UnitsTest extends PdfTestCase
 {
     /**
      * @testWith
-     * ["millimeters", "d7f58a6963b272afce0382062754d26659803768"]
-     * ["centimeters", "057de31cf84fd31a70856b4849593d93b8fd65d3"]
-     * ["inches", "acaf35c5a4371bf29295db10be9391d5d9d67788"]
-     * ["points", "35b1450435469e9692a148ec51cea46d602a5f43"]
+     * ["millimeters", "5b52d8820106e6aa8538658e99f94d96850a7351"]
+     * ["centimeters", "f71b5fdea11d0ab962ac5f11e0f2e9a7eec488b9"]
+     * ["inches", "71db891a602132024edb13ab412e45afe607364f"]
+     * ["points", "e5b69a4f145768e6f362efeb8c31a5128a0b5ec8"]
      */
     public function testUnit(
         string $units,

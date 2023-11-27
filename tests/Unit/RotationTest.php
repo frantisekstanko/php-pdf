@@ -13,7 +13,7 @@ final class RotationTest extends PdfTestCase
 {
     public function testRotations(): void
     {
-        $expectedHash = 'fadf6d3b138f91e79c1cfd8886f0c2d28e41af5a';
+        $expectedHash = 'a779b9c06ae65981e35334baaec4fd8e31591c7f';
 
         $pdf = $this->createTestPdf();
 

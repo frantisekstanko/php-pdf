@@ -12,10 +12,10 @@ final class LayoutTest extends PdfTestCase
 {
     /**
      * @testWith
-     * ["single", "ba24061dfff56446becf65ad0c3aefa22fde1f78"]
-     * ["continuous", "b11f1d8173a7ace608fc74d1df26f85414aa20ac"]
-     * ["two", "ff29e4e9d9d46a8dd6568a894b5066d6aaa9f54a"]
-     * ["default", "d22a77735a2152f2aa795ceb450a42bfdc34e470"]
+     * ["single", "8495ad4d0fadc78ae4bfe5d7d528e06ad4401b93"]
+     * ["continuous", "cd494a275f8b8a63d494368821fbf3e411801324"]
+     * ["two", "bf2f223eb863d01d47015d9b5a41855a2a0b92ed"]
+     * ["default", "51845de2df27c8eaec2d75682834c4fa1b65be70"]
      */
     public function testLayout(
         string $layout,
