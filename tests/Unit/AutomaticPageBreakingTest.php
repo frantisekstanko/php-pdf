@@ -12,7 +12,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     {
         $pdf = $this->createTestPdf();
 
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         self::assertEquals(1, $pdf->getCurrentPageNumber());
 
         $pdf->disableAutomaticPageBreaking();
@@ -35,7 +35,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     public function testNoNewPageIsCreatedWhenMarginIsNotReached(): void
     {
         $pdf = $this->createTestPdf();
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         $pdf->withAutomaticPageBreaking(80);
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
@@ -54,7 +54,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     public function testAPageIsCreatedWhenMarginIsReachedByDrawingACell(): void
     {
         $pdf = $this->createTestPdf();
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         $pdf->withAutomaticPageBreaking(80);
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());

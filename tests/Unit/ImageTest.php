@@ -29,7 +29,7 @@ final class ImageTest extends PdfTestCase
     ): void {
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('1999-12-26'));
 
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
 
         $pdf = $pdf->withFillColor(Color::fromRgb(50, 150, 50));
 
