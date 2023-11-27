@@ -24,6 +24,10 @@ final class FullDocumentTest extends PdfTestCase
             ->withAliasForTotalNumberOfPages('{pagesTotalTest}')
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
+            ->byAuthor('Author is the unit test <3')
+            ->createdBy('Nobody')
+            ->withLayout('single')
+            ->withKeywords('test, unit, pdf')
             ->addPage()
         ;
 
@@ -32,19 +36,25 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf
             ->withFont(OpenSansRegular::points(12))
             ->withFillColor(Color::fromRgb(50, 10, 5))
+
             ->withWidth(100)
             ->withHeight(30)
             ->drawCell('Cell test !@#* ÁČŠĎ')
+
             ->withWidth(90)
             ->withHeight(25)
             ->drawCell('With border', 1)
+
             ->onNextRow()
+
             ->withWidth(70)
             ->withHeight(40)
             ->drawCell('Left border', 'L', 0, 'L')
+
             ->withWidth(44)
             ->withHeight(32)
             ->drawCell('Right border', 'R', 1, 'C')
+
             ->withUnderline()
             ->drawCell('Top border, underlined text', 'T', 2, 'R')
             ->drawCell('With fill', 'B', 0, 'L', true)
@@ -57,7 +67,9 @@ final class FullDocumentTest extends PdfTestCase
             ->insertImage(__DIR__ . '/../../images/test_solid.png')
             ->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150)
             ->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10)
+
             ->drawLine(10, 10, 90, 90)
+
             ->addLink(50, 50, 100, 100, 'https://nothing.io/')
         ;
 
@@ -66,8 +78,8 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf = $pdf
             ->addPage()
-            ->withoutUnderline()
             ->withFont(OpenSansBold::points(12))
+            ->withoutUnderline()
             ->withWidth(100)
             ->drawMultiCell(
                 10,
@@ -85,18 +97,18 @@ final class FullDocumentTest extends PdfTestCase
             ->withDrawColor(Color::fromRgb(255, 0, 0))
             ->withFillColor(Color::fromRgb(255, 255, 0))
             ->drawRectangle(66, 77, 100, 100, RectangleStyle::BORDERED)
+
             ->withDrawColor(Color::fromRgb(0, 255, 0))
             ->drawRectangle(90, 90, 100, 100, RectangleStyle::FILLED)
+
             ->withDrawColor(Color::fromRgb(0, 0, 255))
             ->drawRectangle(120, 120, 100, 100, RectangleStyle::FILLED_AND_BORDERED)
-            ->byAuthor('Author is the unit test <3')
-            ->createdBy('Nobody')
-            ->withLayout('single')
+
             ->withFont(OpenSansBold::points(17))
             ->withWidth(4)
             ->withHeight(4)
             ->drawCell('TEXT')
-            ->withKeywords('test, unit, pdf')
+
             ->addPage()
             ->withLeftMargin(50)
             ->withRightMargin(90)
