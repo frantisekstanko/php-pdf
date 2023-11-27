@@ -1331,8 +1331,10 @@ final class Pdf
         $pageRotation = $this->currentPageRotation;
 
         $this->recalculatePageDimensions();
-        $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
-
+        $this->pageInfo[$this->currentPageNumber]['size'] = [
+            $this->pageWidthInPoints,
+            $this->pageHeightInPoints
+        ];
         $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
     }
 
