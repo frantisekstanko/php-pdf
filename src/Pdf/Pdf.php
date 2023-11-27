@@ -1103,41 +1103,39 @@ final class Pdf
 
     public function downloadFile(string $fileName): void
     {
-        $this->closeDocument();
-        $this->checkOutput();
+        $pdf = $this->closeDocument();
+        $pdf->checkOutput();
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; ' . $this->_httpencode('filename', $fileName));
+        header('Content-Disposition: attachment; ' . $pdf->_httpencode('filename', $fileName));
         header('Cache-Control: private, max-age=0, must-revalidate');
         header('Pragma: public');
-        echo $this->pdfFileBuffer;
+        echo $pdf->pdfFileBuffer;
     }
 
     public function saveAsFile(string $fileName): void
     {
-        $this->closeDocument();
-        file_put_contents($fileName, $this->pdfFileBuffer);
+        $pdf = $this->closeDocument();
+        file_put_contents($fileName, $pdf->pdfFileBuffer);
     }
 
     public function toString(): string
     {
-        $pdf = clone $this;
-
-        $pdf->closeDocument();
+        $pdf = $this->closeDocument();
 
         return $pdf->pdfFileBuffer;
     }
 
     public function toStandardOutput(string $fileName): void
     {
-        $this->closeDocument();
-        $this->checkOutput();
+        $pdf = $this->closeDocument();
+        $pdf->checkOutput();
         if (PHP_SAPI !== 'cli') {
             header('Content-Type: application/pdf');
-            header('Content-Disposition: inline; ' . $this->_httpencode('filename', $fileName));
+            header('Content-Disposition: inline; ' . $pdf->_httpencode('filename', $fileName));
             header('Cache-Control: private, max-age=0, must-revalidate');
             header('Pragma: public');
         }
-        echo $this->pdfFileBuffer;
+        echo $pdf->pdfFileBuffer;
     }
 
     public function createdAt(DateTimeImmutable $createdAt): self
