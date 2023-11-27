@@ -549,7 +549,7 @@ final class Pdf
         $this->internalLinks[$link] = [$page, $y];
     }
 
-    public function Link(
+    public function addLink(
         float $x,
         float $y,
         float $w,
@@ -720,7 +720,7 @@ final class Pdf
                 $appendToPdfBuffer .= ' Q';
             }
             if ($link) {
-                $pdf->Link(
+                $pdf->addLink(
                     $pdf->currentXPosition + $dx,
                     $pdf->currentYPosition + .5 * $pdf->withHeight - .5 * $pdf->currentFontSize,
                     $pdf->getStringWidth($txt),
@@ -1074,7 +1074,7 @@ final class Pdf
             $info['i'],
         ));
         if ($link) {
-            $pdf->Link($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
+            $pdf->addLink($xPosition, $yPosition, $imageWidth, $imageHeight, $link);
         }
 
         return $pdf;
