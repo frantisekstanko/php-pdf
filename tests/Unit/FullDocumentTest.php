@@ -104,8 +104,8 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setTextColor(Color::fromRgb(0, 255, 100));
         $pdf->setTitle('at last!');
         $pdf->writeText(111, 122, 'Hello world!');
-        $pdf->Write(55, 'Hello world!');
-        $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
+        $pdf = $pdf->Write(55, 'Hello world!');
+        $pdf = $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
 
         $pdf = $pdf->withWidth(100)->withHeight(40);
         $pdf = $pdf->drawCell('new line', 1, 2);

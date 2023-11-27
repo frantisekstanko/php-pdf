@@ -869,20 +869,23 @@ final class Pdf
         return $pdf;
     }
 
-    public function Write(float $h, string $txt, string $link = ''): void
+    public function Write(float $h, string $txt, string $link = ''): self
     {
         // Output text in flowing mode
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
-        $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-        $wmax = ($w - 2 * $this->interiorCellMargin);
+
+        $pdf = clone $this;
+
+        $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+        $wmax = ($w - 2 * $pdf->interiorCellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
-            $this->currentXPosition += $this->getStringWidth($s);
+            $pdf->currentXPosition += $pdf->getStringWidth($s);
 
-            return;
+            return $pdf;
         }
         $sep = -1;
         $i = 0;
@@ -894,17 +897,17 @@ final class Pdf
             $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
-                $this->withWidth = $w;
-                $this->withHeight = $h;
-                $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                $pdf->withWidth = $w;
+                $pdf->withHeight = $h;
+                $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 ++$i;
                 $sep = -1;
                 $j = $i;
                 $l = 0;
                 if ($nl == 1) {
-                    $this->currentXPosition = $this->leftMargin;
-                    $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                    $wmax = ($w - 2 * $this->interiorCellMargin);
+                    $pdf->currentXPosition = $pdf->leftMargin;
+                    $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+                    $wmax = ($w - 2 * $pdf->interiorCellMargin);
                 }
                 ++$nl;
 
@@ -914,17 +917,17 @@ final class Pdf
                 $sep = $i;
             }
 
-            $l += $this->getStringWidth($c);
+            $l += $pdf->getStringWidth($c);
 
             if ($l > $wmax) {
                 // Automatic line break
                 if ($sep == -1) {
-                    if ($this->currentXPosition > $this->leftMargin) {
+                    if ($pdf->currentXPosition > $pdf->leftMargin) {
                         // Move to next line
-                        $this->currentXPosition = $this->leftMargin;
-                        $this->currentYPosition += $h;
-                        $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                        $wmax = ($w - 2 * $this->interiorCellMargin);
+                        $pdf->currentXPosition = $pdf->leftMargin;
+                        $pdf->currentYPosition += $h;
+                        $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+                        $wmax = ($w - 2 * $pdf->interiorCellMargin);
                         ++$i;
                         ++$nl;
 
@@ -933,20 +936,20 @@ final class Pdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    $this->withWidth = $w;
-                    $this->withHeight = $h;
-                    $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $pdf->withWidth = $w;
+                    $pdf->withHeight = $h;
+                    $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 } else {
-                    $this->drawCell(mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $pdf = $pdf->drawCell(mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
                 $j = $i;
                 $l = 0;
                 if ($nl == 1) {
-                    $this->currentXPosition = $this->leftMargin;
-                    $w = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
-                    $wmax = ($w - 2 * $this->interiorCellMargin);
+                    $pdf->currentXPosition = $pdf->leftMargin;
+                    $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+                    $wmax = ($w - 2 * $pdf->interiorCellMargin);
                 }
                 ++$nl;
             } else {
@@ -955,11 +958,13 @@ final class Pdf
         }
         // Last chunk
         if ($i != $j) {
-            $this->withWidth = $l;
-            $this->withHeight = $h;
+            $pdf->withWidth = $l;
+            $pdf->withHeight = $h;
 
-            $this->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
+            $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
         }
+
+        return $pdf;
     }
 
     public function onNextRow(): self
