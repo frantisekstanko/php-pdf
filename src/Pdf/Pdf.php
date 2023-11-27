@@ -330,24 +330,28 @@ final class Pdf
         return $this->currentPageNumber;
     }
 
-    public function setDrawColor(Color $color): void
+    public function withDrawColor(Color $color): self
     {
-        if ($color->isBlack()) {
-            $this->drawColor = sprintf('%.3F G', 0);
+        $pdf = clone $this;
 
-            return;
+        if ($color->isBlack()) {
+            $pdf->drawColor = sprintf('%.3F G', 0);
+
+            return $pdf;
         }
 
-        $this->drawColor = sprintf(
+        $pdf->drawColor = sprintf(
             '%.3F %.3F %.3F RG',
             $color->getRed() / 255,
             $color->getGreen() / 255,
             $color->getBlue() / 255,
         );
 
-        if ($this->currentPageNumber > 0) {
-            $this->out($this->drawColor);
+        if ($pdf->currentPageNumber > 0) {
+            $pdf->out($pdf->drawColor);
         }
+
+        return $pdf;
     }
 
     public function withFillColor(Color $color): self
