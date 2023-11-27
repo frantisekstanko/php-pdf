@@ -105,28 +105,29 @@ final class FullDocumentTest extends PdfTestCase
             ->withTextColor(Color::fromRgb(0, 255, 100))
             ->withTitle('at last!')
             ->writeText(111, 122, 'Hello world!')
+            ->Write(55, 'Hello world!')
+            ->Write(55, 'Link to the world!', 'https://toTheWorld.io/')
+            ->withWidth(100)->withHeight(40)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
         ;
-        $pdf = $pdf->Write(55, 'Hello world!');
-        $pdf = $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
-
-        $pdf = $pdf->withWidth(100)->withHeight(40);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
 
         self::assertEquals(4, $pdf->getCurrentPageNumber());
 
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
-        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+            ->drawCell('new line', 1, 2)
+        ;
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
