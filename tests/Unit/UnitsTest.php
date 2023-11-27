@@ -29,7 +29,7 @@ final class UnitsTest extends PdfTestCase
             ->addPage()
         ;
 
-        $pdf->drawRectangle(0, 0, 7, 7, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(0, 0, 7, 7, RectangleStyle::FILLED);
 
         $renderedPdf = $pdf->toString();
 

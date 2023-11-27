@@ -22,27 +22,27 @@ final class PageSizeTest extends PdfTestCase
 
         $pdf = $pdf->withPageSize(PageSize::a3());
         $pdf = $pdf->addPage();
-        $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $pdf = $pdf->withPageSize(PageSize::a4());
         $pdf = $pdf->addPage();
-        $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $pdf = $pdf->withPageSize(PageSize::a5());
         $pdf = $pdf->addPage();
-        $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $pdf = $pdf->withPageSize(PageSize::letter());
         $pdf = $pdf->addPage();
-        $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $pdf = $pdf->withPageSize(PageSize::legal());
         $pdf = $pdf->addPage();
-        $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $pdf = $pdf->withPageSize(PageSize::custom(400, 400));
         $pdf = $pdf->addPage();
-        $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $renderedPdf = $pdf->toString();
 

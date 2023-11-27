@@ -424,17 +424,21 @@ final class Pdf
         float $width,
         float $height,
         RectangleStyle $style,
-    ): void {
-        $this->out(
+    ): self {
+        $pdf = clone $this;
+
+        $pdf->out(
             sprintf(
                 '%.2F %.2F %.2F %.2F re %s',
-                $xPosition * $this->scaleFactor,
-                ($this->pageHeight - $yPosition) * $this->scaleFactor,
-                $width * $this->scaleFactor,
-                -$height * $this->scaleFactor,
+                $xPosition * $pdf->scaleFactor,
+                ($pdf->pageHeight - $yPosition) * $pdf->scaleFactor,
+                $width * $pdf->scaleFactor,
+                -$height * $pdf->scaleFactor,
                 $style->toPdfOperation(),
             )
         );
+
+        return $pdf;
     }
 
     public function loadFont(

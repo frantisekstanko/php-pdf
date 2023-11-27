@@ -33,7 +33,7 @@ final class ImageTest extends PdfTestCase
 
         $pdf = $pdf->withFillColor(Color::fromRgb(50, 150, 50));
 
-        $pdf->drawRectangle(0, 0, 400, 400, RectangleStyle::FILLED);
+        $pdf = $pdf->drawRectangle(0, 0, 400, 400, RectangleStyle::FILLED);
 
         $pdf = $pdf->insertImage(
             __DIR__ . '/../../images/' . $testImage,
