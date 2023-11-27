@@ -324,8 +324,9 @@ final class Pdf
         return $pdf;
     }
 
-    public function withAliasForTotalNumberOfPages(string $alias = '{nb}'): self
-    {
+    public function withAliasForTotalNumberOfPages(
+        string $alias = '{totalPages}',
+    ): self {
         if ($this->usedFonts !== []) {
             throw new AliasMustBeSetBeforeLoadingFontsException();
         }
