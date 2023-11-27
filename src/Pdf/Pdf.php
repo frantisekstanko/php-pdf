@@ -584,146 +584,150 @@ final class Pdf
         string $align = '',
         bool $fill = false,
         mixed $link = '',
-    ): void {
-        $this->automaticPageBreak();
-        $cellWidth = $this->withWidth;
-        if ($this->withWidth === null) {
-            $cellWidth = $this->pageWidth - $this->rightMargin - $this->currentXPosition;
+    ): self {
+        $pdf = clone $this;
+
+        $pdf = $pdf->automaticPageBreak();
+        $cellWidth = $pdf->withWidth;
+        if ($pdf->withWidth === null) {
+            $cellWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
         }
         $appendToPdfBuffer = '';
         if ($fill || $border === 1) {
             $appendToPdfBuffer = sprintf(
                 '%.2F %.2F %.2F %.2F re %s ',
-                $this->currentXPosition * $this->scaleFactor,
-                ($this->pageHeight - $this->currentYPosition) * $this->scaleFactor,
-                $cellWidth * $this->scaleFactor,
-                -$this->withHeight * $this->scaleFactor,
-                $this->getRectangleAttribute($fill, $border),
+                $pdf->currentXPosition * $pdf->scaleFactor,
+                ($pdf->pageHeight - $pdf->currentYPosition) * $pdf->scaleFactor,
+                $cellWidth * $pdf->scaleFactor,
+                -$pdf->withHeight * $pdf->scaleFactor,
+                $pdf->getRectangleAttribute($fill, $border),
             );
         }
         if (is_string($border)) {
-            $x = $this->currentXPosition;
-            $y = $this->currentYPosition;
+            $x = $pdf->currentXPosition;
+            $y = $pdf->currentYPosition;
             if (strpos($border, 'L') !== false) {
                 $appendToPdfBuffer .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $this->scaleFactor,
-                    ($this->pageHeight - $y) * $this->scaleFactor,
-                    $x * $this->scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
+                    $x * $pdf->scaleFactor,
+                    ($pdf->pageHeight - $y) * $pdf->scaleFactor,
+                    $x * $pdf->scaleFactor,
+                    ($pdf->pageHeight - ($y + $pdf->withHeight)) * $pdf->scaleFactor
                 );
             }
             if (strpos($border, 'T') !== false) {
                 $appendToPdfBuffer .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $this->scaleFactor,
-                    ($this->pageHeight - $y) * $this->scaleFactor,
-                    ($x + $cellWidth) * $this->scaleFactor,
-                    ($this->pageHeight - $y) * $this->scaleFactor
+                    $x * $pdf->scaleFactor,
+                    ($pdf->pageHeight - $y) * $pdf->scaleFactor,
+                    ($x + $cellWidth) * $pdf->scaleFactor,
+                    ($pdf->pageHeight - $y) * $pdf->scaleFactor
                 );
             }
             if (strpos($border, 'R') !== false) {
                 $appendToPdfBuffer .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    ($x + $cellWidth) * $this->scaleFactor,
-                    ($this->pageHeight - $y) * $this->scaleFactor,
-                    ($x + $cellWidth) * $this->scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
+                    ($x + $cellWidth) * $pdf->scaleFactor,
+                    ($pdf->pageHeight - $y) * $pdf->scaleFactor,
+                    ($x + $cellWidth) * $pdf->scaleFactor,
+                    ($pdf->pageHeight - ($y + $pdf->withHeight)) * $pdf->scaleFactor
                 );
             }
             if (strpos($border, 'B') !== false) {
                 $appendToPdfBuffer .= sprintf(
                     '%.2F %.2F m %.2F %.2F l S ',
-                    $x * $this->scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor,
-                    ($x + $cellWidth) * $this->scaleFactor,
-                    ($this->pageHeight - ($y + $this->withHeight)) * $this->scaleFactor
+                    $x * $pdf->scaleFactor,
+                    ($pdf->pageHeight - ($y + $pdf->withHeight)) * $pdf->scaleFactor,
+                    ($x + $cellWidth) * $pdf->scaleFactor,
+                    ($pdf->pageHeight - ($y + $pdf->withHeight)) * $pdf->scaleFactor
                 );
             }
         }
         if ($txt !== '') {
-            if ($this->currentFont === null) {
+            if ($pdf->currentFont === null) {
                 throw new NoFontHasBeenSetException();
             }
             if ($align == 'R') {
-                $dx = $cellWidth - $this->interiorCellMargin - $this->getStringWidth($txt);
+                $dx = $cellWidth - $pdf->interiorCellMargin - $pdf->getStringWidth($txt);
             } elseif ($align == 'C') {
-                $dx = ($cellWidth - $this->getStringWidth($txt)) / 2;
+                $dx = ($cellWidth - $pdf->getStringWidth($txt)) / 2;
             } else {
-                $dx = $this->interiorCellMargin;
+                $dx = $pdf->interiorCellMargin;
             }
-            if ($this->fillAndTextColorDiffer) {
-                $appendToPdfBuffer .= 'q ' . $this->textColor . ' ';
+            if ($pdf->fillAndTextColorDiffer) {
+                $appendToPdfBuffer .= 'q ' . $pdf->textColor . ' ';
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
-            if ($this->wordSpacing) {
-                foreach ($this->utf8StringToArray($txt) as $uni) {
-                    $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
+            if ($pdf->wordSpacing) {
+                foreach ($pdf->utf8StringToArray($txt) as $uni) {
+                    $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
                 }
-                $space = $this->escapeSpecialCharacters($this->utf8ToUtf16Be(' '));
+                $space = $pdf->escapeSpecialCharacters($pdf->utf8ToUtf16Be(' '));
                 $appendToPdfBuffer .= sprintf(
                     'BT 0 Tw %.2F %.2F Td [',
-                    ($this->currentXPosition + $dx) * $this->scaleFactor,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $this->scaleFactor
+                    ($pdf->currentXPosition + $dx) * $pdf->scaleFactor,
+                    ($pdf->pageHeight - ($pdf->currentYPosition + .5 * $pdf->withHeight + .3 * $pdf->currentFontSize)) * $pdf->scaleFactor
                 );
                 $t = explode(' ', $txt);
                 $numt = count($t);
                 for ($i = 0; $i < $numt; ++$i) {
                     $tx = $t[$i];
-                    $tx = '(' . $this->escapeSpecialCharacters($this->utf8ToUtf16Be($txt)) . ')';
+                    $tx = '(' . $pdf->escapeSpecialCharacters($pdf->utf8ToUtf16Be($txt)) . ')';
                     $appendToPdfBuffer .= sprintf('%s ', $tx);
                     if (($i + 1) < $numt) {
-                        $adj = - ($this->wordSpacing * $this->scaleFactor) * 1000 / $this->currentFontSizeInPoints;
+                        $adj = - ($pdf->wordSpacing * $pdf->scaleFactor) * 1000 / $pdf->currentFontSizeInPoints;
                         $appendToPdfBuffer .= sprintf('%d(%s) ', $adj, $space);
                     }
                 }
                 $appendToPdfBuffer .= '] TJ';
                 $appendToPdfBuffer .= ' ET';
             } else {
-                $txt2 = '(' . $this->escapeSpecialCharacters($this->utf8ToUtf16Be($txt)) . ')';
-                foreach ($this->utf8StringToArray($txt) as $uni) {
-                    $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
+                $txt2 = '(' . $pdf->escapeSpecialCharacters($pdf->utf8ToUtf16Be($txt)) . ')';
+                foreach ($pdf->utf8StringToArray($txt) as $uni) {
+                    $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $appendToPdfBuffer .= sprintf(
                     'BT %.2F %.2F Td %s Tj ET',
-                    ($this->currentXPosition + $dx) * $this->scaleFactor,
-                    ($this->pageHeight - ($this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize)) * $this->scaleFactor,
+                    ($pdf->currentXPosition + $dx) * $pdf->scaleFactor,
+                    ($pdf->pageHeight - ($pdf->currentYPosition + .5 * $pdf->withHeight + .3 * $pdf->currentFontSize)) * $pdf->scaleFactor,
                     $txt2
                 );
             }
-            if ($this->isUnderline) {
-                $appendToPdfBuffer .= ' ' . $this->_dounderline(
-                    $this->currentXPosition + $dx,
-                    $this->currentYPosition + .5 * $this->withHeight + .3 * $this->currentFontSize,
+            if ($pdf->isUnderline) {
+                $appendToPdfBuffer .= ' ' . $pdf->_dounderline(
+                    $pdf->currentXPosition + $dx,
+                    $pdf->currentYPosition + .5 * $pdf->withHeight + .3 * $pdf->currentFontSize,
                     $txt,
                 );
             }
-            if ($this->fillAndTextColorDiffer) {
+            if ($pdf->fillAndTextColorDiffer) {
                 $appendToPdfBuffer .= ' Q';
             }
             if ($link) {
-                $this->Link(
-                    $this->currentXPosition + $dx,
-                    $this->currentYPosition + .5 * $this->withHeight - .5 * $this->currentFontSize,
-                    $this->getStringWidth($txt),
-                    $this->currentFontSize,
+                $pdf->Link(
+                    $pdf->currentXPosition + $dx,
+                    $pdf->currentYPosition + .5 * $pdf->withHeight - .5 * $pdf->currentFontSize,
+                    $pdf->getStringWidth($txt),
+                    $pdf->currentFontSize,
                     $link,
                 );
             }
         }
         if ($appendToPdfBuffer) {
-            $this->out($appendToPdfBuffer);
+            $pdf->out($appendToPdfBuffer);
         }
-        $this->lastPrintedCellHeight = $this->withHeight;
+        $pdf->lastPrintedCellHeight = $pdf->withHeight;
         if ($ln > 0) {
             // Go to next line
-            $this->currentYPosition += $this->withHeight;
+            $pdf->currentYPosition += $pdf->withHeight;
             if ($ln == 1) {
-                $this->currentXPosition = $this->leftMargin;
+                $pdf->currentXPosition = $pdf->leftMargin;
             }
         } else {
-            $this->currentXPosition += $cellWidth;
+            $pdf->currentXPosition += $cellWidth;
         }
+
+        return $pdf;
     }
 
     public function drawMultiCell(
