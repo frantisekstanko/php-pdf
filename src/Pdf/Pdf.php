@@ -1320,7 +1320,7 @@ final class Pdf
         }
 
         if ($pageRotation === null) {
-            $pageRotation = PageRotation::NONE;
+            $pageRotation = $this->currentPageRotation;
         }
 
         if (
