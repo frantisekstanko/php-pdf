@@ -406,16 +406,20 @@ final class Pdf
         float $fromY,
         float $toX,
         float $toY,
-    ): void {
-        $this->out(
+    ): self {
+        $pdf = clone $this;
+
+        $pdf->out(
             sprintf(
                 '%.2F %.2F m %.2F %.2F l S',
-                $fromX * $this->scaleFactor,
-                ($this->pageHeight - $fromY) * $this->scaleFactor,
-                $toX * $this->scaleFactor,
-                ($this->pageHeight - $toY) * $this->scaleFactor
+                $fromX * $pdf->scaleFactor,
+                ($pdf->pageHeight - $fromY) * $pdf->scaleFactor,
+                $toX * $pdf->scaleFactor,
+                ($pdf->pageHeight - $toY) * $pdf->scaleFactor
             )
         );
+
+        return $pdf;
     }
 
     public function drawRectangle(

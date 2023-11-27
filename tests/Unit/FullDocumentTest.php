@@ -57,9 +57,8 @@ final class FullDocumentTest extends PdfTestCase
             ->insertImage(__DIR__ . '/../../images/test_solid.png')
             ->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150)
             ->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10)
+            ->drawLine(10, 10, 90, 90)
         ;
-
-        $pdf->drawLine(10, 10, 90, 90);
 
         $pdf->Link(50, 50, 100, 100, 'https://nothing.io/');
 
