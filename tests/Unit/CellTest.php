@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Stanko\Pdf\Tests\Unit;
 
 use Stanko\Pdf\Color;
-use Stanko\Pdf\PageOrientation;
-use Stanko\Pdf\PageRotation;
-use Stanko\Pdf\PageSize;
 use Stanko\Pdf\Tests\PdfTestCase;
 
 final class CellTest extends PdfTestCase
@@ -18,11 +15,7 @@ final class CellTest extends PdfTestCase
 
         $pdf = $this->createTestPdf();
 
-        $pdf->addPage(
-            PageOrientation::PORTRAIT,
-            PageSize::a4(),
-            PageRotation::NONE,
-        );
+        $pdf->addPage();
         $pdf->setRightMargin(10);
         $pdf = $pdf->withAutomaticWidth()->withAutomaticHeight();
         $pdf->drawCell('cell without border, auto size', 1, 1);

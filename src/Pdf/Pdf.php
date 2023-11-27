@@ -294,11 +294,8 @@ final class Pdf
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
-    public function addPage(
-        ?PageOrientation $pageOrientation = null,
-        ?PageSize $pageSize = null,
-        ?PageRotation $pageRotation = null,
-    ): void {
+    public function addPage(): void
+    {
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
         }
@@ -306,7 +303,7 @@ final class Pdf
         if ($this->currentPageNumber > 0) {
             $this->endPage();
         }
-        $this->startNewPage($pageOrientation, $pageSize, $pageRotation);
+        $this->startNewPage();
         $this->setLineCapStyleToSquare();
         $this->appendLineWidthToPdfBuffer();
         if ($this->currentFont) {
@@ -1025,11 +1022,7 @@ final class Pdf
             ) {
                 // Automatic page break
                 $x2 = $pdf->currentXPosition;
-                $pdf->addPage(
-                    $pdf->currentOrientation,
-                    $pdf->currentPageSize,
-                    $pdf->currentPageRotation
-                );
+                $pdf->addPage();
                 $pdf->currentXPosition = $x2;
             }
             $yPosition = $pdf->currentYPosition;
@@ -1140,6 +1133,33 @@ final class Pdf
         $pdf = clone $this;
 
         $pdf->metadata = $pdf->metadata->createdAt($createdAt);
+
+        return $pdf;
+    }
+
+    public function withPageOrientation(PageOrientation $pageOrientation): self
+    {
+        $pdf = clone $this;
+
+        $pdf->currentOrientation = $pageOrientation;
+
+        return $pdf;
+    }
+
+    public function withPageRotation(PageRotation $pageRotation): self
+    {
+        $pdf = clone $this;
+
+        $pdf->currentPageRotation = $pageRotation;
+
+        return $pdf;
+    }
+
+    public function withPageSize(PageSize $pageSize): self
+    {
+        $pdf = clone $this;
+
+        $pdf->currentPageSize = $pageSize;
 
         return $pdf;
     }
@@ -1299,11 +1319,8 @@ final class Pdf
         return (bool) preg_match('/^(\xEF\xBB\xBF)?\s*$/', $outputBufferContent);
     }
 
-    private function startNewPage(
-        ?PageOrientation $pageOrientation,
-        ?PageSize $pageSize,
-        ?PageRotation $pageRotation,
-    ): void {
+    private function startNewPage(): void
+    {
         ++$this->currentPageNumber;
         $this->rawPageData[$this->currentPageNumber] = '';
         $this->pageLinks[$this->currentPageNumber] = [];
@@ -1311,17 +1328,9 @@ final class Pdf
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
 
-        if ($pageOrientation === null) {
-            $pageOrientation = $this->currentOrientation;
-        }
-
-        if ($pageSize === null) {
-            $pageSize = $this->currentPageSize;
-        }
-
-        if ($pageRotation === null) {
-            $pageRotation = $this->currentPageRotation;
-        }
+        $pageOrientation = $this->currentOrientation;
+        $pageSize = $this->currentPageSize;
+        $pageRotation = $this->currentPageRotation;
 
         if (
             $pageOrientation !== $this->currentOrientation
@@ -2050,11 +2059,7 @@ final class Pdf
                 $this->wordSpacing = 0;
                 $this->out('0 Tw');
             }
-            $this->addPage(
-                $this->currentOrientation,
-                $this->currentPageSize,
-                $this->currentPageRotation
-            );
+            $this->addPage();
             $this->currentXPosition = $x;
             if ($ws > 0) {
                 $this->wordSpacing = $ws;

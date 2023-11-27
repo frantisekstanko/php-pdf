@@ -20,22 +20,28 @@ final class PageSizeTest extends PdfTestCase
             new DateTimeImmutable('1999-12-26')
         );
 
-        $pdf->addPage(null, PageSize::a3());
+        $pdf = $pdf->withPageSize(PageSize::a3());
+        $pdf->addPage();
         $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
-        $pdf->addPage(null, PageSize::a4());
+        $pdf = $pdf->withPageSize(PageSize::a4());
+        $pdf->addPage();
         $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
-        $pdf->addPage(null, PageSize::a5());
+        $pdf = $pdf->withPageSize(PageSize::a5());
+        $pdf->addPage();
         $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
-        $pdf->addPage(null, PageSize::letter());
+        $pdf = $pdf->withPageSize(PageSize::letter());
+        $pdf->addPage();
         $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
-        $pdf->addPage(null, PageSize::legal());
+        $pdf = $pdf->withPageSize(PageSize::legal());
+        $pdf->addPage();
         $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
-        $pdf->addPage(null, PageSize::custom(400, 400));
+        $pdf = $pdf->withPageSize(PageSize::custom(400, 400));
+        $pdf->addPage();
         $pdf->drawRectangle(10, 10, 100, 100, RectangleStyle::FILLED);
 
         $renderedPdf = $pdf->toString();

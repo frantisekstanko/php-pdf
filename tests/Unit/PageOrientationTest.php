@@ -17,17 +17,23 @@ final class PageOrientationTest extends PdfTestCase
 
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-12-26'));
 
-        $pdf->addPage(PageOrientation::PORTRAIT);
-        $pdf->addPage(PageOrientation::PORTRAIT);
-        $pdf->addPage(PageOrientation::PORTRAIT);
+        $pdf = $pdf->withPageOrientation(PageOrientation::PORTRAIT);
 
-        $pdf->addPage(PageOrientation::LANDSCAPE);
-        $pdf->addPage(PageOrientation::LANDSCAPE);
-        $pdf->addPage(PageOrientation::LANDSCAPE);
+        $pdf->addPage();
+        $pdf->addPage();
+        $pdf->addPage();
 
-        $pdf->addPage(PageOrientation::PORTRAIT);
-        $pdf->addPage(PageOrientation::PORTRAIT);
-        $pdf->addPage(PageOrientation::PORTRAIT);
+        $pdf = $pdf->withPageOrientation(PageOrientation::LANDSCAPE);
+
+        $pdf->addPage();
+        $pdf->addPage();
+        $pdf->addPage();
+
+        $pdf = $pdf->withPageOrientation(PageOrientation::PORTRAIT);
+
+        $pdf->addPage();
+        $pdf->addPage();
+        $pdf->addPage();
 
         $renderedPdf = $pdf->toString();
 
