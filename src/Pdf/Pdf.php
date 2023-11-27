@@ -555,7 +555,7 @@ final class Pdf
         // Put a link on the page
         $this->pageLinks[$this->currentPageNumber][] = [
             $x * $this->scaleFactor,
-            ($this->pageHeight * $this->scaleFactor) - $y * $this->scaleFactor,
+            $this->pageHeightInPoints() - $y * $this->scaleFactor,
             $w * $this->scaleFactor,
             $h * $this->scaleFactor, $link,
         ];
@@ -1360,10 +1360,20 @@ final class Pdf
 
         $this->recalculatePageDimensions();
         $this->pageInfo[$this->currentPageNumber]['size'] = [
-            $this->pageWidth * $this->scaleFactor,
-            $this->pageHeight * $this->scaleFactor,
+            $this->pageWidthInPoints(),
+            $this->pageHeightInPoints(),
         ];
         $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
+    }
+
+    private function pageWidthInPoints(): float
+    {
+        return $this->pageWidth * $this->scaleFactor;
+    }
+
+    private function pageHeightInPoints(): float
+    {
+        return $this->pageHeight * $this->scaleFactor;
     }
 
     private function endPage(): void
