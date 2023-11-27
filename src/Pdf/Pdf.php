@@ -1545,7 +1545,11 @@ final class Pdf
         $this->newObject();
         $this->appendIntoBuffer('<</Type /Page');
         $this->appendIntoBuffer('/Parent 1 0 R');
-        $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $this->pageInfo[$n]['size'][0], $this->pageInfo[$n]['size'][1]));
+        $this->appendIntoBuffer(sprintf(
+            '/MediaBox [0 0 %.2F %.2F]',
+            $this->pageInfo[$n]['size'][0],
+            $this->pageInfo[$n]['size'][1],
+        ));
         if ($this->pageInfo[$n]['rotation'] !== PageRotation::NONE) {
             $this->appendIntoBuffer('/Rotate ' . $this->pageInfo[$n]['rotation']->toInteger());
         }
