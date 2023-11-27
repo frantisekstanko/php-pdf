@@ -92,12 +92,11 @@ final class FullDocumentTest extends PdfTestCase
             ->byAuthor('Author is the unit test <3')
             ->createdBy('Nobody')
             ->withLayout('single')
+            ->withFont(OpenSansBold::points(17))
+            ->withWidth(4)
+            ->withHeight(4)
+            ->drawCell('TEXT')
         ;
-
-        $pdf = $pdf->withFont(OpenSansBold::points(17));
-
-        $pdf = $pdf->withWidth(4)->withHeight(4);
-        $pdf = $pdf->drawCell('TEXT');
         $pdf->setKeywords('test, unit, pdf');
 
         $pdf = $pdf->addPage();
