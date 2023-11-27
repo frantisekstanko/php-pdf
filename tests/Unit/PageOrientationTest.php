@@ -19,21 +19,21 @@ final class PageOrientationTest extends PdfTestCase
 
         $pdf = $pdf->withPageOrientation(PageOrientation::PORTRAIT);
 
-        $pdf->addPage();
-        $pdf->addPage();
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
+        $pdf = $pdf->addPage();
+        $pdf = $pdf->addPage();
 
         $pdf = $pdf->withPageOrientation(PageOrientation::LANDSCAPE);
 
-        $pdf->addPage();
-        $pdf->addPage();
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
+        $pdf = $pdf->addPage();
+        $pdf = $pdf->addPage();
 
         $pdf = $pdf->withPageOrientation(PageOrientation::PORTRAIT);
 
-        $pdf->addPage();
-        $pdf->addPage();
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
+        $pdf = $pdf->addPage();
+        $pdf = $pdf->addPage();
 
         $renderedPdf = $pdf->toString();
 
