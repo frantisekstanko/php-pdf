@@ -96,10 +96,9 @@ final class FullDocumentTest extends PdfTestCase
             ->withWidth(4)
             ->withHeight(4)
             ->drawCell('TEXT')
+            ->withKeywords('test, unit, pdf')
+            ->addPage()
         ;
-        $pdf->setKeywords('test, unit, pdf');
-
-        $pdf = $pdf->addPage();
 
         $pdf->setLeftMargin(50);
         $pdf->setRightMargin(90);

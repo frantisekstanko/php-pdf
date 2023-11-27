@@ -281,9 +281,13 @@ final class Pdf
         $this->metadata = $this->metadata->withSubject($subject);
     }
 
-    public function setKeywords(string $keywords): void
+    public function withKeywords(string $keywords): self
     {
-        $this->metadata = $this->metadata->withKeywords($keywords);
+        $pdf = clone $this;
+
+        $pdf->metadata = $pdf->metadata->withKeywords($keywords);
+
+        return $pdf;
     }
 
     public function createdBy(string $creator): self
