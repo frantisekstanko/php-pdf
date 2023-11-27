@@ -156,13 +156,13 @@ final class FullDocumentTest extends PdfTestCase
             ->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L')
         ;
 
-        $renderedPdf = $pdf->toString();
-
         $this->storeResult($pdf);
+
+        $actualHash = sha1($pdf->toString());
 
         self::assertEquals(
             $expectedHash,
-            sha1($renderedPdf)
+            $actualHash,
         );
     }
 }
