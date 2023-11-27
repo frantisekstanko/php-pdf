@@ -41,9 +41,8 @@ final class FullDocumentTest extends PdfTestCase
             ->drawCell('Left border', 'L', 0, 'L')
             ->withWidth(44)->withHeight(32)
             ->drawCell('Right border', 'R', 1, 'C')
+            ->withUnderline()
         ;
-
-        $pdf->enableUnderline();
         $pdf = $pdf->drawCell('Top border, underlined text', 'T', 2, 'R');
         $pdf = $pdf->drawCell('With fill', 'B', 0, 'L', true);
 

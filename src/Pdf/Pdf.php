@@ -492,9 +492,13 @@ final class Pdf
         return $pdf;
     }
 
-    public function enableUnderline(): void
+    public function withUnderline(): self
     {
-        $this->isUnderline = true;
+        $pdf = clone $this;
+
+        $pdf->isUnderline = true;
+
+        return $pdf;
     }
 
     public function disableUnderline(): void
