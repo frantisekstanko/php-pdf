@@ -113,13 +113,16 @@ final class Pdf
     private ?float $withWidth;
     private ?float $withHeight;
 
+    private Units $units;
+
     public function __construct()
     {
         $this->currentDocumentState = DocumentState::NOT_INITIALIZED;
 
         $this->metadata = Metadata::empty();
 
-        $this->scaleFactor = Units::MILLIMETERS->getScaleFactor();
+        $this->units = Units::MILLIMETERS;
+        $this->scaleFactor = $this->units->getScaleFactor();
 
         $this->currentOrientation = PageOrientation::PORTRAIT;
 
@@ -143,6 +146,7 @@ final class Pdf
     {
         $pdf = clone $this;
 
+        $pdf->units = $units;
         $pdf->scaleFactor = $units->getScaleFactor();
 
         $pdf->recalculatePageDimensions();
@@ -1239,13 +1243,13 @@ final class Pdf
     private function recalculatePageDimensions(): void
     {
         if ($this->currentOrientation == PageOrientation::PORTRAIT) {
-            $this->pageWidth = $this->currentPageSize->getWidth($this->scaleFactor);
-            $this->pageHeight = $this->currentPageSize->getHeight($this->scaleFactor);
+            $this->pageWidth = $this->currentPageSize->getWidth($this->units);
+            $this->pageHeight = $this->currentPageSize->getHeight($this->units);
         }
 
         if ($this->currentOrientation == PageOrientation::LANDSCAPE) {
-            $this->pageWidth = $this->currentPageSize->getHeight($this->scaleFactor);
-            $this->pageHeight = $this->currentPageSize->getWidth($this->scaleFactor);
+            $this->pageWidth = $this->currentPageSize->getHeight($this->units);
+            $this->pageHeight = $this->currentPageSize->getWidth($this->units);
         }
 
         $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
