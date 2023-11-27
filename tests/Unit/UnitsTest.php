@@ -28,7 +28,7 @@ final class UnitsTest extends PdfTestCase
             ->inUnits($this->getUnitsFromString($units))
         ;
 
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
 
         $pdf->drawRectangle(0, 0, 7, 7, RectangleStyle::FILLED);
 

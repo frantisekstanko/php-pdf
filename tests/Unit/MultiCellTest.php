@@ -36,7 +36,7 @@ final class MultiCellTest extends PdfTestCase
 
         $pdf = $this->createTestPdf();
 
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
 
         $pdf->setRightMargin(10);
         $pdf = $pdf->withAutomaticWidth()->withAutomaticHeight();

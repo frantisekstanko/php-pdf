@@ -16,20 +16,20 @@ final class RotationTest extends PdfTestCase
         $pdf = $this->createTestPdf();
 
         $pdf = $pdf->withPageRotation(PageRotation::NONE);
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         $pdf = $pdf->withWidth(100)->withHeight(100);
         $pdf->drawCell('page without rotation');
 
         $pdf = $pdf->withPageRotation(PageRotation::CLOCKWISE_90_DEGREES);
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         $pdf->drawCell('page rotated clockwise 90 degrees');
 
         $pdf = $pdf->withPageRotation(PageRotation::UPSIDE_DOWN);
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         $pdf->drawCell('page upside down');
 
         $pdf = $pdf->withPageRotation(PageRotation::ANTICLOCKWISE_90_DEGREES);
-        $pdf->addPage();
+        $pdf = $pdf->addPage();
         $pdf->drawCell('page rotated anticlockwise 90 degrees');
 
         $renderedPdf = $pdf->toString();
