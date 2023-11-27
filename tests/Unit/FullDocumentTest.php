@@ -42,9 +42,9 @@ final class FullDocumentTest extends PdfTestCase
             ->withWidth(44)->withHeight(32)
             ->drawCell('Right border', 'R', 1, 'C')
             ->withUnderline()
+            ->drawCell('Top border, underlined text', 'T', 2, 'R')
+            ->drawCell('With fill', 'B', 0, 'L', true)
         ;
-        $pdf = $pdf->drawCell('Top border, underlined text', 'T', 2, 'R');
-        $pdf = $pdf->drawCell('With fill', 'B', 0, 'L', true);
 
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
