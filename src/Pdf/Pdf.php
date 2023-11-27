@@ -294,27 +294,31 @@ final class Pdf
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
-    public function addPage(): void
+    public function addPage(): self
     {
         if ($this->currentDocumentState === DocumentState::CLOSED) {
             throw new CannotAddPageToClosedDocumentException();
         }
 
-        if ($this->currentPageNumber > 0) {
-            $this->endPage();
+        $pdf = clone $this;
+
+        if ($pdf->currentPageNumber > 0) {
+            $pdf->endPage();
         }
-        $this->startNewPage();
-        $this->setLineCapStyleToSquare();
-        $this->appendLineWidthToPdfBuffer();
-        if ($this->currentFont) {
-            $this->writeFontInformationToDocument($this->currentFont);
+        $pdf->startNewPage();
+        $pdf->setLineCapStyleToSquare();
+        $pdf->appendLineWidthToPdfBuffer();
+        if ($pdf->currentFont) {
+            $pdf->writeFontInformationToDocument($pdf->currentFont);
         }
-        if ($this->drawColor != '0 G') {
-            $this->out($this->drawColor);
+        if ($pdf->drawColor != '0 G') {
+            $pdf->out($pdf->drawColor);
         }
-        if ($this->fillColor != '0 g') {
-            $this->out($this->fillColor);
+        if ($pdf->fillColor != '0 g') {
+            $pdf->out($this->fillColor);
         }
+
+        return $pdf;
     }
 
     public function getCurrentPageNumber(): int
@@ -1022,7 +1026,7 @@ final class Pdf
             ) {
                 // Automatic page break
                 $x2 = $pdf->currentXPosition;
-                $pdf->addPage();
+                $pdf = $pdf->addPage();
                 $pdf->currentXPosition = $x2;
             }
             $yPosition = $pdf->currentYPosition;
@@ -1225,27 +1229,31 @@ final class Pdf
         $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
     }
 
-    private function closeDocument(): void
+    private function closeDocument(): self
     {
         if ($this->currentDocumentState === DocumentState::CLOSED) {
-            return;
+            return $this;
         }
 
-        if ($this->currentPageNumber === 0) {
-            $this->addPage();
+        $pdf = clone $this;
+
+        if ($pdf->currentPageNumber === 0) {
+            $pdf = $pdf->addPage();
         }
 
-        $this->endPage();
+        $pdf->endPage();
 
-        $this->appendHeaderIntoBuffer();
-        $this->appendPagesIntoBuffer();
-        $this->appendResourcesIntoBuffer();
-        $this->appendMetadataIntoBuffer();
-        $this->appendCatalogIntoBuffer();
-        $offsetAtXRef = $this->currentBufferLength();
-        $this->appendXRefIntoBuffer();
-        $this->appendTrailerIntoBuffer((string) $offsetAtXRef);
-        $this->currentDocumentState = DocumentState::CLOSED;
+        $pdf->appendHeaderIntoBuffer();
+        $pdf->appendPagesIntoBuffer();
+        $pdf->appendResourcesIntoBuffer();
+        $pdf->appendMetadataIntoBuffer();
+        $pdf->appendCatalogIntoBuffer();
+        $offsetAtXRef = $pdf->currentBufferLength();
+        $pdf->appendXRefIntoBuffer();
+        $pdf->appendTrailerIntoBuffer((string) $offsetAtXRef);
+        $pdf->currentDocumentState = DocumentState::CLOSED;
+
+        return $pdf;
     }
 
     private function getStringWidth(string $string): float
@@ -1333,7 +1341,7 @@ final class Pdf
         $this->recalculatePageDimensions();
         $this->pageInfo[$this->currentPageNumber]['size'] = [
             $this->pageWidthInPoints,
-            $this->pageHeightInPoints
+            $this->pageHeightInPoints,
         ];
         $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
     }
