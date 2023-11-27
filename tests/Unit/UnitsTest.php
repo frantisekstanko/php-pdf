@@ -31,11 +31,11 @@ final class UnitsTest extends PdfTestCase
             ->drawRectangle(0, 0, 7, 7, RectangleStyle::FILLED)
         ;
 
-        $renderedPdf = $pdf->toString();
-
         $this->storeResult($pdf);
 
-        self::assertEquals($expectedHash, sha1($renderedPdf));
+        $actualHash = sha1($pdf->toString());
+
+        self::assertEquals($expectedHash, $actualHash);
     }
 
     private function getUnitsFromString(string $units): Units
