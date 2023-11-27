@@ -21,7 +21,7 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf = (new Pdf())
             ->createdAt(new DateTimeImmutable('2023-11-20'))
-            ->setAliasForTotalNumberOfPages('{pagesTotalTest}')
+            ->withAliasForTotalNumberOfPages('{pagesTotalTest}')
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
             ->withFont(OpenSansRegular::points(12))
