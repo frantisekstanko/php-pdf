@@ -275,9 +275,13 @@ final class Pdf
         $this->compressionEnabled = false;
     }
 
-    public function setTitle(string $title): void
+    public function withTitle(string $title): self
     {
-        $this->metadata = $this->metadata->withTitle($title);
+        $pdf = clone $this;
+
+        $pdf->metadata = $pdf->metadata->withTitle($title);
+
+        return $pdf;
     }
 
     public function byAuthor(string $author): self
