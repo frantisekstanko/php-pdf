@@ -102,8 +102,7 @@ final class FullDocumentTest extends PdfTestCase
             ->withRightMargin(90)
             ->withTopMargin(44)
             ->withSubject('What is this? I hope this is not Chris.')
-        ;
-        $pdf->setTextColor(Color::fromRgb(0, 255, 100));
+            ->withTextColor(Color::fromRgb(0, 255, 100));
         $pdf->setTitle('at last!');
         $pdf->writeText(111, 122, 'Hello world!');
         $pdf = $pdf->Write(55, 'Hello world!');

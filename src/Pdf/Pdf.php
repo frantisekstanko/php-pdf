@@ -410,21 +410,25 @@ final class Pdf
         return $pdf;
     }
 
-    public function setTextColor(Color $color): void
+    public function withTextColor(Color $color): self
     {
-        if ($color->isBlack()) {
-            $this->textColor = sprintf('%.3F g', 0);
+        $pdf = clone $this;
 
-            return;
+        if ($color->isBlack()) {
+            $pdf->textColor = sprintf('%.3F g', 0);
+
+            return $pdf;
         }
 
-        $this->textColor = sprintf(
+        $pdf->textColor = sprintf(
             '%.3F %.3F %.3F rg',
             $color->getRed() / 255,
             $color->getGreen() / 255,
             $color->getBlue() / 255,
         );
-        $this->fillAndTextColorDiffer = ($this->fillColor != $this->textColor);
+        $pdf->fillAndTextColorDiffer = ($pdf->fillColor != $pdf->textColor);
+
+        return $pdf;
     }
 
     public function withLineWidth(float $width): self
