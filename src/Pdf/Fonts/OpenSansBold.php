@@ -15,7 +15,7 @@ final readonly class OpenSansBold implements FontInterface
     ) {
     }
 
-    public function getTtfFilePath(): string
+    public function getFontFilePath(): string
     {
         return self::FONT_PATH;
     }
@@ -25,7 +25,7 @@ final readonly class OpenSansBold implements FontInterface
         return new self($fontSizeInPoints);
     }
 
-    public function getSizeInPoints(): float
+    public function getFontSize(): float
     {
         return $this->fontSizeInPoints;
     }

@@ -6,7 +6,13 @@ namespace Stanko\Pdf;
 
 interface FontInterface
 {
-    public function getTtfFilePath(): string;
+    /**
+     * @return string absolute path to font file (TTF)
+     */
+    public function getFontFilePath(): string;
 
-    public function getSizeInPoints(): float;
+    /**
+     * @return float font size in points
+     */
+    public function getFontSize(): float;
 }

@@ -504,14 +504,14 @@ final class Pdf
             return $this;
         }
 
-        $ttfstat = stat($font->getTtfFilePath());
+        $ttfstat = stat($font->getFontFilePath());
 
         if ($ttfstat === false) {
-            throw new FontNotFoundException($font->getTtfFilePath());
+            throw new FontNotFoundException($font->getFontFilePath());
         }
 
         $ttfParser = new TtfParser();
-        $ttfParser->getMetrics($font->getTtfFilePath());
+        $ttfParser->getMetrics($font->getFontFilePath());
         $charWidths = $ttfParser->charWidths;
         $name = (string) preg_replace('/[ ()]/', '', $ttfParser->fullName);
 
@@ -544,7 +544,7 @@ final class Pdf
             'up' => round($ttfParser->underlinePosition),
             'ut' => round($ttfParser->underlineThickness),
             'cw' => $charWidths,
-            'ttffile' => $font->getTtfFilePath(),
+            'ttffile' => $font->getFontFilePath(),
             'subset' => $sbarr,
             'n' => 0,
         ];
@@ -1276,8 +1276,8 @@ final class Pdf
         }
 
         $this->currentFont = $font;
-        $this->currentFontSizeInPoints = $font->getSizeInPoints();
-        $this->currentFontSize = $font->getSizeInPoints() / $this->scaleFactor;
+        $this->currentFontSizeInPoints = $font->getFontSize();
+        $this->currentFontSize = $font->getFontSize() / $this->scaleFactor;
 
         if ($this->currentPageNumber > 0) {
             $this->writeFontInformationToDocument($font);
