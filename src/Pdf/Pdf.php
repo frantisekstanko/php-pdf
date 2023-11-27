@@ -1328,34 +1328,12 @@ final class Pdf
         $this->currentXPosition = $this->leftMargin;
         $this->currentYPosition = $this->topMargin;
 
-        $pageOrientation = $this->currentOrientation;
-        $pageSize = $this->currentPageSize;
         $pageRotation = $this->currentPageRotation;
-
-        if (
-            $pageOrientation !== $this->currentOrientation
-            || $pageSize->getWidth($this->scaleFactor) != $this->currentPageSize->getWidth($this->scaleFactor)
-            || $pageSize->getHeight($this->scaleFactor) != $this->currentPageSize->getHeight($this->scaleFactor)
-        ) {
-            if ($pageOrientation === PageOrientation::PORTRAIT) {
-                $this->pageWidth = $pageSize->getWidth($this->scaleFactor);
-                $this->pageHeight = $pageSize->getHeight($this->scaleFactor);
-            } else {
-                $this->pageWidth = $pageSize->getHeight($this->scaleFactor);
-                $this->pageHeight = $pageSize->getWidth($this->scaleFactor);
-            }
-            $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-            $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
-            $this->recalculatePageBreakThreshold();
-            $this->currentOrientation = $pageOrientation;
-            $this->currentPageSize = $pageSize;
-        }
 
         $this->recalculatePageDimensions();
         $this->pageInfo[$this->currentPageNumber]['size'] = [$this->pageWidthInPoints, $this->pageHeightInPoints];
 
         $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
-        $this->currentPageRotation = $pageRotation;
     }
 
     private function endPage(): void
