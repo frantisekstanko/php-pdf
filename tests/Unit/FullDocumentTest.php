@@ -32,14 +32,18 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf
             ->withFont(OpenSansRegular::points(12))
             ->withFillColor(Color::fromRgb(50, 10, 5))
-            ->withWidth(100)->withHeight(30)
+            ->withWidth(100)
+            ->withHeight(30)
             ->drawCell('Cell test !@#* ÁČŠĎ')
-            ->withWidth(90)->withHeight(25)
+            ->withWidth(90)
+            ->withHeight(25)
             ->drawCell('With border', 1)
             ->onNextRow()
-            ->withWidth(70)->withHeight(40)
+            ->withWidth(70)
+            ->withHeight(40)
             ->drawCell('Left border', 'L', 0, 'L')
-            ->withWidth(44)->withHeight(32)
+            ->withWidth(44)
+            ->withHeight(32)
             ->drawCell('Right border', 'R', 1, 'C')
             ->withUnderline()
             ->drawCell('Top border, underlined text', 'T', 2, 'R')
@@ -49,9 +53,11 @@ final class FullDocumentTest extends PdfTestCase
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
 
-        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test_solid.png');
-        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150);
-        $pdf = $pdf->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10);
+        $pdf = $pdf
+            ->insertImage(__DIR__ . '/../../images/test_solid.png')
+            ->insertImage(__DIR__ . '/../../images/test_solid.png', 200, 150)
+            ->insertImage(__DIR__ . '/../../images/test_solid.png', 0, 0, 10, 10)
+        ;
 
         $pdf->drawLine(10, 10, 90, 90);
 
