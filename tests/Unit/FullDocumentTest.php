@@ -21,7 +21,7 @@ final class FullDocumentTest extends PdfTestCase
 
         $pdf = (new Pdf())->createdAt(new DateTimeImmutable('2023-11-20'));
 
-        $pdf->setAliasForTotalNumberOfPages('{pagesTotalTest}');
+        $pdf = $pdf->setAliasForTotalNumberOfPages('{pagesTotalTest}');
 
         $pdf = $pdf
             ->loadFont(OpenSansRegular::points(12))
@@ -34,17 +34,17 @@ final class FullDocumentTest extends PdfTestCase
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         $pdf = $pdf->createdAt(new DateTimeImmutable('1999-12-26'));
         $pdf = $pdf->withWidth(100)->withHeight(30);
-        $pdf->drawCell('Cell test !@#* ÁČŠĎ');
+        $pdf = $pdf->drawCell('Cell test !@#* ÁČŠĎ');
         $pdf = $pdf->withWidth(90)->withHeight(25);
-        $pdf->drawCell('With border', 1);
+        $pdf = $pdf->drawCell('With border', 1);
         $pdf = $pdf->onNextRow();
         $pdf = $pdf->withWidth(70)->withHeight(40);
-        $pdf->drawCell('Left border', 'L', 0, 'L');
+        $pdf = $pdf->drawCell('Left border', 'L', 0, 'L');
         $pdf = $pdf->withWidth(44)->withHeight(32);
-        $pdf->drawCell('Right border', 'R', 1, 'C');
+        $pdf = $pdf->drawCell('Right border', 'R', 1, 'C');
         $pdf->enableUnderline();
-        $pdf->drawCell('Top border, underlined text', 'T', 2, 'R');
-        $pdf->drawCell('With fill', 'B', 0, 'L', true);
+        $pdf = $pdf->drawCell('Top border, underlined text', 'T', 2, 'R');
+        $pdf = $pdf->drawCell('With fill', 'B', 0, 'L', true);
 
         self::assertEqualsWithDelta(210.001566, $pdf->GetPageWidth(), 0.0001);
         self::assertEqualsWithDelta(297.000083, $pdf->GetPageHeight(), 0.0001);
@@ -66,7 +66,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf->withFont(OpenSansBold::points(12));
 
         $pdf = $pdf->withWidth(100);
-        $pdf->drawMultiCell(
+        $pdf = $pdf->drawMultiCell(
             10,
             "MultiCell test !@#* ÁČŠĎ\nNEW LINE",
             CellBorder::withAllSides(),
@@ -92,7 +92,7 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf->withFont(OpenSansBold::points(17));
 
         $pdf = $pdf->withWidth(4)->withHeight(4);
-        $pdf->drawCell('TEXT');
+        $pdf = $pdf->drawCell('TEXT');
         $pdf->setKeywords('test, unit, pdf');
 
         $pdf = $pdf->addPage();
@@ -104,39 +104,39 @@ final class FullDocumentTest extends PdfTestCase
         $pdf->setTextColor(Color::fromRgb(0, 255, 100));
         $pdf->setTitle('at last!');
         $pdf->writeText(111, 122, 'Hello world!');
-        $pdf->Write(55, 'Hello world!');
-        $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
+        $pdf = $pdf->Write(55, 'Hello world!');
+        $pdf = $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
 
         $pdf = $pdf->withWidth(100)->withHeight(40);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
 
         self::assertEquals(4, $pdf->getCurrentPageNumber());
 
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
         $pdf->disableAutomaticPageBreaking();
 
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
-        $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
+        $pdf = $pdf->drawCell('new line', 1, 2);
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
 
@@ -147,7 +147,7 @@ final class FullDocumentTest extends PdfTestCase
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
 
-        $pdf->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L');
+        $pdf = $pdf->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L');
 
         $renderedPdf = $pdf->toString();
 
