@@ -3,6 +3,7 @@
 namespace Stanko\Pdf;
 
 use DateTimeImmutable;
+use Stanko\Pdf\Exception\AliasMustBeSetBeforeLoadingFontsException;
 use Stanko\Pdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
@@ -289,6 +290,10 @@ final class Pdf
 
     public function setAliasForTotalNumberOfPages(string $alias = '{nb}'): void
     {
+        if ($this->usedFonts !== []) {
+            throw new AliasMustBeSetBeforeLoadingFontsException();
+        }
+
         $this->aliasForTotalNumberOfPages = $alias;
     }
 
