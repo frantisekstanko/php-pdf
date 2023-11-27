@@ -289,9 +289,13 @@ final class Pdf
         return $pdf;
     }
 
-    public function setSubject(string $subject): void
+    public function withSubject(string $subject): self
     {
-        $this->metadata = $this->metadata->withSubject($subject);
+        $pdf = clone $this;
+
+        $pdf->metadata = $pdf->metadata->withSubject($subject);
+
+        return $pdf;
     }
 
     public function withKeywords(string $keywords): self
