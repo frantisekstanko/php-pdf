@@ -14,7 +14,7 @@ final class PageSizeTest extends PdfTestCase
 {
     public function testPageSizes(): void
     {
-        $expectedHash = '66e4f19ceb571510a010927f96ac7ff5ef920f0f';
+        $expectedHash = '83aedc3247b221b0184a02eecebd5d9f4efb9231';
 
         $pdf = (new Pdf())->createdAt(
             new DateTimeImmutable('1999-12-26')

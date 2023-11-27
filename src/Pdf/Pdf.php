@@ -38,7 +38,6 @@ final class Pdf
     private PageOrientation $defaultOrientation;
     private PageOrientation $currentOrientation;
 
-    private PageSize $defaultPageSize;
     private PageSize $currentPageSize;
 
     private PageRotation $currentPageRotation;
@@ -1187,7 +1186,6 @@ final class Pdf
 
     private function setPageSize(PageSize $pageSize): void
     {
-        $this->defaultPageSize = $pageSize;
         $this->currentPageSize = $pageSize;
 
         $this->recalculatePageDimensions();
@@ -1320,7 +1318,7 @@ final class Pdf
         }
 
         if ($pageSize === null) {
-            $pageSize = $this->defaultPageSize;
+            $pageSize = $this->currentPageSize;
         }
 
         if ($pageRotation === null) {
@@ -1585,14 +1583,9 @@ final class Pdf
         $kids .= ']';
         $this->appendIntoBuffer($kids);
         $this->appendIntoBuffer('/Count ' . $nb);
-        if ($this->defaultOrientation === PageOrientation::PORTRAIT) {
-            $w = $this->defaultPageSize->getWidth($this->scaleFactor);
-            $h = $this->defaultPageSize->getHeight($this->scaleFactor);
-        } else {
-            $w = $this->defaultPageSize->getHeight($this->scaleFactor);
-            $h = $this->defaultPageSize->getWidth($this->scaleFactor);
-        }
-        $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $w * $this->scaleFactor, $h * $this->scaleFactor));
+        $w = $this->pageInfo[1]['size'][0];
+        $h = $this->pageInfo[1]['size'][1];
+        $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $w, $h));
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
