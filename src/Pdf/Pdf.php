@@ -35,7 +35,6 @@ final class Pdf
     private DocumentState $currentDocumentState;
     private bool $compressionEnabled;
     private float $scaleFactor;
-    private PageOrientation $defaultOrientation;
     private PageOrientation $currentOrientation;
 
     private PageSize $currentPageSize;
@@ -122,7 +121,6 @@ final class Pdf
 
         $this->scaleFactor = Units::MILLIMETERS->getScaleFactor();
 
-        $this->defaultOrientation = PageOrientation::PORTRAIT;
         $this->currentOrientation = PageOrientation::PORTRAIT;
 
         $this->setPageSize(PageSize::a4());
@@ -1314,7 +1312,7 @@ final class Pdf
         $this->currentYPosition = $this->topMargin;
 
         if ($pageOrientation === null) {
-            $pageOrientation = $this->defaultOrientation;
+            $pageOrientation = $this->currentOrientation;
         }
 
         if ($pageSize === null) {
