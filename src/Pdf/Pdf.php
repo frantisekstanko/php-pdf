@@ -48,8 +48,6 @@ final class Pdf
      * }>
      */
     private array $pageInfo = [];
-    private float $pageWidthInPoints;
-    private float $pageHeightInPoints;
     private float $pageWidth;
     private float $pageHeight;
     private float $leftMargin;
@@ -128,8 +126,6 @@ final class Pdf
 
         $this->setPageSize(PageSize::a4());
 
-        $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-        $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
         $this->currentPageRotation = PageRotation::NONE;
 
         $margin = 28.35 / $this->scaleFactor;
@@ -559,7 +555,7 @@ final class Pdf
         // Put a link on the page
         $this->pageLinks[$this->currentPageNumber][] = [
             $x * $this->scaleFactor,
-            $this->pageHeightInPoints - $y * $this->scaleFactor,
+            ($this->pageHeight * $this->scaleFactor) - $y * $this->scaleFactor,
             $w * $this->scaleFactor,
             $h * $this->scaleFactor, $link,
         ];
@@ -1251,9 +1247,6 @@ final class Pdf
             $this->pageWidth = $this->currentPageSize->getHeight($this->units);
             $this->pageHeight = $this->currentPageSize->getWidth($this->units);
         }
-
-        $this->pageWidthInPoints = $this->pageWidth * $this->scaleFactor;
-        $this->pageHeightInPoints = $this->pageHeight * $this->scaleFactor;
     }
 
     private function closeDocument(): self
@@ -1367,8 +1360,8 @@ final class Pdf
 
         $this->recalculatePageDimensions();
         $this->pageInfo[$this->currentPageNumber]['size'] = [
-            $this->pageWidthInPoints,
-            $this->pageHeightInPoints,
+            $this->pageWidth * $this->scaleFactor,
+            $this->pageHeight * $this->scaleFactor,
         ];
         $this->pageInfo[$this->currentPageNumber]['rotation'] = $pageRotation;
     }
