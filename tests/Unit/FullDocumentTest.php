@@ -25,21 +25,24 @@ final class FullDocumentTest extends PdfTestCase
             ->loadFont(OpenSansRegular::points(12))
             ->loadFont(OpenSansBold::points(12))
             ->addPage()
-            ->withFont(OpenSansRegular::points(12))
-            ->withFillColor(Color::fromRgb(50, 10, 5))
         ;
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
 
-        $pdf = $pdf->withWidth(100)->withHeight(30);
-        $pdf = $pdf->drawCell('Cell test !@#* ÁČŠĎ');
-        $pdf = $pdf->withWidth(90)->withHeight(25);
-        $pdf = $pdf->drawCell('With border', 1);
-        $pdf = $pdf->onNextRow();
-        $pdf = $pdf->withWidth(70)->withHeight(40);
-        $pdf = $pdf->drawCell('Left border', 'L', 0, 'L');
-        $pdf = $pdf->withWidth(44)->withHeight(32);
-        $pdf = $pdf->drawCell('Right border', 'R', 1, 'C');
+        $pdf = $pdf
+            ->withFont(OpenSansRegular::points(12))
+            ->withFillColor(Color::fromRgb(50, 10, 5))
+            ->withWidth(100)->withHeight(30)
+            ->drawCell('Cell test !@#* ÁČŠĎ')
+            ->withWidth(90)->withHeight(25)
+            ->drawCell('With border', 1)
+            ->onNextRow()
+            ->withWidth(70)->withHeight(40)
+            ->drawCell('Left border', 'L', 0, 'L')
+            ->withWidth(44)->withHeight(32)
+            ->drawCell('Right border', 'R', 1, 'C')
+        ;
+
         $pdf->enableUnderline();
         $pdf = $pdf->drawCell('Top border, underlined text', 'T', 2, 'R');
         $pdf = $pdf->drawCell('With fill', 'B', 0, 'L', true);
