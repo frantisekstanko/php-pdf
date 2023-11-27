@@ -18,4 +18,14 @@ abstract class PdfTestCase extends TestCase
             ->withFont(OpenSansRegular::points(12))
         ;
     }
+
+    protected function storeResult(Pdf $pdf): void
+    {
+        $pdfData = $pdf->toString();
+
+        $sha1 = sha1($pdfData);
+
+        is_dir('/tmp/pdfTests/') || mkdir('/tmp/pdfTests/');
+        file_put_contents('/tmp/pdfTests/' . $sha1 . '.pdf', $pdfData);
+    }
 }

@@ -27,6 +27,8 @@ final class LayoutTest extends PdfTestCase
 
         $renderedPdf = $pdf->toString();
 
+        $this->storeResult($pdf);
+
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }
 }

@@ -94,6 +94,9 @@ final class MultiCellTest extends PdfTestCase
         $renderedPdf = $pdf->toString();
 
         self::assertEquals(5, $pdf->getCurrentPageNumber());
+
+        $this->storeResult($pdf);
+
         self::assertEquals($expectedHash, sha1($renderedPdf));
     }
 }
