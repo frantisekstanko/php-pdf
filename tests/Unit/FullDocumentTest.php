@@ -104,8 +104,8 @@ final class FullDocumentTest extends PdfTestCase
             ->withSubject('What is this? I hope this is not Chris.')
             ->withTextColor(Color::fromRgb(0, 255, 100))
             ->withTitle('at last!')
+            ->writeText(111, 122, 'Hello world!')
         ;
-        $pdf->writeText(111, 122, 'Hello world!');
         $pdf = $pdf->Write(55, 'Hello world!');
         $pdf = $pdf->Write(55, 'Link to the world!', 'https://toTheWorld.io/');
 

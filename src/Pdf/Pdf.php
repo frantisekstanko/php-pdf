@@ -619,9 +619,11 @@ final class Pdf
         return $pdf;
     }
 
-    public function writeText(float $x, float $y, string $txt): void
+    public function writeText(float $x, float $y, string $txt): self
     {
-        if ($this->currentFont === null) {
+        $pdf = clone $this;
+
+        if ($pdf->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
 
@@ -629,22 +631,24 @@ final class Pdf
             $this->utf8ToUtf16Be($txt)
         ) . ')';
 
-        foreach ($this->utf8StringToArray($txt) as $uni) {
-            $this->usedFonts[$this->currentFont::class]['subset'][$uni] = $uni;
+        foreach ($pdf->utf8StringToArray($txt) as $uni) {
+            $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
         }
         $s = sprintf(
             'BT %.2F %.2F Td %s Tj ET',
-            $x * $this->scaleFactor,
-            ($this->pageHeight - $y) * $this->scaleFactor,
+            $x * $pdf->scaleFactor,
+            ($pdf->pageHeight - $y) * $pdf->scaleFactor,
             $txt2,
         );
-        if ($this->isUnderline && $txt != '') {
-            $s .= ' ' . $this->_dounderline($x, $y, $txt);
+        if ($pdf->isUnderline && $txt != '') {
+            $s .= ' ' . $pdf->_dounderline($x, $y, $txt);
         }
-        if ($this->fillAndTextColorDiffer) {
-            $s = 'q ' . $this->textColor . ' ' . $s . ' Q';
+        if ($pdf->fillAndTextColorDiffer) {
+            $s = 'q ' . $pdf->textColor . ' ' . $s . ' Q';
         }
-        $this->out($s);
+        $pdf->out($s);
+
+        return $pdf;
     }
 
     public function drawCell(
