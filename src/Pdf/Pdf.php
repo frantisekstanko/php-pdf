@@ -285,13 +285,17 @@ final class Pdf
         $this->metadata = $this->metadata->createdBy($creator);
     }
 
-    public function setAliasForTotalNumberOfPages(string $alias = '{nb}'): void
+    public function setAliasForTotalNumberOfPages(string $alias = '{nb}'): self
     {
         if ($this->usedFonts !== []) {
             throw new AliasMustBeSetBeforeLoadingFontsException();
         }
 
-        $this->aliasForTotalNumberOfPages = $alias;
+        $pdf = clone $this;
+
+        $pdf->aliasForTotalNumberOfPages = $alias;
+
+        return $pdf;
     }
 
     public function addPage(): self
