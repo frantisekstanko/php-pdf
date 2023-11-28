@@ -966,8 +966,8 @@ final class Pdf
 
         $pdf = clone $this;
 
-        $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-        $wmax = ($w - 2 * $pdf->interiorCellMargin);
+        $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+        $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
@@ -985,7 +985,7 @@ final class Pdf
             $c = mb_substr($s, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
-                $pdf->withWidth = $w;
+                $pdf->withWidth = $remainingWidth;
                 $pdf->withHeight = $h;
                 $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 ++$i;
@@ -994,8 +994,8 @@ final class Pdf
                 $l = 0;
                 if ($nl == 1) {
                     $pdf->currentXPosition = $pdf->leftMargin;
-                    $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-                    $wmax = ($w - 2 * $pdf->interiorCellMargin);
+                    $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+                    $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
                 }
                 ++$nl;
 
@@ -1014,8 +1014,8 @@ final class Pdf
                         // Move to next line
                         $pdf->currentXPosition = $pdf->leftMargin;
                         $pdf->currentYPosition += $h;
-                        $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-                        $wmax = ($w - 2 * $pdf->interiorCellMargin);
+                        $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+                        $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
                         ++$i;
                         ++$nl;
 
@@ -1024,7 +1024,7 @@ final class Pdf
                     if ($i == $j) {
                         ++$i;
                     }
-                    $pdf->withWidth = $w;
+                    $pdf->withWidth = $remainingWidth;
                     $pdf->withHeight = $h;
                     $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 } else {
@@ -1036,8 +1036,8 @@ final class Pdf
                 $l = 0;
                 if ($nl == 1) {
                     $pdf->currentXPosition = $pdf->leftMargin;
-                    $w = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-                    $wmax = ($w - 2 * $pdf->interiorCellMargin);
+                    $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
+                    $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
                 }
                 ++$nl;
             } else {
