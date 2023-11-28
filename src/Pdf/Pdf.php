@@ -131,6 +131,7 @@ final class Pdf
         $margin = 28.35 / $this->scaleFactor;
         $this->leftMargin = $margin;
         $this->topMargin = $margin;
+        $this->rightMargin = $margin;
         $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
 
