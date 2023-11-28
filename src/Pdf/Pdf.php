@@ -639,7 +639,7 @@ final class Pdf
      *
      * If you want to write a paragraph, it's better to use $pdf->writeText().
      */
-    public function writeString(float $x, float $y, string $txt): self
+    public function writeString(float $x, float $y, string $string): self
     {
         $pdf = clone $this;
 
@@ -647,15 +647,15 @@ final class Pdf
             throw FailedToWriteStringException::becauseNoFontHasBeenSelected();
         }
 
-        if ($txt === '') {
+        if ($string === '') {
             throw FailedToWriteStringException::becauseStringToWriteIsEmpty();
         }
 
         $txt2 = '(' . $this->escapeSpecialCharacters(
-            $this->utf8ToUtf16Be($txt)
+            $this->utf8ToUtf16Be($string)
         ) . ')';
 
-        foreach ($pdf->utf8StringToArray($txt) as $uni) {
+        foreach ($pdf->utf8StringToArray($string) as $uni) {
             $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
         }
         $s = sprintf(
@@ -665,7 +665,7 @@ final class Pdf
             $txt2,
         );
         if ($pdf->isUnderline) {
-            $s .= ' ' . $pdf->_dounderline($x, $y, $txt);
+            $s .= ' ' . $pdf->_dounderline($x, $y, $string);
         }
         if ($pdf->fillAndTextColorDiffer) {
             $s = 'q ' . $pdf->textColor . ' ' . $s . ' Q';
