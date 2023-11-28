@@ -1000,7 +1000,7 @@ final class Pdf
         $sep = -1;
         $i = 0;
         $j = 0;
-        $l = 0;
+        $stringWidth = 0;
         $nl = 1;
         while ($i < $cleanTextLength) {
             // Get next character
@@ -1013,7 +1013,7 @@ final class Pdf
                 ++$i;
                 $sep = -1;
                 $j = $i;
-                $l = 0;
+                $stringWidth = 0;
                 if ($nl == 1) {
                     $pdf->currentXPosition = $pdf->leftMargin;
                     $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
@@ -1027,9 +1027,9 @@ final class Pdf
                 $sep = $i;
             }
 
-            $l += $pdf->getStringWidth($c);
+            $stringWidth += $pdf->getStringWidth($c);
 
-            if ($l > $remainingWidth) {
+            if ($stringWidth > $remainingWidth) {
                 // Automatic line break
                 if ($sep == -1) {
                     if ($pdf->currentXPosition > $pdf->leftMargin) {
@@ -1055,7 +1055,7 @@ final class Pdf
                 }
                 $sep = -1;
                 $j = $i;
-                $l = 0;
+                $stringWidth = 0;
                 if ($nl == 1) {
                     $pdf->currentXPosition = $pdf->leftMargin;
                     $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
@@ -1068,7 +1068,7 @@ final class Pdf
         }
         // Last chunk
         if ($i != $j) {
-            $pdf->withWidth = $l;
+            $pdf->withWidth = $stringWidth;
             $pdf->withHeight = $h;
 
             $pdf = $pdf->drawCell(mb_substr($cleanText, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
