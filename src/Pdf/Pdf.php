@@ -902,7 +902,7 @@ final class Pdf
                 $stringWidth = 0;
                 $ns = 0;
                 ++$currentLine;
-                if ($cellBorder->hasAnySide() && $currentLine == 2) {
+                if ($cellBorder->hasAnySide() && $currentLine === 2) {
                     $border1 = $border2;
                 }
 
@@ -945,7 +945,7 @@ final class Pdf
                 $stringWidth = 0;
                 $ns = 0;
                 ++$currentLine;
-                if ($cellBorder->hasAnySide() && $currentLine == 2) {
+                if ($cellBorder->hasAnySide() && $currentLine === 2) {
                     $border1 = $border2;
                 }
             } else {
