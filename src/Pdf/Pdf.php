@@ -967,7 +967,7 @@ final class Pdf
         return $pdf;
     }
 
-    public function Write(float $h, string $txt, string $link = ''): self
+    public function writeText(float $h, string $txt, string $link = ''): self
     {
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
