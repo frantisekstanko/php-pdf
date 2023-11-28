@@ -992,7 +992,7 @@ final class Pdf
         );
         $cleanText = str_replace("\r", '', (string) $text);
         $cleanTextLength = mb_strlen($cleanText, 'UTF-8');
-        if ($cleanTextLength == 1 && $cleanText == ' ') {
+        if ($cleanTextLength === 1 && $cleanText === ' ') {
             $pdf->currentXPosition += $pdf->getStringWidth($cleanText);
 
             return $pdf;
