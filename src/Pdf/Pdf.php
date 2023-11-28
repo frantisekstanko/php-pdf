@@ -1146,6 +1146,7 @@ final class Pdf
             if (
                 $pdf->currentYPosition + $imageHeight > $pdf->pageBreakThreshold
                 && $pdf->automaticPageBreaking
+                && $pdf->currentYPosition !== $pdf->topMargin
             ) {
                 // Automatic page break
                 $x2 = $pdf->currentXPosition;
