@@ -9,6 +9,7 @@ use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\ContentBufferException;
 use Stanko\Pdf\Exception\FailedToWriteStringException;
+use Stanko\Pdf\Exception\FailedToWriteTextException;
 use Stanko\Pdf\Exception\FontNotFoundException;
 use Stanko\Pdf\Exception\HeadersAlreadySentException;
 use Stanko\Pdf\Exception\IncorrectFontDefinitionException;
@@ -976,7 +977,11 @@ final class Pdf
     public function writeText(float $h, string $txt, string $link = ''): self
     {
         if ($this->currentFont === null) {
-            throw new NoFontHasBeenSetException();
+            throw FailedToWriteTextException::becauseNoFontHasBeenSelected();
+        }
+
+        if ($txt === '') {
+            throw FailedToWriteTextException::becauseStringToWriteIsEmpty();
         }
 
         $pdf = clone $this;
