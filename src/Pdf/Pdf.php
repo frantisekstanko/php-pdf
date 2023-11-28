@@ -966,8 +966,10 @@ final class Pdf
 
         $pdf = clone $this;
 
-        $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-        $remainingWidth = ($remainingWidth - 2 * $pdf->interiorCellMargin);
+        $remainingWidth = (
+            ($pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition)
+            - 2 * $pdf->interiorCellMargin
+        );
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
