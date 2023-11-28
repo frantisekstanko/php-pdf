@@ -967,7 +967,7 @@ final class Pdf
         $pdf = clone $this;
 
         $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-        $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
+        $remainingWidth = ($remainingWidth - 2 * $pdf->interiorCellMargin);
         $s = str_replace("\r", '', (string) $txt);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
@@ -995,7 +995,7 @@ final class Pdf
                 if ($nl == 1) {
                     $pdf->currentXPosition = $pdf->leftMargin;
                     $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-                    $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
+                    $remainingWidth = ($remainingWidth - 2 * $pdf->interiorCellMargin);
                 }
                 ++$nl;
 
@@ -1007,7 +1007,7 @@ final class Pdf
 
             $l += $pdf->getStringWidth($c);
 
-            if ($l > $wmax) {
+            if ($l > $remainingWidth) {
                 // Automatic line break
                 if ($sep == -1) {
                     if ($pdf->currentXPosition > $pdf->leftMargin) {
@@ -1015,7 +1015,7 @@ final class Pdf
                         $pdf->currentXPosition = $pdf->leftMargin;
                         $pdf->currentYPosition += $h;
                         $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-                        $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
+                        $remainingWidth = ($remainingWidth - 2 * $pdf->interiorCellMargin);
                         ++$i;
                         ++$nl;
 
@@ -1037,7 +1037,7 @@ final class Pdf
                 if ($nl == 1) {
                     $pdf->currentXPosition = $pdf->leftMargin;
                     $remainingWidth = $pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition;
-                    $wmax = ($remainingWidth - 2 * $pdf->interiorCellMargin);
+                    $remainingWidth = ($remainingWidth - 2 * $pdf->interiorCellMargin);
                 }
                 ++$nl;
             } else {
