@@ -28,4 +28,11 @@ abstract class PdfTestCase extends TestCase
         is_dir('/tmp/pdfTests/') || mkdir('/tmp/pdfTests/');
         file_put_contents('/tmp/pdfTests/' . $sha1 . '.pdf', $pdfData);
     }
+
+    protected function storeStaticResult(Pdf $pdf): void
+    {
+        $pdfData = $pdf->toString();
+
+        file_put_contents(__DIR__ . '/../static.pdf', $pdfData);
+    }
 }
