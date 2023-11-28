@@ -974,13 +974,13 @@ final class Pdf
      * Line-breaks are inserted automatically when the end of the page
      * is reached. "\n" is also respected to force a line-break.
      */
-    public function writeText(float $h, string $txt, string $link = ''): self
+    public function writeText(float $h, string $text, string $link = ''): self
     {
         if ($this->currentFont === null) {
             throw FailedToWriteTextException::becauseNoFontHasBeenSelected();
         }
 
-        if ($txt === '') {
+        if ($text === '') {
             throw FailedToWriteTextException::becauseStringToWriteIsEmpty();
         }
 
@@ -990,7 +990,7 @@ final class Pdf
             ($pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition)
             - 2 * $pdf->interiorCellMargin
         );
-        $s = str_replace("\r", '', (string) $txt);
+        $s = str_replace("\r", '', (string) $text);
         $nb = mb_strlen($s, 'UTF-8');
         if ($nb == 1 && $s == ' ') {
             $pdf->currentXPosition += $pdf->getStringWidth($s);
