@@ -651,7 +651,7 @@ final class Pdf
             throw FailedToWriteStringException::becauseStringToWriteIsEmpty();
         }
 
-        $txt2 = '(' . $this->escapeSpecialCharacters(
+        $pdfString = '(' . $this->escapeSpecialCharacters(
             $this->utf8ToUtf16Be($string)
         ) . ')';
 
@@ -662,7 +662,7 @@ final class Pdf
             'BT %.2F %.2F Td %s Tj ET',
             $x * $pdf->scaleFactor,
             ($pdf->pageHeight - $y) * $pdf->scaleFactor,
-            $txt2,
+            $pdfString,
         );
         if ($pdf->isUnderline) {
             $s .= ' ' . $pdf->_dounderline($x, $y, $string);
