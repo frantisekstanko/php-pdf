@@ -8,6 +8,7 @@ use Stanko\Pdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\ContentBufferException;
+use Stanko\Pdf\Exception\FailedToWriteStringException;
 use Stanko\Pdf\Exception\FontNotFoundException;
 use Stanko\Pdf\Exception\HeadersAlreadySentException;
 use Stanko\Pdf\Exception\IncorrectFontDefinitionException;
@@ -643,7 +644,11 @@ final class Pdf
         $pdf = clone $this;
 
         if ($pdf->currentFont === null) {
-            throw new NoFontHasBeenSetException();
+            throw FailedToWriteStringException::becauseNoFontHasBeenSelected();
+        }
+
+        if ($txt === '') {
+            throw FailedToWriteStringException::becauseStringToWriteIsEmpty();
         }
 
         $txt2 = '(' . $this->escapeSpecialCharacters(
@@ -659,7 +664,7 @@ final class Pdf
             ($pdf->pageHeight - $y) * $pdf->scaleFactor,
             $txt2,
         );
-        if ($pdf->isUnderline && $txt != '') {
+        if ($pdf->isUnderline) {
             $s .= ' ' . $pdf->_dounderline($x, $y, $txt);
         }
         if ($pdf->fillAndTextColorDiffer) {

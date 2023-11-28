@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Stanko\Pdf\Tests\Unit;
 
 use DateTimeImmutable;
+use Stanko\Pdf\Exception\FailedToWriteStringException;
 use Stanko\Pdf\Fonts\OpenSansBold;
 use Stanko\Pdf\Fonts\OpenSansRegular;
 use Stanko\Pdf\Pdf;
@@ -39,5 +40,33 @@ final class WriteStringTest extends PdfTestCase
             $expectedHash,
             $actualHash,
         );
+    }
+
+    public function testWriteStringThrowsExceptionWhenNoFontHasBeenSelected(): void
+    {
+        $this->expectException(FailedToWriteStringException::class);
+        $this->expectExceptionMessage(
+            'You must call ->withFont() before calling ->writeString()'
+        );
+
+        (new Pdf())
+            ->addPage()
+            ->writeString(10, 10, 'Hello world!')
+        ;
+    }
+
+    public function testWriteStringThrowsExceptionWhenStringToWriteIsEmpty(): void
+    {
+        $this->expectException(FailedToWriteStringException::class);
+        $this->expectExceptionMessage(
+            'You must provide a non-empty string to ->writeString()'
+        );
+
+        (new Pdf())
+            ->addPage()
+            ->loadfont(OpenSansRegular::points(12))
+            ->withFont(OpenSansRegular::points(12))
+            ->writeString(10, 10, '')
+        ;
     }
 }
