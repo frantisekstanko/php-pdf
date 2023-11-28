@@ -959,7 +959,6 @@ final class Pdf
 
     public function Write(float $h, string $txt, string $link = ''): self
     {
-        // Output text in flowing mode
         if ($this->currentFont === null) {
             throw new NoFontHasBeenSetException();
         }
