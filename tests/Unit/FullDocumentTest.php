@@ -160,13 +160,10 @@ final class FullDocumentTest extends PdfTestCase
             ->addPage()
             ->insertImage(__DIR__ . '/../../images/test.jpg')
             ->insertImage(__DIR__ . '/../../images/test.gif', 100, 100)
+            ->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L')
         ;
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
-
-        $pdf = $pdf
-            ->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L')
-        ;
 
         $this->storeResult($pdf);
 
