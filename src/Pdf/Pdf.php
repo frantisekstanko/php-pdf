@@ -875,7 +875,7 @@ final class Pdf
         $j = 0;
         $stringWidth = 0;
         $ns = 0;
-        $nl = 1;
+        $currentLine = 1;
         $ls = 0;
         while ($i < $nb) {
             // Get next character
@@ -901,8 +901,8 @@ final class Pdf
                 $j = $i;
                 $stringWidth = 0;
                 $ns = 0;
-                ++$nl;
-                if ($cellBorder->hasAnySide() && $nl == 2) {
+                ++$currentLine;
+                if ($cellBorder->hasAnySide() && $currentLine == 2) {
                     $border1 = $border2;
                 }
 
@@ -944,8 +944,8 @@ final class Pdf
                 $j = $i;
                 $stringWidth = 0;
                 $ns = 0;
-                ++$nl;
-                if ($cellBorder->hasAnySide() && $nl == 2) {
+                ++$currentLine;
+                if ($cellBorder->hasAnySide() && $currentLine == 2) {
                     $border1 = $border2;
                 }
             } else {
