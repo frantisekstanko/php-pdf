@@ -17,7 +17,7 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $expectedHash = 'd40d062f8f7f85a5842265734280c6f04ed3f889';
+        $expectedHash = '8c628086fa2589b41436c5ab24526710329c1aef';
 
         $pdf = (new Pdf())
             ->createdAt(new DateTimeImmutable('2023-11-20'))
@@ -164,6 +164,15 @@ final class FullDocumentTest extends PdfTestCase
         ;
 
         self::assertEquals(6, $pdf->getCurrentPageNumber());
+
+        $pdf->withAutomaticPageBreaking();
+
+        $pdf = $pdf
+            ->addPage()
+            ->insertImage(__DIR__ . '/../../images/test_hires.png')
+        ;
+
+        self::assertEquals(8, $pdf->getCurrentPageNumber());
 
         $this->storeResult($pdf);
 
