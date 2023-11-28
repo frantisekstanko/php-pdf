@@ -655,7 +655,7 @@ final class Pdf
             $this->utf8ToUtf16Be($string)
         ) . ')';
 
-        foreach ($pdf->utf8StringToArray($string) as $uni) {
+        foreach ($pdf->utf8StringToUnicodeArray($string) as $uni) {
             $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
         }
         $s = sprintf(
@@ -757,7 +757,7 @@ final class Pdf
             }
             // If multibyte, Tw has no effect - do word spacing using an adjustment before each space
             if ($pdf->wordSpacing) {
-                foreach ($pdf->utf8StringToArray($txt) as $uni) {
+                foreach ($pdf->utf8StringToUnicodeArray($txt) as $uni) {
                     $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $space = $pdf->escapeSpecialCharacters($pdf->utf8ToUtf16Be(' '));
@@ -781,7 +781,7 @@ final class Pdf
                 $appendToPdfBuffer .= ' ET';
             } else {
                 $txt2 = '(' . $pdf->escapeSpecialCharacters($pdf->utf8ToUtf16Be($txt)) . ')';
-                foreach ($pdf->utf8StringToArray($txt) as $uni) {
+                foreach ($pdf->utf8StringToUnicodeArray($txt) as $uni) {
                     $pdf->usedFonts[$pdf->currentFont::class]['subset'][$uni] = $uni;
                 }
                 $appendToPdfBuffer .= sprintf(
@@ -1371,7 +1371,7 @@ final class Pdf
 
         $characterWidths = $this->usedFonts[$this->currentFont::class]['cw'];
         $stringWidth = 0;
-        $unicode = $this->utf8StringToArray($string);
+        $unicode = $this->utf8StringToUnicodeArray($string);
         foreach ($unicode as $char) {
             if (isset($characterWidths[2 * $char])) {
                 $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
@@ -2092,7 +2092,7 @@ final class Pdf
     /**
      * @return array<int>
      */
-    private function utf8StringToArray(string $string): array
+    private function utf8StringToUnicodeArray(string $string): array
     {
         $out = [];
         $stringLength = strlen($string);
