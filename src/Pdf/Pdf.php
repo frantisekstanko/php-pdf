@@ -990,10 +990,10 @@ final class Pdf
             ($pdf->pageWidth - $pdf->rightMargin - $pdf->currentXPosition)
             - 2 * $pdf->interiorCellMargin
         );
-        $s = str_replace("\r", '', (string) $text);
-        $nb = mb_strlen($s, 'UTF-8');
-        if ($nb == 1 && $s == ' ') {
-            $pdf->currentXPosition += $pdf->getStringWidth($s);
+        $cleanText = str_replace("\r", '', (string) $text);
+        $nb = mb_strlen($cleanText, 'UTF-8');
+        if ($nb == 1 && $cleanText == ' ') {
+            $pdf->currentXPosition += $pdf->getStringWidth($cleanText);
 
             return $pdf;
         }
@@ -1004,12 +1004,12 @@ final class Pdf
         $nl = 1;
         while ($i < $nb) {
             // Get next character
-            $c = mb_substr($s, $i, 1, 'UTF-8');
+            $c = mb_substr($cleanText, $i, 1, 'UTF-8');
             if ($c == "\n") {
                 // Explicit line break
                 $pdf->withWidth = $remainingWidth;
                 $pdf->withHeight = $h;
-                $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                $pdf = $pdf->drawCell(mb_substr($cleanText, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 ++$i;
                 $sep = -1;
                 $j = $i;
@@ -1048,9 +1048,9 @@ final class Pdf
                     }
                     $pdf->withWidth = $remainingWidth;
                     $pdf->withHeight = $h;
-                    $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $pdf = $pdf->drawCell(mb_substr($cleanText, $j, $i - $j, 'UTF-8'), 0, 2, '', false, $link);
                 } else {
-                    $pdf = $pdf->drawCell(mb_substr($s, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
+                    $pdf = $pdf->drawCell(mb_substr($cleanText, $j, $sep - $j, 'UTF-8'), 0, 2, '', false, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -1071,7 +1071,7 @@ final class Pdf
             $pdf->withWidth = $l;
             $pdf->withHeight = $h;
 
-            $pdf = $pdf->drawCell(mb_substr($s, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
+            $pdf = $pdf->drawCell(mb_substr($cleanText, $j, $i - $j, 'UTF-8'), 0, 0, '', false, $link);
         }
 
         return $pdf;
