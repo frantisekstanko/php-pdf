@@ -61,6 +61,7 @@ final class Pdf
     private float $currentYPosition;
     private ?float $lastPrintedCellHeight;
     private float $lineWidth;
+    private int $withDpi = 96;
 
     /** @var array<string, array{
      * i: int,
@@ -139,6 +140,15 @@ final class Pdf
 
         $this->withAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
+    }
+
+    public function withDpi(int $dpi): self
+    {
+        $pdf = clone $this;
+
+        $pdf->withDpi = $dpi;
+
+        return $pdf;
     }
 
     public function inUnits(Units $units): self
@@ -1124,9 +1134,9 @@ final class Pdf
 
         // Automatic width and height calculation if needed
         if ($imageWidth == 0 && $imageHeight == 0) {
-            // Put image at 96 dpi
-            $imageWidth = -96;
-            $imageHeight = -96;
+            // Put image at dpi
+            $imageWidth = - $this->withDpi;
+            $imageHeight = - $this->withDpi;
         }
         if ($imageWidth < 0) {
             $imageWidth = -$info['w'] * 72 / $imageWidth / $pdf->scaleFactor;
