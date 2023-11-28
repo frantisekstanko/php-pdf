@@ -967,6 +967,12 @@ final class Pdf
         return $pdf;
     }
 
+    /**
+     * Use this method to write multi-line text.
+     *
+     * Line-breaks are inserted automatically when the end of the page
+     * is reached. "\n" is also respected to force a line-break.
+     */
     public function writeText(float $h, string $txt, string $link = ''): self
     {
         if ($this->currentFont === null) {
