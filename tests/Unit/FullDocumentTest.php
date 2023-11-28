@@ -116,7 +116,7 @@ final class FullDocumentTest extends PdfTestCase
             ->withSubject('What is this? I hope this is not Chris.')
             ->withTextColor(Color::fromRgb(0, 255, 100))
             ->withTitle('at last!')
-            ->writeText(111, 122, 'Hello world!')
+            ->writeString(111, 122, 'Hello world!')
             ->Write(55, 'Hello world!')
             ->Write(55, 'Link to the world!', 'https://toTheWorld.io/')
             ->withWidth(100)->withHeight(40)

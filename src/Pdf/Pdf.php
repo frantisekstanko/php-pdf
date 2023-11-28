@@ -633,7 +633,12 @@ final class Pdf
         return $pdf;
     }
 
-    public function writeText(float $x, float $y, string $txt): self
+    /**
+     * Writes a string at a specific position, without any line-breaking.
+     *
+     * If you want to write a paragraph, it's better to use $pdf->writeText().
+     */
+    public function writeString(float $x, float $y, string $txt): self
     {
         $pdf = clone $this;
 
