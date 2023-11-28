@@ -991,8 +991,8 @@ final class Pdf
             - 2 * $pdf->interiorCellMargin
         );
         $cleanText = str_replace("\r", '', (string) $text);
-        $nb = mb_strlen($cleanText, 'UTF-8');
-        if ($nb == 1 && $cleanText == ' ') {
+        $cleanTextLength = mb_strlen($cleanText, 'UTF-8');
+        if ($cleanTextLength == 1 && $cleanText == ' ') {
             $pdf->currentXPosition += $pdf->getStringWidth($cleanText);
 
             return $pdf;
@@ -1002,7 +1002,7 @@ final class Pdf
         $j = 0;
         $l = 0;
         $nl = 1;
-        while ($i < $nb) {
+        while ($i < $cleanTextLength) {
             // Get next character
             $c = mb_substr($cleanText, $i, 1, 'UTF-8');
             if ($c == "\n") {
