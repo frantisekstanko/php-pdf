@@ -8,6 +8,7 @@ use Stanko\Pdf\Exception\CannotAddPageToClosedDocumentException;
 use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\ContentBufferException;
+use Stanko\Pdf\Exception\FailedToDrawCellException;
 use Stanko\Pdf\Exception\FailedToWriteStringException;
 use Stanko\Pdf\Exception\FailedToWriteTextException;
 use Stanko\Pdf\Exception\FontNotFoundException;
@@ -760,7 +761,7 @@ final class Pdf
         }
         if ($txt !== '') {
             if ($pdf->currentFont === null) {
-                throw new NoFontHasBeenSetException();
+                throw FailedToDrawCellException::becauseNoFontHasBeenSelected();
             }
             if ($align == 'R') {
                 $dx = $cellWidth - $pdf->interiorCellMargin - $pdf->getStringWidth($txt);

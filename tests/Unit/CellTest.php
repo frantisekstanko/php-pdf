@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Stanko\Pdf\Tests\Unit;
 
 use Stanko\Pdf\Color;
+use Stanko\Pdf\Exception\FailedToDrawCellException;
+use Stanko\Pdf\Pdf;
 use Stanko\Pdf\Tests\PdfTestCase;
 
 final class CellTest extends PdfTestCase
@@ -72,5 +74,13 @@ final class CellTest extends PdfTestCase
         $this->storeResult($pdf);
 
         self::assertEquals($expectedHash, sha1($renderedPdf));
+    }
+
+    public function testDrawCellThrowsExceptionWhenNoFontHasBeenSelected(): void
+    {
+        $this->expectException(FailedToDrawCellException::class);
+        $this->expectExceptionMessage('You must call ->withFont() before calling ->drawCell()');
+
+        (new Pdf())->drawCell('cell without border, auto size', 1, 1);
     }
 }
