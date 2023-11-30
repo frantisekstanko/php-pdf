@@ -138,6 +138,12 @@ final class Pdf
         $this->interiorCellMargin = $margin / 10;
         $this->lineWidth = .567 / $this->scaleFactor;
 
+        $this->currentXPosition = $this->leftMargin;
+        $this->currentYPosition = $this->topMargin;
+
+        $this->withWidth = null;
+        $this->withHeight = null;
+
         $this->withAutomaticPageBreaking(2 * $margin);
         $this->enableCompressionIfAvailable();
     }
