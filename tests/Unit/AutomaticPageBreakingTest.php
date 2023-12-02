@@ -36,7 +36,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     {
         $pdf = $this->createTestPdf();
         $pdf = $pdf->addPage();
-        $pdf->withAutomaticPageBreaking(80);
+        $pdf = $pdf->withAutomaticPageBreaking(80);
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);
@@ -55,7 +55,7 @@ final class AutomaticPageBreakingTest extends PdfTestCase
     {
         $pdf = $this->createTestPdf();
         $pdf = $pdf->addPage();
-        $pdf->withAutomaticPageBreaking(80);
+        $pdf = $pdf->withAutomaticPageBreaking(80);
 
         self::assertEquals(1, $pdf->getCurrentPageNumber());
         self::assertEqualsWithDelta(10, $pdf->GetX(), 0.002);

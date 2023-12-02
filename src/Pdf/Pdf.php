@@ -145,7 +145,10 @@ final class Pdf
         $this->withWidth = null;
         $this->withHeight = null;
 
-        $this->withAutomaticPageBreaking(2 * $margin);
+        $this->automaticPageBreaking = true;
+        $this->pageBreakMargin = 2 * $margin;
+        $this->recalculatePageBreakThreshold();
+
         $this->enableCompressionIfAvailable();
     }
 
@@ -251,11 +254,15 @@ final class Pdf
         return $pdf;
     }
 
-    public function withAutomaticPageBreaking(float $threshold = 0): void
+    public function withAutomaticPageBreaking(float $threshold = 0): self
     {
-        $this->automaticPageBreaking = true;
-        $this->pageBreakMargin = $threshold;
-        $this->recalculatePageBreakThreshold();
+        $pdf = clone $this;
+
+        $pdf->automaticPageBreaking = true;
+        $pdf->pageBreakMargin = $threshold;
+        $pdf->recalculatePageBreakThreshold();
+
+        return $pdf;
     }
 
     public function withoutAutomaticPageBreaking(): self
