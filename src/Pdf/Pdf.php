@@ -1214,13 +1214,19 @@ final class Pdf
         return $this->currentXPosition;
     }
 
-    public function SetX(float $x): void
+    public function withX(float $x): self
     {
+        $pdf = clone $this;
+
         if ($x >= 0) {
-            $this->currentXPosition = $x;
-        } else {
-            $this->currentXPosition = $this->pageWidth + $x;
+            $pdf->currentXPosition = $x;
+
+            return $pdf;
         }
+
+        $pdf->currentXPosition = $pdf->pageWidth + $x;
+
+        return $pdf;
     }
 
     public function GetY(): float
@@ -1228,13 +1234,19 @@ final class Pdf
         return $this->currentYPosition;
     }
 
-    public function SetY(float $y): void
+    public function withY(float $y): self
     {
+        $pdf = clone $this;
+
         if ($y >= 0) {
-            $this->currentYPosition = $y;
-        } else {
-            $this->currentYPosition = $this->pageHeight + $y;
+            $pdf->currentYPosition = $y;
+
+            return $pdf;
         }
+
+        $pdf->currentYPosition = $this->pageHeight + $y;
+
+        return $pdf;
     }
 
     public function downloadFile(string $fileName): void
