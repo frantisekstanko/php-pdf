@@ -73,8 +73,8 @@ final class FullDocumentTest extends PdfTestCase
             ->addLink(50, 50, 100, 100, 'https://nothing.io/')
         ;
 
-        self::assertEquals(54.00125, $pdf->GetX());
-        self::assertEqualsWithDelta(178.3762, $pdf->GetY(), 0.0001);
+        self::assertEquals(54.00125, $pdf->getX());
+        self::assertEqualsWithDelta(178.3762, $pdf->getY(), 0.0001);
 
         $pdf = $pdf
             ->addPage()

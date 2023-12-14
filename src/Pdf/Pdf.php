@@ -1209,7 +1209,7 @@ final class Pdf
         return $this->pageHeight;
     }
 
-    public function GetX(): float
+    public function getX(): float
     {
         return $this->currentXPosition;
     }
@@ -1229,7 +1229,7 @@ final class Pdf
         return $pdf;
     }
 
-    public function GetY(): float
+    public function getY(): float
     {
         return $this->currentYPosition;
     }
