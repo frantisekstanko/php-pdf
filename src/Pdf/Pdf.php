@@ -1214,7 +1214,7 @@ final class Pdf
         return $this->currentXPosition;
     }
 
-    public function withX(float $x): self
+    public function atX(float $x): self
     {
         $pdf = clone $this;
 
@@ -1234,7 +1234,7 @@ final class Pdf
         return $this->currentYPosition;
     }
 
-    public function withY(float $y): self
+    public function atY(float $y): self
     {
         $pdf = clone $this;
 

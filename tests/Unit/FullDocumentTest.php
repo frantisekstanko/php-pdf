@@ -175,11 +175,11 @@ final class FullDocumentTest extends PdfTestCase
         self::assertEquals(7, $pdf->getCurrentPageNumber());
 
         $pdf = $pdf
-            ->withX(258)
-            ->withY(199)
+            ->atX(258)
+            ->atY(199)
             ->drawCell('new line', 1, 2)
-            ->withX(189)
-            ->withY(278)
+            ->atX(189)
+            ->atY(278)
             ->drawCell('new line', 1, 2)
         ;
 
