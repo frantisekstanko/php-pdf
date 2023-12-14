@@ -1249,6 +1249,24 @@ final class Pdf
         return $pdf;
     }
 
+    public function lowerBy(float $y): self
+    {
+        $pdf = clone $this;
+
+        $pdf->currentYPosition += $y;
+
+        return $pdf;
+    }
+
+    public function rightwardBy(float $x): self
+    {
+        $pdf = clone $this;
+
+        $pdf->currentXPosition += $x;
+
+        return $pdf;
+    }
+
     public function downloadFile(string $fileName): void
     {
         $pdf = $this->closeDocument();
