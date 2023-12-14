@@ -177,16 +177,11 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf
             ->withX(258)
             ->withY(199)
-        ;
-
-        $pdf = $pdf->drawCell('new line', 1, 2);
-
-        $pdf = $pdf
+            ->drawCell('new line', 1, 2)
             ->withX(189)
             ->withY(278)
+            ->drawCell('new line', 1, 2)
         ;
-
-        $pdf = $pdf->drawCell('new line', 1, 2);
 
         $this->storeResult($pdf);
 
