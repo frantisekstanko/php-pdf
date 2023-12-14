@@ -17,7 +17,7 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $expectedHash = '1dbd76e201c69c337a75352a00d0eabca289f3da';
+        $expectedHash = 'dceaa0930f5bd74788ea97f609da88d1f5cb58e2';
 
         $pdf = (new Pdf())
             ->createdAt(new DateTimeImmutable('2023-11-20'))
@@ -173,6 +173,16 @@ final class FullDocumentTest extends PdfTestCase
         ;
 
         self::assertEquals(7, $pdf->getCurrentPageNumber());
+
+        $pdf->SetX(258);
+        $pdf->SetY(199);
+
+        $pdf = $pdf->drawCell('new line', 1, 2);
+
+        $pdf->SetX(189);
+        $pdf->SetY(278);
+
+        $pdf = $pdf->drawCell('new line', 1, 2);
 
         $this->storeResult($pdf);
 

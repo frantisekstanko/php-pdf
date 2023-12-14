@@ -1228,16 +1228,12 @@ final class Pdf
         return $this->currentYPosition;
     }
 
-    public function SetY(float $y, bool $resetX = true): void
+    public function SetY(float $y): void
     {
-        // Set y position and optionally reset x
         if ($y >= 0) {
             $this->currentYPosition = $y;
         } else {
             $this->currentYPosition = $this->pageHeight + $y;
-        }
-        if ($resetX) {
-            $this->currentXPosition = $this->leftMargin;
         }
     }
 
