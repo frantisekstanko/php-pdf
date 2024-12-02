@@ -60,6 +60,10 @@ final readonly class ImageParser
         $bpc = $a['bits'] ?? 8;
         $data = file_get_contents($file);
 
+        if ($data === false) {
+            throw new FileStreamException('file_get_contents() returned false');
+        }
+
         return [
             'w' => $a[0],
             'h' => $a[1],
