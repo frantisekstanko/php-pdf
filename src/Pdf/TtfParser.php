@@ -344,18 +344,6 @@ class TtfParser
         return $this->splice($stream, $offset, $up);
     }
 
-    public function _set_short(string $stream, int $offset, string $val): string
-    {
-        if ($val < 0) {
-            $val = abs($val);
-            $val = ~$val;
-            ++$val;
-        }
-        $up = pack('n', $val);
-
-        return $this->splice($stream, $offset, $up);
-    }
-
     public function get_chunk(int $pos, int $length): string
     {
         fseek($this->fh, $pos);
