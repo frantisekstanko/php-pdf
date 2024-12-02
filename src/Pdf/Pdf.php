@@ -2025,9 +2025,7 @@ final class Pdf
             }
         }
         $this->appendIntoBuffer('/BitsPerComponent ' . $info['bpc']);
-        if (isset($info['f'])) {
-            $this->appendIntoBuffer('/Filter /' . $info['f']);
-        }
+        $this->appendIntoBuffer('/Filter /' . $info['f']);
         if (isset($info['dp'])) {
             $this->appendIntoBuffer('/DecodeParms <<' . $info['dp'] . '>>');
         }
