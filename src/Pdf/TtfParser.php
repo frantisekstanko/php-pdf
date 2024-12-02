@@ -1,4 +1,5 @@
 <?php
+
 /*
 * TTFontFile class                                                             *
 *                                                                              *

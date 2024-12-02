@@ -1113,8 +1113,8 @@ final class Pdf
 
     public function insertImage(
         string $file,
-        float $xPosition = null,
-        float $yPosition = null,
+        ?float $xPosition = null,
+        ?float $yPosition = null,
         float $imageWidth = 0,
         float $imageHeight = 0,
         string $fileType = '',
@@ -1570,7 +1570,7 @@ final class Pdf
         ) {
             return str_replace(
                 ['\\', '(', ')', "\r"],
-                ['\\\\', '\\(', '\\)', '\\r'],
+                ['\\\\', '\(', '\)', '\r'],
                 $s
             );
         }
