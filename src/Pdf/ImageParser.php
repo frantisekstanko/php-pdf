@@ -61,7 +61,14 @@ final readonly class ImageParser
         $bpc = $a['bits'] ?? 8;
         $data = file_get_contents($file);
 
-        return ['w' => $a[0], 'h' => $a[1], 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'DCTDecode', 'data' => $data];
+        return [
+            'w' => $a[0],
+            'h' => $a[1],
+            'cs' => $colspace,
+            'bpc' => $bpc,
+            'f' => 'DCTDecode',
+            'data' => $data,
+        ];
     }
 
     /** @return array<mixed> */
