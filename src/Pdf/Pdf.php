@@ -1604,6 +1604,14 @@ final class Pdf
 
     private function out(string $s): void
     {
+        if ($this->currentDocumentState === DocumentState::NOT_INITIALIZED) {
+            throw new NoPageHasBeenAddedException();
+        }
+
+        if ($this->currentDocumentState === DocumentState::CLOSED) {
+            throw new TheDocumentIsClosedException();
+        }
+
         if ($this->currentDocumentState === DocumentState::PAGE_STARTED) {
             $this->rawPageData[$this->currentPageNumber] .= $s . "\n";
 
@@ -1614,14 +1622,6 @@ final class Pdf
             $this->appendIntoBuffer($s);
 
             return;
-        }
-
-        if ($this->currentDocumentState === DocumentState::NOT_INITIALIZED) {
-            throw new NoPageHasBeenAddedException();
-        }
-
-        if ($this->currentDocumentState === DocumentState::CLOSED) {
-            throw new TheDocumentIsClosedException();
         }
     }
 
