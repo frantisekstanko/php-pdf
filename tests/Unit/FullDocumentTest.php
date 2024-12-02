@@ -17,7 +17,7 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $expectedHash = 'dceaa0930f5bd74788ea97f609da88d1f5cb58e2';
+        $expectedHash = 'e603230d4f8e588e16ac8b23ea8c27bd9b088732';
 
         $pdf = (new Pdf())
             ->createdAt(new DateTimeImmutable('2023-11-20'))
@@ -159,7 +159,6 @@ final class FullDocumentTest extends PdfTestCase
         $pdf = $pdf
             ->addPage()
             ->insertImage(__DIR__ . '/../../images/test.jpg')
-            ->insertImage(__DIR__ . '/../../images/test.gif', 100, 100)
             ->drawCell('paging test, page / {pagesTotalTest}', 0, 0, 'L')
         ;
 

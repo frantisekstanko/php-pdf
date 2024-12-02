@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Stanko\Pdf;
 
 use Exception;
-use Stanko\Pdf\Exception\CannotOpenImageFileException;
 use Stanko\Pdf\Exception\CompressionException;
-use Stanko\Pdf\Exception\ContentBufferException;
 use Stanko\Pdf\Exception\FileStreamException;
 use Stanko\Pdf\Exception\IncorrectPngFileException;
 use Stanko\Pdf\Exception\InterlacingNotSupportedException;
-use Stanko\Pdf\Exception\MemoryStreamException;
 use Stanko\Pdf\Exception\UnknownColorTypeException;
 use Stanko\Pdf\Exception\UnknownCompressionMethodException;
 use Stanko\Pdf\Exception\UnknownFilterMethodException;
@@ -32,9 +29,6 @@ final readonly class ImageParser
         }
         if ($type === 'png') {
             return $this->parsePng($file);
-        }
-        if ($type === 'gif') {
-            return $this->parseGif($file);
         }
 
         throw new UnsupportedImageTypeException();
@@ -268,39 +262,6 @@ final readonly class ImageParser
         }
 
         return $a['i'];
-    }
-
-    /** @return array<mixed> */
-    private function parseGif(string $file): array
-    {
-        if (!function_exists('imagepng')) {
-            $this->Error('GD extension is required for GIF support');
-        }
-        if (!function_exists('imagecreatefromgif')) {
-            $this->Error('GD has no GIF read support');
-        }
-        $im = imagecreatefromgif($file);
-        if ($im === false) {
-            throw new CannotOpenImageFileException($file);
-        }
-        imageinterlace($im, false);
-        ob_start();
-        imagepng($im);
-        $data = ob_get_clean();
-        if ($data === false) {
-            throw new ContentBufferException('ob_get_clean() returned false');
-        }
-        imagedestroy($im);
-        $f = fopen('php://temp', 'rb+');
-        if ($f === false) {
-            throw new MemoryStreamException('fopen() returned false');
-        }
-        fwrite($f, $data);
-        rewind($f);
-        $info = $this->_parsepngstream($f, $file);
-        fclose($f);
-
-        return $info;
     }
 
     private function Error(string $msg): never
