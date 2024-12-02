@@ -1141,6 +1141,7 @@ final class Pdf
 
             $info = (new ImageParser())->parseImage($file, $fileType);
 
+            $info['n'] = 0;
             $info['i'] = count($pdf->usedImages) + 1;
             $pdf->usedImages[$file] = $info;
         } else {
