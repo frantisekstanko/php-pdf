@@ -1925,39 +1925,39 @@ final class Pdf
             if ($cid > 255 && (!isset($font['subset'][$cid]) || !$font['subset'][$cid])) {
                 continue;
             }
-                if ($cid == ($prevcid + 1)) {
-                    if ($width == $prevwidth) {
-                        if ($width == $range[$rangeid][0]) {
-                            $range[$rangeid][] = $width;
-                        } else {
-                            array_pop($range[$rangeid]);
-                            // new range
-                            $rangeid = $prevcid;
-                            $range[$rangeid] = [];
-                            $range[$rangeid][] = $prevwidth;
-                            $range[$rangeid][] = $width;
-                        }
-                        $interval = true;
-                        $range[$rangeid]['interval'] = true;
+            if ($cid == ($prevcid + 1)) {
+                if ($width == $prevwidth) {
+                    if ($width == $range[$rangeid][0]) {
+                        $range[$rangeid][] = $width;
                     } else {
-                        if ($interval) {
-                            // new range
-                            $rangeid = $cid;
-                            $range[$rangeid] = [];
-                            $range[$rangeid][] = $width;
-                        } else {
-                            $range[$rangeid][] = $width;
-                        }
-                        $interval = false;
+                        array_pop($range[$rangeid]);
+                        // new range
+                        $rangeid = $prevcid;
+                        $range[$rangeid] = [];
+                        $range[$rangeid][] = $prevwidth;
+                        $range[$rangeid][] = $width;
                     }
+                    $interval = true;
+                    $range[$rangeid]['interval'] = true;
                 } else {
-                    $rangeid = $cid;
-                    $range[$rangeid] = [];
-                    $range[$rangeid][] = $width;
+                    if ($interval) {
+                        // new range
+                        $rangeid = $cid;
+                        $range[$rangeid] = [];
+                        $range[$rangeid][] = $width;
+                    } else {
+                        $range[$rangeid][] = $width;
+                    }
                     $interval = false;
                 }
-                $prevcid = $cid;
-                $prevwidth = $width;
+            } else {
+                $rangeid = $cid;
+                $range[$rangeid] = [];
+                $range[$rangeid][] = $width;
+                $interval = false;
+            }
+            $prevcid = $cid;
+            $prevwidth = $width;
         }
         $prevk = -1;
         $nextk = -1;
