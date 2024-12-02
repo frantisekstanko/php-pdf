@@ -1108,7 +1108,6 @@ class TtfParser
                 $aw = $arr[($glyph * 2) + 1];
             } else {
                 $aw = $this->read_ushort();
-                $lsb = $this->read_ushort();
             }
             if (isset($glyphToChar[$glyph]) || $glyph == 0) {
                 if (is_array($glyphToChar[$glyph]) === false) {
