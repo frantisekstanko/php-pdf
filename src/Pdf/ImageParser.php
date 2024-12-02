@@ -218,7 +218,13 @@ final readonly class ImageParser
             }
             unset($data);
             $data = gzcompress($color);
+            if ($data === false) {
+                throw new CompressionException('gzcompress() returned false');
+            }
             $info['smask'] = gzcompress($alpha);
+            if ($info['smask'] === false) {
+                throw new CompressionException('gzcompress() returned false');
+            }
         }
         $info['data'] = $data;
 
