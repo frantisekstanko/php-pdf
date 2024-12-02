@@ -250,6 +250,10 @@ final readonly class ImageParser
             throw new UnpackException('unpack() returned false');
         }
 
+        if (is_int($a['i']) === false) {
+            throw new UnpackException('unpack() returned non-integer value');
+        }
+
         return $a['i'];
     }
 
