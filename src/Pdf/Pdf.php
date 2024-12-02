@@ -1925,7 +1925,6 @@ final class Pdf
             if ($cid > 255 && (!isset($font['subset'][$cid]) || !$font['subset'][$cid])) {
                 continue;
             }
-            if (!isset($font['dw']) || ($width != $font['dw'])) {
                 if ($cid == ($prevcid + 1)) {
                     if ($width == $prevwidth) {
                         if ($width == $range[$rangeid][0]) {
@@ -1959,7 +1958,6 @@ final class Pdf
                 }
                 $prevcid = $cid;
                 $prevwidth = $width;
-            }
         }
         $prevk = -1;
         $nextk = -1;
