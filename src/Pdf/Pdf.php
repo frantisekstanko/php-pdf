@@ -2,6 +2,7 @@
 
 namespace Stanko\Pdf;
 
+use Assert\Assertion;
 use DateTimeImmutable;
 use Stanko\Pdf\Exception\AliasMustBeSetBeforeLoadingFontsException;
 use Stanko\Pdf\Exception\CannotAddPageToClosedDocumentException;
@@ -1989,6 +1990,7 @@ final class Pdf
         $w = '';
         foreach ($range as $k => $ws) {
             if (count(array_count_values($ws)) == 1) {
+                Assertion::integer($ws[0]);
                 $w .= ' ' . $k . ' ' . ((int) $k + count($ws) - 1) . ' ' . $ws[0];
             } else {
                 $w .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";
