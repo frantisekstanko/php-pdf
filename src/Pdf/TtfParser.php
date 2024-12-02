@@ -1110,9 +1110,6 @@ class TtfParser
                 $aw = $this->read_ushort();
             }
             if (isset($glyphToChar[$glyph]) || $glyph == 0) {
-                if (is_array($glyphToChar[$glyph]) === false) {
-                    throw new InvalidGlyphDataException();
-                }
                 if ($aw >= (1 << 15)) {
                     $aw = 0;
                 }    // 1.03 Some (arabic) fonts have -ve values for width
