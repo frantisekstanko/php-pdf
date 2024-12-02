@@ -1618,11 +1618,7 @@ final class Pdf
             return;
         }
 
-        if ($this->currentDocumentState === DocumentState::PAGE_ENDED) {
-            $this->appendIntoBuffer($s);
-
-            return;
-        }
+        $this->appendIntoBuffer($s);
     }
 
     private function appendIntoBuffer(string $s): void
