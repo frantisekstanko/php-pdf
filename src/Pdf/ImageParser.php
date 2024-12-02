@@ -171,7 +171,16 @@ final readonly class ImageParser
         if ($colspace == 'Indexed' && $pal === '') {
             $this->Error('Missing palette in ' . $file);
         }
-        $info = ['w' => $w, 'h' => $h, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'FlateDecode', 'dp' => $dp, 'pal' => $pal, 'trns' => $trns];
+        $info = [
+            'w' => $w,
+            'h' => $h,
+            'cs' => $colspace,
+            'bpc' => $bpc,
+            'f' => 'FlateDecode',
+            'dp' => $dp,
+            'pal' => $pal,
+            'trns' => $trns,
+        ];
         if ($ct >= 4) {
             if (!function_exists('gzuncompress')) {
                 $this->Error('Zlib not available, can\'t handle alpha channel: ' . $file);
