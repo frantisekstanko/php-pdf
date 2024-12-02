@@ -36,7 +36,7 @@ final readonly class FontAttributes
      *  ItalicAngle: int,
      *  StemV: int,
      *  MissingWidth: int,
-     * }>
+     * }
      */
     public function toArray(): array
     {
