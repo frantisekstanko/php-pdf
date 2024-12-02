@@ -43,7 +43,6 @@ final readonly class ImageParser
     /** @return array<mixed> */
     private function parseJpg(string $file): array
     {
-        // Extract info from a JPEG file
         $a = getimagesize($file);
         if (!$a) {
             $this->Error('Missing or incorrect image file: ' . $file);
@@ -74,7 +73,6 @@ final readonly class ImageParser
     /** @return array<mixed> */
     private function parsePng(string $file): array
     {
-        // Extract info from a PNG file
         $f = fopen($file, 'rb');
         if (!$f) {
             $this->Error('Can\'t open image file: ' . $file);
@@ -92,12 +90,10 @@ final readonly class ImageParser
      */
     private function _parsepngstream($f, string $file): array
     {
-        // Check signature
         if ($this->_readstream($f, 8) != chr(137) . 'PNG' . chr(13) . chr(10) . chr(26) . chr(10)) {
             $this->Error('Not a PNG file: ' . $file);
         }
 
-        // Read header chunk
         $this->_readstream($f, 4);
 
         $fileTypeByte = $this->_readstream($f, 4);
@@ -140,7 +136,6 @@ final readonly class ImageParser
         $this->_readstream($f, 4);
         $dp = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
 
-        // Scan chunks looking for palette, transparency and image data
         $pal = '';
         $trns = '';
         $data = '';
@@ -148,11 +143,9 @@ final readonly class ImageParser
             $n = $this->_readint($f);
             $type = $this->_readstream($f, 4);
             if ($type == 'PLTE') {
-                // Read palette
                 $pal = $this->_readstream($f, $n);
                 $this->_readstream($f, 4);
             } elseif ($type == 'tRNS') {
-                // Read transparency info
                 $t = $this->_readstream($f, $n);
                 if ($ct == 0) {
                     $trns = [ord(substr($t, 1, 1))];
@@ -166,7 +159,6 @@ final readonly class ImageParser
                 }
                 $this->_readstream($f, 4);
             } elseif ($type == 'IDAT') {
-                // Read image data block
                 $data .= $this->_readstream($f, $n);
                 $this->_readstream($f, 4);
             } elseif ($type == 'IEND') {
@@ -181,7 +173,6 @@ final readonly class ImageParser
         }
         $info = ['w' => $w, 'h' => $h, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'FlateDecode', 'dp' => $dp, 'pal' => $pal, 'trns' => $trns];
         if ($ct >= 4) {
-            // Extract alpha channel
             if (!function_exists('gzuncompress')) {
                 $this->Error('Zlib not available, can\'t handle alpha channel: ' . $file);
             }
@@ -192,7 +183,6 @@ final readonly class ImageParser
             $color = '';
             $alpha = '';
             if ($ct == 4) {
-                // Gray image
                 $len = 2 * $w;
                 for ($i = 0; $i < $h; ++$i) {
                     $pos = (1 + $len) * $i;
@@ -203,7 +193,6 @@ final readonly class ImageParser
                     $alpha .= preg_replace('/.(.)/s', '$1', $line);
                 }
             } else {
-                // RGB image
                 $len = 4 * $w;
                 for ($i = 0; $i < $h; ++$i) {
                     $pos = (1 + $len) * $i;
@@ -228,7 +217,6 @@ final readonly class ImageParser
      */
     private function _readstream($f, int $n): string
     {
-        // Read n bytes from stream
         $res = '';
         while ($n > 0 && !feof($f)) {
             $s = fread($f, $n);
@@ -250,7 +238,6 @@ final readonly class ImageParser
      */
     private function _readint($f): int
     {
-        // Read a 4-byte integer from stream
         $a = unpack('Ni', $this->_readstream($f, 4));
 
         if ($a === false) {
@@ -267,7 +254,6 @@ final readonly class ImageParser
     /** @return array<mixed> */
     private function parseGif(string $file): array
     {
-        // Extract info from a GIF file (via PNG conversion)
         if (!function_exists('imagepng')) {
             $this->Error('GD extension is required for GIF support');
         }
