@@ -2045,7 +2045,15 @@ final class Pdf
         // Soft mask
         if (isset($info['smask'])) {
             $dp = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['w'];
-            $smask = ['w' => $info['w'], 'h' => $info['h'], 'cs' => 'DeviceGray', 'bpc' => 8, 'f' => $info['f'], 'dp' => $dp, 'data' => $info['smask']];
+            $smask = [
+                'w' => $info['w'],
+                'h' => $info['h'],
+                'cs' => 'DeviceGray',
+                'bpc' => 8,
+                'f' => $info['f'],
+                'dp' => $dp,
+                'data' => $info['smask'],
+            ];
             $this->_putimage($smask);
         }
         // Palette
