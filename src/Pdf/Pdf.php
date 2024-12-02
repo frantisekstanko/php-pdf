@@ -2031,7 +2031,7 @@ final class Pdf
         if (isset($info['dp'])) {
             $this->appendIntoBuffer('/DecodeParms <<' . $info['dp'] . '>>');
         }
-        if (isset($info['trns']) && is_array($info['trns'])) {
+        if (isset($info['trns']) && $info['trns'] !== []) {
             $trns = '';
             for ($i = 0; $i < count($info['trns']); ++$i) {
                 $trns .= $info['trns'][$i] . ' ' . $info['trns'][$i] . ' ';

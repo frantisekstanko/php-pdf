@@ -141,7 +141,7 @@ final readonly class ImageParser
         $dp = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
 
         $pal = '';
-        $trns = '';
+        $trns = [];
         $data = '';
         do {
             $n = $this->_readint($f);
