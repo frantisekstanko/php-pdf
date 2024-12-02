@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": ">=8.1",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "beberlei/assert": "^3.3"
     },
     "autoload": {
         "psr-4": {
@@ -24,7 +25,8 @@
     "require-dev": {
         "phpstan/phpstan": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.65",
-        "phpunit/phpunit": "^11.4"
+        "phpunit/phpunit": "^11.4",
+        "phpstan/phpstan-beberlei-assert": "^2.0"
     },
     "scripts": {
         "test": [
