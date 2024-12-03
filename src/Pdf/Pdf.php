@@ -2040,7 +2040,7 @@ final class Pdf
      *     cs: string,
      *     bpc: int,
      *     pal: string,
-     *     dp?: string,
+     *     decodeParameters?: string,
      *     trns?: array<int>,
      *     softMask: string,
      *     f: string,
@@ -2067,8 +2067,8 @@ final class Pdf
         }
         $this->appendIntoBuffer('/BitsPerComponent ' . $info['bpc']);
         $this->appendIntoBuffer('/Filter /' . $info['f']);
-        if (isset($info['dp'])) {
-            $this->appendIntoBuffer('/DecodeParms <<' . $info['dp'] . '>>');
+        if (isset($info['decodeParameters'])) {
+            $this->appendIntoBuffer('/DecodeParms <<' . $info['decodeParameters'] . '>>');
         }
         if (isset($info['trns']) && $info['trns'] !== []) {
             $trns = '';
@@ -2084,14 +2084,14 @@ final class Pdf
         $this->_putstream($info['data']);
         $this->appendIntoBuffer('endobj');
         if ($info['softMask'] !== '') {
-            $dp = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['w'];
+            $decodeParameters = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['w'];
             $softMask = [
                 'w' => $info['w'],
                 'h' => $info['h'],
                 'cs' => 'DeviceGray',
                 'bpc' => 8,
                 'f' => $info['f'],
-                'dp' => $dp,
+                'decodeParameters' => $decodeParameters,
                 'data' => $info['softMask'],
                 'pal' => '',
                 'softMask' => '',

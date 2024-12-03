@@ -101,7 +101,7 @@ final readonly class ImageParser
      *     cs: string,
      *     bpc: int,
      *     f: string,
-     *     dp: string,
+     *     decodeParameters: string,
      *     pal: string,
      *     trns: array<int>,
      *     data: string,
@@ -129,7 +129,7 @@ final readonly class ImageParser
      *     cs: string,
      *     bpc: int,
      *     f: string,
-     *     dp: string,
+     *     decodeParameters: string,
      *     pal: string,
      *     trns: array<int>,
      *     data: string,
@@ -182,7 +182,7 @@ final readonly class ImageParser
         }
 
         $this->_readstream($f, 4);
-        $dp = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
+        $decodeParameters = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
 
         $pal = '';
         $trns = [];
@@ -225,7 +225,7 @@ final readonly class ImageParser
             'cs' => $colspace,
             'bpc' => $bpc,
             'f' => 'FlateDecode',
-            'dp' => $dp,
+            'decodeParameters' => $decodeParameters,
             'pal' => $pal,
             'trns' => $trns,
             'softMask' => '',
