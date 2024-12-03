@@ -1169,6 +1169,8 @@ class TtfParser
                 throw new CompressionException('unpack() returned false');
             }
 
+            Assertion::allInteger($arr);
+
             for ($n = 0; $n <= $numGlyphs; ++$n) {
                 $this->glyphPos[] = ($arr[$n + 1] * 2);
             }
@@ -1179,6 +1181,8 @@ class TtfParser
             if ($arr === false) {
                 throw new CompressionException('unpack() returned false');
             }
+
+            Assertion::allInteger($arr);
 
             for ($n = 0; $n <= $numGlyphs; ++$n) {
                 $this->glyphPos[] = $arr[$n + 1];
