@@ -92,7 +92,7 @@ final class Pdf
 
     /**
      * @var array<string, array{
-     *  w: int,
+     *  width: int,
      *  h: int,
      *  i: int,
      *  data: string,
@@ -657,7 +657,7 @@ final class Pdf
     public function addLink(
         float $x,
         float $y,
-        float $w,
+        float $width,
         float $h,
         mixed $link,
     ): self {
@@ -666,7 +666,7 @@ final class Pdf
         $pdf->pageLinks[$pdf->currentPageNumber][] = [
             $x * $pdf->scaleFactor,
             $pdf->pageHeightInPoints() - $y * $pdf->scaleFactor,
-            $w * $pdf->scaleFactor,
+            $width * $pdf->scaleFactor,
             $h * $pdf->scaleFactor, $link,
         ];
 
@@ -1168,16 +1168,16 @@ final class Pdf
             $imageHeight = - $this->withDpi;
         }
         if ($imageWidth < 0) {
-            $imageWidth = -$info['w'] * 72 / $imageWidth / $pdf->scaleFactor;
+            $imageWidth = -$info['width'] * 72 / $imageWidth / $pdf->scaleFactor;
         }
         if ($imageHeight < 0) {
             $imageHeight = -$info['h'] * 72 / $imageHeight / $pdf->scaleFactor;
         }
         if ($imageWidth == 0) {
-            $imageWidth = $imageHeight * $info['w'] / $info['h'];
+            $imageWidth = $imageHeight * $info['width'] / $info['h'];
         }
         if ($imageHeight == 0) {
-            $imageHeight = $imageWidth * $info['h'] / $info['w'];
+            $imageHeight = $imageWidth * $info['h'] / $info['width'];
         }
 
         // Flowing mode
@@ -1612,9 +1612,9 @@ final class Pdf
         // Underline text
         $up = $this->usedFonts[$this->currentFont::class]['up'];
         $ut = $this->usedFonts[$this->currentFont::class]['ut'];
-        $w = $this->getStringWidth($txt) + $this->wordSpacing * substr_count($txt, ' ');
+        $width = $this->getStringWidth($txt) + $this->wordSpacing * substr_count($txt, ' ');
 
-        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $w * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
+        return sprintf('%.2F %.2F %.2F %.2F re f', $x * $this->scaleFactor, ($this->pageHeight - ($y - $up / 1000 * $this->currentFontSize)) * $this->scaleFactor, $width * $this->scaleFactor, -$ut / 1000 * $this->currentFontSizeInPoints);
     }
 
     private function out(string $s): void
@@ -1772,9 +1772,9 @@ final class Pdf
         $kids .= ']';
         $this->appendIntoBuffer($kids);
         $this->appendIntoBuffer('/Count ' . $nb);
-        $w = $this->pageInfo[1]['size'][0];
+        $width = $this->pageInfo[1]['size'][0];
         $h = $this->pageInfo[1]['size'][1];
-        $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $w, $h));
+        $this->appendIntoBuffer(sprintf('/MediaBox [0 0 %.2F %.2F]', $width, $h));
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('endobj');
     }
@@ -2012,16 +2012,16 @@ final class Pdf
                 $prevint = false;
             }
         }
-        $w = '';
+        $width = '';
         foreach ($range as $k => $ws) {
             if (count(array_count_values($ws)) == 1) {
                 Assertion::integer($ws[0]);
-                $w .= ' ' . $k . ' ' . ((int) $k + count($ws) - 1) . ' ' . $ws[0];
+                $width .= ' ' . $k . ' ' . ((int) $k + count($ws) - 1) . ' ' . $ws[0];
             } else {
-                $w .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";
+                $width .= ' ' . $k . ' [ ' . implode(' ', $ws) . ' ]' . "\n";
             }
         }
-        $this->out('/W [' . $w . ' ]');
+        $this->out('/W [' . $width . ' ]');
     }
 
     private function appendImagesIntoBuffer(): void
@@ -2035,7 +2035,7 @@ final class Pdf
 
     /**
      * @param array{
-     *     w: int,
+     *     width: int,
      *     h: int,
      *     cs: string,
      *     bpc: int,
@@ -2055,7 +2055,7 @@ final class Pdf
         $info['n'] = $this->currentObjectNumber;
         $this->appendIntoBuffer('<</Type /XObject');
         $this->appendIntoBuffer('/Subtype /Image');
-        $this->appendIntoBuffer('/Width ' . $info['w']);
+        $this->appendIntoBuffer('/Width ' . $info['width']);
         $this->appendIntoBuffer('/Height ' . $info['h']);
         if ($info['cs'] == 'Indexed') {
             $this->appendIntoBuffer('/ColorSpace [/Indexed /DeviceRGB ' . (strlen($info['pal']) / 3 - 1) . ' ' . ($this->currentObjectNumber + 1) . ' 0 R]');
@@ -2084,9 +2084,9 @@ final class Pdf
         $this->_putstream($info['data']);
         $this->appendIntoBuffer('endobj');
         if ($info['softMask'] !== '') {
-            $decodeParameters = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['w'];
+            $decodeParameters = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['width'];
             $softMask = [
-                'w' => $info['w'],
+                'width' => $info['width'],
                 'h' => $info['h'],
                 'cs' => 'DeviceGray',
                 'bpc' => 8,

@@ -23,7 +23,7 @@ final readonly class ImageParser
 
     /**
      * @return array{
-     *    w: int,
+     *    width: int,
      *    h: int,
      *    cs: string,
      *    bpc: int,
@@ -49,7 +49,7 @@ final readonly class ImageParser
 
     /**
      * @return array{
-     *     w: int,
+     *     width: int,
      *     h: int,
      *     cs: string,
      *     bpc: int,
@@ -83,7 +83,7 @@ final readonly class ImageParser
         }
 
         return [
-            'w' => $a[0],
+            'width' => $a[0],
             'h' => $a[1],
             'cs' => $colspace,
             'bpc' => $bpc,
@@ -96,7 +96,7 @@ final readonly class ImageParser
 
     /**
      * @return array{
-     *     w: int,
+     *     width: int,
      *     h: int,
      *     cs: string,
      *     bpc: int,
@@ -124,7 +124,7 @@ final readonly class ImageParser
      * @param resource $f
      *
      * @return array{
-     *     w: int,
+     *     width: int,
      *     h: int,
      *     cs: string,
      *     bpc: int,
@@ -149,7 +149,7 @@ final readonly class ImageParser
             throw new IncorrectPngFileException($file);
         }
 
-        $w = $this->_readint($f);
+        $width = $this->_readint($f);
         $h = $this->_readint($f);
         $bpc = ord($this->_readstream($f, 1));
         if ($bpc > 8) {
@@ -182,7 +182,7 @@ final readonly class ImageParser
         }
 
         $this->_readstream($f, 4);
-        $decodeParameters = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $w;
+        $decodeParameters = '/Predictor 15 /Colors ' . ($colspace == 'DeviceRGB' ? 3 : 1) . ' /BitsPerComponent ' . $bpc . ' /Columns ' . $width;
 
         $pal = '';
         $trns = [];
@@ -220,7 +220,7 @@ final readonly class ImageParser
             $this->Error('Missing palette in ' . $file);
         }
         $info = [
-            'w' => $w,
+            'width' => $width,
             'h' => $h,
             'cs' => $colspace,
             'bpc' => $bpc,
@@ -241,7 +241,7 @@ final readonly class ImageParser
             $color = '';
             $alpha = '';
             if ($colorType == 4) {
-                $len = 2 * $w;
+                $len = 2 * $width;
                 for ($i = 0; $i < $h; ++$i) {
                     $pos = (1 + $len) * $i;
                     $color .= $data[$pos];
@@ -251,7 +251,7 @@ final readonly class ImageParser
                     $alpha .= preg_replace('/.(.)/s', '$1', $line);
                 }
             } else {
-                $len = 4 * $w;
+                $len = 4 * $width;
                 for ($i = 0; $i < $h; ++$i) {
                     $pos = (1 + $len) * $i;
                     $color .= $data[$pos];
