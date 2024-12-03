@@ -928,6 +928,8 @@ class TtfParser
                     }
 
                     $glyphIdx = $up[1];
+                    Assertion::integer($glyphIdx);
+                    Assertion::integer($glyphSet[$glyphIdx]);
                     $this->glyphdata[$originalGlyphIdx]['compGlyphs'][] = $glyphIdx;
                     $data = $this->_set_ushort($data, $pos_in_glyph + 2, $glyphSet[$glyphIdx]);
                     $pos_in_glyph += 4;
