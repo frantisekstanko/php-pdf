@@ -24,7 +24,7 @@ final readonly class ImageParser
     /**
      * @return array{
      *    width: int,
-     *    h: int,
+     *    height: int,
      *    cs: string,
      *    bpc: int,
      *    f: string,
@@ -50,7 +50,7 @@ final readonly class ImageParser
     /**
      * @return array{
      *     width: int,
-     *     h: int,
+     *     height: int,
      *     cs: string,
      *     bpc: int,
      *     f: string,
@@ -84,7 +84,7 @@ final readonly class ImageParser
 
         return [
             'width' => $a[0],
-            'h' => $a[1],
+            'height' => $a[1],
             'cs' => $colspace,
             'bpc' => $bpc,
             'f' => 'DCTDecode',
@@ -97,7 +97,7 @@ final readonly class ImageParser
     /**
      * @return array{
      *     width: int,
-     *     h: int,
+     *     height: int,
      *     cs: string,
      *     bpc: int,
      *     f: string,
@@ -125,7 +125,7 @@ final readonly class ImageParser
      *
      * @return array{
      *     width: int,
-     *     h: int,
+     *     height: int,
      *     cs: string,
      *     bpc: int,
      *     f: string,
@@ -150,7 +150,7 @@ final readonly class ImageParser
         }
 
         $width = $this->_readint($f);
-        $h = $this->_readint($f);
+        $height = $this->_readint($f);
         $bpc = ord($this->_readstream($f, 1));
         if ($bpc > 8) {
             $this->Error('16-bit depth not supported: ' . $file);
@@ -221,7 +221,7 @@ final readonly class ImageParser
         }
         $info = [
             'width' => $width,
-            'h' => $h,
+            'height' => $height,
             'cs' => $colspace,
             'bpc' => $bpc,
             'f' => 'FlateDecode',
@@ -242,7 +242,7 @@ final readonly class ImageParser
             $alpha = '';
             if ($colorType == 4) {
                 $len = 2 * $width;
-                for ($i = 0; $i < $h; ++$i) {
+                for ($i = 0; $i < $height; ++$i) {
                     $pos = (1 + $len) * $i;
                     $color .= $data[$pos];
                     $alpha .= $data[$pos];
@@ -252,7 +252,7 @@ final readonly class ImageParser
                 }
             } else {
                 $len = 4 * $width;
-                for ($i = 0; $i < $h; ++$i) {
+                for ($i = 0; $i < $height; ++$i) {
                     $pos = (1 + $len) * $i;
                     $color .= $data[$pos];
                     $alpha .= $data[$pos];
