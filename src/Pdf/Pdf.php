@@ -48,7 +48,7 @@ final class Pdf
     /** @var array<int, array{
      *   size: array<float>,
      *   rotation: PageRotation,
-     *   n: int,
+     *   objectNumber: int,
      * }>
      */
     private array $pageInfo = [];
@@ -75,7 +75,7 @@ final class Pdf
      * cw: string,
      * ttffile: string,
      * subset: array<int, int>,
-     * n: int,
+     * objectNumber: int,
      * }> */
     private array $usedFonts = [];
 
@@ -97,7 +97,7 @@ final class Pdf
      *  i: int,
      *  data: string,
      *  softMask: string,
-     *  n: int,
+     *  objectNumber: int,
      *  cs: string,
      *  bpc: int,
      *  pal: string,
@@ -595,7 +595,7 @@ final class Pdf
             'cw' => $charWidths,
             'ttffile' => $font->getFontFilePath(),
             'subset' => $sbarr,
-            'n' => 0,
+            'objectNumber' => 0,
         ];
 
         return $pdf;
@@ -1154,7 +1154,7 @@ final class Pdf
 
             $info = (new ImageParser())->parseImage($file, $fileType);
 
-            $info['n'] = 0;
+            $info['objectNumber'] = 0;
             $info['i'] = count($pdf->usedImages) + 1;
             $pdf->usedImages[$file] = $info;
         } else {
@@ -1700,7 +1700,7 @@ final class Pdf
             } else {
                 $l = $this->internalLinks[$pl[4]];
                 $height = $this->pageInfo[$l[0]]['size'][1];
-                $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->pageInfo[$l[0]]['n'], $height - $l[1] * $this->scaleFactor);
+                $s .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>', $this->pageInfo[$l[0]]['objectNumber'], $height - $l[1] * $this->scaleFactor);
             }
             $this->appendIntoBuffer($s);
             $this->appendIntoBuffer('endobj');
@@ -1752,7 +1752,7 @@ final class Pdf
         $nb = $this->currentPageNumber;
         $n = $this->currentObjectNumber;
         for ($i = 1; $i <= $nb; ++$i) {
-            $this->pageInfo[$i]['n'] = ++$n;
+            $this->pageInfo[$i]['objectNumber'] = ++$n;
             ++$n;
             foreach ($this->pageLinks[$i] as &$pl) {
                 $pl[5] = ++$n;
@@ -1767,7 +1767,7 @@ final class Pdf
         $this->appendIntoBuffer('<</Type /Pages');
         $kids = '/Kids [';
         for ($i = 1; $i <= $nb; ++$i) {
-            $kids .= $this->pageInfo[$i]['n'] . ' 0 R ';
+            $kids .= $this->pageInfo[$i]['objectNumber'] . ' 0 R ';
         }
         $kids .= ']';
         $this->appendIntoBuffer($kids);
@@ -1782,7 +1782,7 @@ final class Pdf
     private function appendFontsIntoBuffer(): void
     {
         foreach ($this->usedFonts as $k => $font) {
-            $this->usedFonts[$k]['n'] = $this->currentObjectNumber + 1;
+            $this->usedFonts[$k]['objectNumber'] = $this->currentObjectNumber + 1;
 
             $ttf = new TtfParser();
             $fontname = 'MPDFAA+' . $font['name'];
@@ -1916,7 +1916,7 @@ final class Pdf
      *     cw: string,
      *     ttffile: string,
      *     subset: array<int, int>,
-     *     n: int,
+     *     objectNumber: int,
      * } $font
      */
     private function _putTTfontwidths(array $font, int $maxUni): void
@@ -2046,13 +2046,13 @@ final class Pdf
      *     f: string,
      *     data: string,
      *     i: int,
-     *     n: int,
+     *     objectNumber: int,
      * } $info
      */
     private function _putimage(&$info): void
     {
         $this->newObject();
-        $info['n'] = $this->currentObjectNumber;
+        $info['objectNumber'] = $this->currentObjectNumber;
         $this->appendIntoBuffer('<</Type /XObject');
         $this->appendIntoBuffer('/Subtype /Image');
         $this->appendIntoBuffer('/Width ' . $info['width']);
@@ -2118,12 +2118,12 @@ final class Pdf
         $this->appendIntoBuffer('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->appendIntoBuffer('/Font <<');
         foreach ($this->usedFonts as $font) {
-            $this->appendIntoBuffer('/F' . $font['i'] . ' ' . $font['n'] . ' 0 R');
+            $this->appendIntoBuffer('/F' . $font['i'] . ' ' . $font['objectNumber'] . ' 0 R');
         }
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('/XObject <<');
         foreach ($this->usedImages as $image) {
-            $this->appendIntoBuffer('/I' . $image['i'] . ' ' . $image['n'] . ' 0 R');
+            $this->appendIntoBuffer('/I' . $image['i'] . ' ' . $image['objectNumber'] . ' 0 R');
         }
         $this->appendIntoBuffer('>>');
         $this->appendIntoBuffer('>>');
