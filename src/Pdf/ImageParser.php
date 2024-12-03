@@ -21,7 +21,20 @@ final readonly class ImageParser
     ) {
     }
 
-    /** @return array<mixed> */
+    /**
+     * @return array{
+     *    w: int,
+     *    h: int,
+     *    cs: string,
+     *    bpc: int,
+     *    f: string,
+     *    data: string,
+     *    smask: string,
+     *    n?: int,
+     *    cs?: string,
+     *    pal: string,
+     *    }
+     */
     public function parseImage(string $file, string $type): array
     {
         if ($type === 'jpg' || $type == 'jpeg') {
@@ -34,7 +47,18 @@ final readonly class ImageParser
         throw new UnsupportedImageTypeException();
     }
 
-    /** @return array<mixed> */
+    /**
+     * @return array{
+     *     w: int,
+     *     h: int,
+     *     cs: string,
+     *     bpc: int,
+     *     f: string,
+     *     data: string,
+     *     pal: string,
+     *     smask: string
+     * }
+     */
     private function parseJpg(string $file): array
     {
         $a = getimagesize($file);
@@ -70,7 +94,20 @@ final readonly class ImageParser
         ];
     }
 
-    /** @return array<mixed> */
+    /**
+     * @return array{
+     *     w: int,
+     *     h: int,
+     *     cs: string,
+     *     bpc: int,
+     *     f: string,
+     *     dp: string,
+     *     pal: string,
+     *     trns: array<int>,
+     *     data: string,
+     *     smask: string
+     * }
+     */
     private function parsePng(string $file): array
     {
         $f = fopen($file, 'rb');
@@ -86,7 +123,18 @@ final readonly class ImageParser
     /**
      * @param resource $f
      *
-     * @return array<mixed>
+     * @return array{
+     *     w: int,
+     *     h: int,
+     *     cs: string,
+     *     bpc: int,
+     *     f: string,
+     *     dp: string,
+     *     pal: string,
+     *     trns: array<int>,
+     *     data: string,
+     *     smask: string
+     * }
      */
     private function _parsepngstream($f, string $file): array
     {

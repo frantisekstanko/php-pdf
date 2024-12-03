@@ -75,7 +75,9 @@ class TtfParser
     /** @var array<int> */
     public array $charToGlyph;
 
-    /** @var array<mixed> */
+    /**
+     * @var array<int, int>
+     */
     public array $codeToGlyph;
 
     public float $ascent;
@@ -165,8 +167,14 @@ class TtfParser
     }
 
     /**
-     * @param array<mixed> $x
-     * @param array<mixed> $y
+     * @param array{
+     *    0: int,
+     *    1: int
+     * } $x
+     * @param array{
+     *    0: int,
+     *    1: int
+     * } $y
      *
      * @return array<mixed>
      */
@@ -190,7 +198,7 @@ class TtfParser
         return [$reshi, $reslo];
     }
 
-    /** @return array<int> */
+    /** @return array{int, int} */
     public function calcChecksum(string $data): array
     {
         if (strlen($data) % 4) {
@@ -1055,7 +1063,7 @@ class TtfParser
     }
 
     /**
-     * @param array<mixed> $glyphToChar
+     * @param array<int, array<int>> $glyphToChar
      */
     public function getHMTX(
         int $numberOfHMetrics,
@@ -1194,8 +1202,8 @@ class TtfParser
 
     // CMAP Format 4
     /**
-     * @param array<int> $glyphToChar
-     * @param array<int> $charToGlyph
+     * @param array<int, array<int>> $glyphToChar
+     * @param array<int>             $charToGlyph
      */
     public function getCMAP4(int $unicode_cmap_offset, array &$glyphToChar, array &$charToGlyph): void
     {

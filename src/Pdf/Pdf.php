@@ -90,7 +90,20 @@ final class Pdf
     private bool $fillAndTextColorDiffer = false;
     private float $wordSpacing = 0;
 
-    /** @var array<string, array<mixed>> */
+    /**
+     * @var array<string, array{
+     *  w: int,
+     *  h: int,
+     *  i: int,
+     *  data: string,
+     *  smask: string,
+     *  n: int,
+     *  cs: string,
+     *  bpc: int,
+     *  pal: string,
+     *  f: string,
+     * }>
+     * */
     private array $usedImages = [];
 
     /** @var array<int, array<int, array{
@@ -1893,7 +1906,18 @@ final class Pdf
     }
 
     /**
-     * @param array<mixed> $font
+     * @param array{
+     *     i: int,
+     *     type: string,
+     *     name: string,
+     *     attributes: FontAttributes,
+     *     up: float,
+     *     ut: float,
+     *     cw: string,
+     *     ttffile: string,
+     *     subset: array<int, int>,
+     *     n: int,
+     * } $font
      */
     private function _putTTfontwidths(array $font, int $maxUni): void
     {
@@ -2009,7 +2033,22 @@ final class Pdf
         }
     }
 
-    /** @param array<mixed> $info */
+    /**
+     * @param array{
+     *     w: int,
+     *     h: int,
+     *     cs: string,
+     *     bpc: int,
+     *     pal: string,
+     *     dp?: string,
+     *     trns?: array<int>,
+     *     smask: string,
+     *     f: string,
+     *     data: string,
+     *     i: int,
+     *     n: int,
+     * } $info
+     */
     private function _putimage(&$info): void
     {
         $this->newObject();
