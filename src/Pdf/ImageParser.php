@@ -65,6 +65,8 @@ final readonly class ImageParser
             'bpc' => $bpc,
             'f' => 'DCTDecode',
             'data' => $data,
+            'pal' => '',
+            'smask' => '',
         ];
     }
 
@@ -178,6 +180,7 @@ final readonly class ImageParser
             'dp' => $dp,
             'pal' => $pal,
             'trns' => $trns,
+            'smask' => '',
         ];
         if ($ct >= 4) {
             if (!function_exists('gzuncompress')) {

@@ -2004,10 +2004,8 @@ final class Pdf
     {
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
-            unset(
-                $this->usedImages[$file]['data'],
-                $this->usedImages[$file]['smask']
-            );
+            $this->usedImages[$file]['data'] = '';
+            $this->usedImages[$file]['smask'] = '';
         }
     }
 
@@ -2040,14 +2038,14 @@ final class Pdf
             }
             $this->appendIntoBuffer('/Mask [' . $trns . ']');
         }
-        if (isset($info['smask'])) {
+        if ($info['smask'] !== '') {
             $this->appendIntoBuffer('/SMask ' . ($this->currentObjectNumber + 1) . ' 0 R');
         }
         $this->appendIntoBuffer('/Length ' . strlen($info['data']) . '>>');
         $this->_putstream($info['data']);
         $this->appendIntoBuffer('endobj');
         // Soft mask
-        if (isset($info['smask'])) {
+        if ($info['smask'] !== '') {
             $dp = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['w'];
             $smask = [
                 'w' => $info['w'],
@@ -2057,6 +2055,8 @@ final class Pdf
                 'f' => $info['f'],
                 'dp' => $dp,
                 'data' => $info['smask'],
+                'pal' => '',
+                'smask' => '',
             ];
             $this->_putimage($smask);
         }
