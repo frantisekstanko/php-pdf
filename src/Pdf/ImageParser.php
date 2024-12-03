@@ -155,12 +155,12 @@ final readonly class ImageParser
         if ($bpc > 8) {
             $this->Error('16-bit depth not supported: ' . $file);
         }
-        $ct = ord($this->_readstream($f, 1));
-        if ($ct == 0 || $ct == 4) {
+        $colorType = ord($this->_readstream($f, 1));
+        if ($colorType == 0 || $colorType == 4) {
             $colspace = 'DeviceGray';
-        } elseif ($ct == 2 || $ct == 6) {
+        } elseif ($colorType == 2 || $colorType == 6) {
             $colspace = 'DeviceRGB';
-        } elseif ($ct == 3) {
+        } elseif ($colorType == 3) {
             $colspace = 'Indexed';
         } else {
             throw new UnknownColorTypeException();
@@ -195,9 +195,9 @@ final readonly class ImageParser
                 $this->_readstream($f, 4);
             } elseif ($type == 'tRNS') {
                 $t = $this->_readstream($f, $n);
-                if ($ct == 0) {
+                if ($colorType == 0) {
                     $trns = [ord(substr($t, 1, 1))];
-                } elseif ($ct == 2) {
+                } elseif ($colorType == 2) {
                     $trns = [ord(substr($t, 1, 1)), ord(substr($t, 3, 1)), ord(substr($t, 5, 1))];
                 } else {
                     $pos = strpos($t, chr(0));
@@ -230,7 +230,7 @@ final readonly class ImageParser
             'trns' => $trns,
             'smask' => '',
         ];
-        if ($ct >= 4) {
+        if ($colorType >= 4) {
             if (!function_exists('gzuncompress')) {
                 $this->Error('Zlib not available, can\'t handle alpha channel: ' . $file);
             }
@@ -240,7 +240,7 @@ final readonly class ImageParser
             }
             $color = '';
             $alpha = '';
-            if ($ct == 4) {
+            if ($colorType == 4) {
                 $len = 2 * $w;
                 for ($i = 0; $i < $h; ++$i) {
                     $pos = (1 + $len) * $i;
