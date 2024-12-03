@@ -35,7 +35,7 @@ final class ImageTest extends PdfTestCase
 
         $pdf = $pdf->drawRectangle(0, 0, 400, 400, RectangleStyle::FILLED);
 
-        $pdf = $pdf->insertImage(
+        $pdf = $pdf->withImage(
             __DIR__ . '/../../images/' . $testImage,
             $xPosition,
             $yPosition,

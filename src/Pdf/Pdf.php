@@ -1112,7 +1112,7 @@ final class Pdf
         return $pdf;
     }
 
-    public function insertImage(
+    public function withImage(
         string $file,
         ?float $xPosition = null,
         ?float $yPosition = null,
