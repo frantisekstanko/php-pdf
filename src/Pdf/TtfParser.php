@@ -906,7 +906,7 @@ class TtfParser
                 }
             }
 
-            if ($glyphLength > 2 && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
+            if ($glyphLength > 2 && is_integer($up[1]) && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
                 $pos_in_glyph = 10;
                 $flags = GF_MORE;
                 $nComponentElements = 0;
