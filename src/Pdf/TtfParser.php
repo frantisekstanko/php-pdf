@@ -19,6 +19,7 @@
 
 namespace Stanko\Pdf;
 
+use Assert\Assertion;
 use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\CopyrightedFontException;
 use Stanko\Pdf\Exception\FileStreamException;
@@ -919,6 +920,7 @@ class TtfParser
                     }
 
                     $flags = $up[1];
+                    Assertion::integer($flags);
                     $up = unpack('n', substr($data, $pos_in_glyph + 2, 2));
 
                     if ($up === false) {
