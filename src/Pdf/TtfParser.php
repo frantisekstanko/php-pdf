@@ -1084,6 +1084,7 @@ class TtfParser
             } else {
                 $aw = $this->read_ushort();
             }
+            Assertion::integer($aw);
             if (isset($glyphToChar[$glyph]) || $glyph == 0) {
                 if ($aw >= (1 << 15)) {
                     $aw = 0;
