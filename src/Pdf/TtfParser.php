@@ -24,7 +24,6 @@ use Stanko\Pdf\Exception\CompressionException;
 use Stanko\Pdf\Exception\CopyrightedFontException;
 use Stanko\Pdf\Exception\FileStreamException;
 use Stanko\Pdf\Exception\FontHeadNotFoundException;
-use Stanko\Pdf\Exception\InvalidGlyphDataException;
 
 // Define the value used in the "head" table of a created TTF file
 // 0x74727565 "true" for Mac
@@ -1005,30 +1004,6 @@ class TtfParser
         $this->endTTFile($stm);
 
         return $stm;
-    }
-
-    // Recursively get composite glyph data
-    public function getGlyphData(
-        int $originalGlyphIdx,
-        int &$maxdepth,
-        int &$depth,
-        int &$points,
-        int &$contours,
-    ): void {
-        ++$depth;
-        $maxdepth = max($maxdepth, $depth);
-        if (is_array($this->glyphdata[$originalGlyphIdx]) === false) {
-            throw new InvalidGlyphDataException();
-        }
-        if (count($this->glyphdata[$originalGlyphIdx]['compGlyphs'])) {
-            foreach ($this->glyphdata[$originalGlyphIdx]['compGlyphs'] as $glyphIdx) {
-                $this->getGlyphData($glyphIdx, $maxdepth, $depth, $points, $contours);
-            }
-        } elseif (($this->glyphdata[$originalGlyphIdx]['nContours'] > 0) && $depth > 0) {    // simple
-            $contours += $this->glyphdata[$originalGlyphIdx]['nContours'];
-            $points += $this->glyphdata[$originalGlyphIdx]['nPoints'];
-        }
-        --$depth;
     }
 
     // Recursively get composite glyphs
