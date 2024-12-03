@@ -78,8 +78,6 @@ class TtfParser
     /** @var array<mixed> */
     public array $codeToGlyph;
 
-    /** @var array<mixed> */
-    public array $glyphdata;
     public float $ascent;
     public float $descent;
 
@@ -876,7 +874,6 @@ class TtfParser
 
         $hmtxstr = '';
         $maxComponentElements = 0;    // number of glyphs referenced at top level
-        $this->glyphdata = [];
 
         foreach ($subsetglyphs as $originalGlyphIdx => $uni) {
             // hmtx - Horizontal Metrics
@@ -929,7 +926,6 @@ class TtfParser
                     $glyphIdx = $up[1];
                     Assertion::integer($glyphIdx);
                     Assertion::integer($glyphSet[$glyphIdx]);
-                    $this->glyphdata[$originalGlyphIdx]['compGlyphs'][] = $glyphIdx;
                     $data = $this->_set_ushort($data, $pos_in_glyph + 2, $glyphSet[$glyphIdx]);
                     $pos_in_glyph += 4;
                     if ($flags & GF_WORDS) {
