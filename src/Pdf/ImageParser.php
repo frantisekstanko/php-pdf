@@ -29,7 +29,7 @@ final readonly class ImageParser
      *    bpc: int,
      *    f: string,
      *    data: string,
-     *    smask: string,
+     *    softMask: string,
      *    n?: int,
      *    cs?: string,
      *    pal: string,
@@ -56,7 +56,7 @@ final readonly class ImageParser
      *     f: string,
      *     data: string,
      *     pal: string,
-     *     smask: string
+     *     softMask: string
      * }
      */
     private function parseJpg(string $file): array
@@ -90,7 +90,7 @@ final readonly class ImageParser
             'f' => 'DCTDecode',
             'data' => $data,
             'pal' => '',
-            'smask' => '',
+            'softMask' => '',
         ];
     }
 
@@ -105,7 +105,7 @@ final readonly class ImageParser
      *     pal: string,
      *     trns: array<int>,
      *     data: string,
-     *     smask: string
+     *     softMask: string
      * }
      */
     private function parsePng(string $file): array
@@ -133,7 +133,7 @@ final readonly class ImageParser
      *     pal: string,
      *     trns: array<int>,
      *     data: string,
-     *     smask: string
+     *     softMask: string
      * }
      */
     private function _parsepngstream($f, string $file): array
@@ -228,7 +228,7 @@ final readonly class ImageParser
             'dp' => $dp,
             'pal' => $pal,
             'trns' => $trns,
-            'smask' => '',
+            'softMask' => '',
         ];
         if ($colorType >= 4) {
             if (!function_exists('gzuncompress')) {
@@ -266,8 +266,8 @@ final readonly class ImageParser
             if ($data === false) {
                 throw new CompressionException('gzcompress() returned false');
             }
-            $info['smask'] = gzcompress($alpha);
-            if ($info['smask'] === false) {
+            $info['softMask'] = gzcompress($alpha);
+            if ($info['softMask'] === false) {
                 throw new CompressionException('gzcompress() returned false');
             }
         }

@@ -96,7 +96,7 @@ final class Pdf
      *  h: int,
      *  i: int,
      *  data: string,
-     *  smask: string,
+     *  softMask: string,
      *  n: int,
      *  cs: string,
      *  bpc: int,
@@ -2029,7 +2029,7 @@ final class Pdf
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
             $this->usedImages[$file]['data'] = '';
-            $this->usedImages[$file]['smask'] = '';
+            $this->usedImages[$file]['softMask'] = '';
         }
     }
 
@@ -2042,7 +2042,7 @@ final class Pdf
      *     pal: string,
      *     dp?: string,
      *     trns?: array<int>,
-     *     smask: string,
+     *     softMask: string,
      *     f: string,
      *     data: string,
      *     i: int,
@@ -2077,27 +2077,27 @@ final class Pdf
             }
             $this->appendIntoBuffer('/Mask [' . $trns . ']');
         }
-        if ($info['smask'] !== '') {
+        if ($info['softMask'] !== '') {
             $this->appendIntoBuffer('/SMask ' . ($this->currentObjectNumber + 1) . ' 0 R');
         }
         $this->appendIntoBuffer('/Length ' . strlen($info['data']) . '>>');
         $this->_putstream($info['data']);
         $this->appendIntoBuffer('endobj');
         // Soft mask
-        if ($info['smask'] !== '') {
+        if ($info['softMask'] !== '') {
             $dp = '/Predictor 15 /Colors 1 /BitsPerComponent 8 /Columns ' . $info['w'];
-            $smask = [
+            $softMask = [
                 'w' => $info['w'],
                 'h' => $info['h'],
                 'cs' => 'DeviceGray',
                 'bpc' => 8,
                 'f' => $info['f'],
                 'dp' => $dp,
-                'data' => $info['smask'],
+                'data' => $info['softMask'],
                 'pal' => '',
-                'smask' => '',
+                'softMask' => '',
             ];
-            $this->_putimage($smask);
+            $this->_putimage($softMask);
         }
         // Palette
         if ($info['cs'] == 'Indexed') {
