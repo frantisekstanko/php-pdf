@@ -2004,7 +2004,10 @@ final class Pdf
     {
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
-            unset($this->usedImages[$file]['data'], $this->usedImages[$file]['smask']);
+            unset(
+                $this->usedImages[$file]['data'],
+                $this->usedImages[$file]['smask']
+            );
         }
     }
 
