@@ -885,12 +885,12 @@ class TtfParser
 
             $offsets[] = $pos;
             $glyphPos = $this->glyphPos[$originalGlyphIdx];
-            $glyphLen = $this->glyphPos[$originalGlyphIdx + 1] - $glyphPos;
+            $glyphLength = $this->glyphPos[$originalGlyphIdx + 1] - $glyphPos;
             if ($glyfLength < $this->maxStrLenRead) {
-                $data = substr($glyphData, $glyphPos, $glyphLen);
+                $data = substr($glyphData, $glyphPos, $glyphLength);
             } else {
-                if ($glyphLen > 0) {
-                    $data = $this->get_chunk($glyfOffset + $glyphPos, $glyphLen);
+                if ($glyphLength > 0) {
+                    $data = $this->get_chunk($glyfOffset + $glyphPos, $glyphLength);
                 } else {
                     $data = '';
                 }
@@ -898,7 +898,7 @@ class TtfParser
 
             $up = [];
 
-            if ($glyphLen > 0) {
+            if ($glyphLength > 0) {
                 $up = unpack('n', substr($data, 0, 2));
 
                 if ($up === false) {
@@ -906,7 +906,7 @@ class TtfParser
                 }
             }
 
-            if ($glyphLen > 2 && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
+            if ($glyphLength > 2 && ($up[1] & (1 << 15))) {    // If number of contours <= -1 i.e. composite glyph
                 $pos_in_glyph = 10;
                 $flags = GF_MORE;
                 $nComponentElements = 0;
@@ -946,7 +946,7 @@ class TtfParser
             }
 
             $glyf .= $data;
-            $pos += $glyphLen;
+            $pos += $glyphLength;
             if ($pos % 4 != 0) {
                 $padding = 4 - ($pos % 4);
                 $glyf .= str_repeat("\0", $padding);
