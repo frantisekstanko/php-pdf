@@ -106,8 +106,8 @@ class TtfParser
     public int $stemV;
     public int $italicAngle;
     public int $flags;
-    public int $underlinePosition;
-    public int $underlineThickness;
+    public float $underlinePosition;
+    public float $underlineThickness;
     public string $charWidths;
     public float $defaultWidth;
     public int $maxStrLenRead;

@@ -17,7 +17,7 @@ final class FullDocumentTest extends PdfTestCase
 {
     public function testFullDocument(): void
     {
-        $expectedHash = 'e603230d4f8e588e16ac8b23ea8c27bd9b088732';
+        $expectedHash = 'ceb51b2229d525197fdcfa81dd821c06a53081d2';
 
         $pdf = (new Pdf())
             ->createdAt(new DateTimeImmutable('2023-11-20'))
