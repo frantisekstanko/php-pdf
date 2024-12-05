@@ -85,7 +85,7 @@ final class Metadata
     public function toArray(): array
     {
         if ($this->createdAt === null) {
-            throw new CreatedAtIsNotSetException('You must call setCreatedAt() first.');
+            throw new CreatedAtIsNotSetException('You forgot to call $pdf->createdAt()');
         }
 
         $date = $this->createdAt->format('YmdHisO');
