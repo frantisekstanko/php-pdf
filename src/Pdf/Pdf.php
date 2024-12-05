@@ -1484,7 +1484,7 @@ final class Pdf
         $outputBufferLength = ob_get_length();
 
         if ($outputBufferLength === false) {
-            throw new ContentBufferException('ob_get_length() returned false');
+            return;
         }
 
         if ($outputBufferLength === 0) {
