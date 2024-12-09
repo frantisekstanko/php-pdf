@@ -1355,6 +1355,28 @@ final class Pdf
         return $pdf;
     }
 
+    public function getStringWidth(string $string): float
+    {
+        if ($this->currentFont === null) {
+            throw new IncorrectFontDefinitionException();
+        }
+
+        $characterWidths = $this->usedFonts[$this->currentFont::class]['cw'];
+        $stringWidth = 0;
+        $unicode = $this->utf8StringToUnicodeArray($string);
+        foreach ($unicode as $char) {
+            if (isset($characterWidths[2 * $char])) {
+                $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
+
+                continue;
+            }
+
+            $stringWidth += $this->usedFonts[$this->currentFont::class]['attributes']->getMissingWidth();
+        }
+
+        return $stringWidth * $this->currentFontSize / 1000;
+    }
+
     private function appendLineWidthToPdfBuffer(): void
     {
         $this->out(sprintf('%.2F w', $this->lineWidth * $this->scaleFactor));
@@ -1438,28 +1460,6 @@ final class Pdf
         $pdf->currentDocumentState = DocumentState::CLOSED;
 
         return $pdf;
-    }
-
-    private function getStringWidth(string $string): float
-    {
-        if ($this->currentFont === null) {
-            throw new IncorrectFontDefinitionException();
-        }
-
-        $characterWidths = $this->usedFonts[$this->currentFont::class]['cw'];
-        $stringWidth = 0;
-        $unicode = $this->utf8StringToUnicodeArray($string);
-        foreach ($unicode as $char) {
-            if (isset($characterWidths[2 * $char])) {
-                $stringWidth += (ord($characterWidths[2 * $char]) << 8) + ord($characterWidths[2 * $char + 1]);
-
-                continue;
-            }
-
-            $stringWidth += $this->usedFonts[$this->currentFont::class]['attributes']->getMissingWidth();
-        }
-
-        return $stringWidth * $this->currentFontSize / 1000;
     }
 
     private function enableCompressionIfAvailable(): void
