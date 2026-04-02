@@ -2056,7 +2056,6 @@ final class Pdf
      *     softMask: string,
      *     f: string,
      *     data: string,
-     *     i: int,
      *     objectNumber: int,
      * } $info
      */
@@ -2106,6 +2105,7 @@ final class Pdf
                 'data' => $info['softMask'],
                 'pal' => '',
                 'softMask' => '',
+                'objectNumber' => 0,
             ];
             $this->_putimage($softMask);
         }
