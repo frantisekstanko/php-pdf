@@ -111,7 +111,7 @@ final class Pdf
      *  1: float,
      *  2: float,
      *  3: float,
-     *  4: mixed,
+     *  4: int|string,
      *  5?: int,
      * }>> */
     private array $pageLinks;
@@ -665,7 +665,7 @@ final class Pdf
         float $y,
         float $width,
         float $height,
-        mixed $link,
+        int|string $link,
     ): self {
         $pdf = clone $this;
 
@@ -726,7 +726,7 @@ final class Pdf
         int $ln = 0,
         string $align = '',
         bool $fill = false,
-        mixed $link = '',
+        int|string $link = '',
     ): self {
         $pdf = clone $this;
 
