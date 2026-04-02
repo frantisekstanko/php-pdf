@@ -552,6 +552,53 @@ final class Pdf
         return $pdf;
     }
 
+    public function drawCircle(
+        float $centerX,
+        float $centerY,
+        float $radius,
+        RectangleStyle $style,
+    ): self {
+        $pdf = clone $this;
+
+        $cx = $centerX * $pdf->scaleFactor;
+        $cy = ($pdf->pageHeight - $centerY) * $pdf->scaleFactor;
+        $r = $radius * $pdf->scaleFactor;
+        $k = $r * 4.0 * (M_SQRT2 - 1.0) / 3.0;
+
+        $pdf->out(sprintf(
+            '%.2F %.2F m %.2F %.2F %.2F %.2F %.2F %.2F c %.2F %.2F %.2F %.2F %.2F %.2F c %.2F %.2F %.2F %.2F %.2F %.2F c %.2F %.2F %.2F %.2F %.2F %.2F c h %s',
+            $cx + $r,
+            $cy,
+            $cx + $r,
+            $cy + $k,
+            $cx + $k,
+            $cy + $r,
+            $cx,
+            $cy + $r,
+            $cx - $k,
+            $cy + $r,
+            $cx - $r,
+            $cy + $k,
+            $cx - $r,
+            $cy,
+            $cx - $r,
+            $cy - $k,
+            $cx - $k,
+            $cy - $r,
+            $cx,
+            $cy - $r,
+            $cx + $k,
+            $cy - $r,
+            $cx + $r,
+            $cy - $k,
+            $cx + $r,
+            $cy,
+            $style->toPdfOperation(),
+        ));
+
+        return $pdf;
+    }
+
     public function loadFont(
         FontInterface $font,
     ): self {
