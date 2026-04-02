@@ -2037,8 +2037,10 @@ final class Pdf
     {
         foreach (array_keys($this->usedImages) as $file) {
             $this->_putimage($this->usedImages[$file]);
-            $this->usedImages[$file]['data'] = '';
-            $this->usedImages[$file]['softMask'] = '';
+            $entry = $this->usedImages[$file];
+            $entry['data'] = '';
+            $entry['softMask'] = '';
+            $this->usedImages[$file] = $entry;
         }
     }
 
