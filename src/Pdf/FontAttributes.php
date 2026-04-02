@@ -45,15 +45,15 @@ final readonly class FontAttributes
             'Descent' => (int) round($this->descent),
             'CapHeight' => (int) round($this->capHeight),
             'Flags' => $this->flags,
-            'FontBBox' => '[' .
-                round($this->boundingBox[0]) .
-                ' ' .
-                round($this->boundingBox[1]) .
-                ' ' .
-                round($this->boundingBox[2]) .
-                ' ' .
-                round($this->boundingBox[3]) .
-                ']',
+            'FontBBox' => '['
+                . round($this->boundingBox[0])
+                . ' '
+                . round($this->boundingBox[1])
+                . ' '
+                . round($this->boundingBox[2])
+                . ' '
+                . round($this->boundingBox[3])
+                . ']',
             'ItalicAngle' => $this->italicAngle,
             'StemV' => (int) round($this->stemV),
             'MissingWidth' => (int) round($this->missingWidth),

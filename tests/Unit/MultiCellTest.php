@@ -10,9 +10,9 @@ use Stanko\Pdf\Tests\PdfTestCase;
 
 final class MultiCellTest extends PdfTestCase
 {
-    private const TEXT_LONG_LINE = 'long text 1234567890 šč+éíťýčšľúpldc+ôúäú' .
-        '§+ôč+ä long text more long text more long text ____|||||| WOLOLOO' .
-        'will this ever end?!';
+    private const TEXT_LONG_LINE = 'long text 1234567890 šč+éíťýčšľúpldc+ôúäú'
+        . '§+ôč+ä long text more long text more long text ____|||||| WOLOLOO'
+        . 'will this ever end?!';
 
     private const TEXT_WITH_NEWLINES = <<<'EOF'
         this is a text

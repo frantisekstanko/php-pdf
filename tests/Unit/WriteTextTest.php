@@ -30,27 +30,27 @@ final class WriteTextTest extends PdfTestCase
             ->withFont(OpenSansBold::points(12))
             ->writeText(
                 12,
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                "\n" .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                "\n" .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
                 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . "\n"
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . "\n"
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
             )
             ->writeText(
                 12,
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
                 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
             )
         ;
 
@@ -83,14 +83,14 @@ final class WriteTextTest extends PdfTestCase
             ->withFont(OpenSansBold::points(12))
             ->writeText(
                 12,
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
-                'Text test text test text test text test text test 1 2 3 4 5' .
                 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
+                . 'Text test text test text test text test text test 1 2 3 4 5'
             )
         ;
 
