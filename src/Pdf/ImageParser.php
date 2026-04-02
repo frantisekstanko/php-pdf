@@ -166,17 +166,19 @@ final readonly class ImageParser
             throw new UnknownColorTypeException();
         }
 
-        $compressionByte = ord($this->_readstream($f, 1));
+        $methodBytes = $this->_readstream($f, 3);
+
+        $compressionByte = ord($methodBytes[0]);
         if ($compressionByte != 0) {
             throw new UnknownCompressionMethodException($file);
         }
 
-        $filterByte = ord($this->_readstream($f, 1));
+        $filterByte = ord($methodBytes[1]);
         if ($filterByte != 0) {
             throw new UnknownFilterMethodException($file);
         }
 
-        $interlacingByte = ord($this->_readstream($f, 1));
+        $interlacingByte = ord($methodBytes[2]);
         if ($interlacingByte != 0) {
             throw new InterlacingNotSupportedException($file);
         }
