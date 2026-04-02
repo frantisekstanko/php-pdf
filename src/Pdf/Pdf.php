@@ -425,6 +425,9 @@ final class Pdf
 
         if ($color->isBlack()) {
             $pdf->drawColor = sprintf('%.3F G', 0);
+            if ($pdf->currentPageNumber > 0) {
+                $pdf->out($pdf->drawColor);
+            }
 
             return $pdf;
         }
@@ -449,6 +452,9 @@ final class Pdf
 
         if ($color->isBlack()) {
             $pdf->fillColor = sprintf('%.3F g', 0);
+            if ($pdf->currentPageNumber > 0) {
+                $pdf->out($pdf->fillColor);
+            }
 
             return $pdf;
         }
